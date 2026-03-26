@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %} 
+{% block gestion %}
+<br>
+<h2>Liste des Cellules Postées</h2> <br>
+
+<p>Nombre de cellules posté : <strong> {{nombre_cellules}} </strong> </p>
+    {% for cellules in object_list %}            
+        <div class="row">
+
+            <div class="col-lg-12">
+                <div class="card mb-3" style="max-width: 100%; ">
+                <div class="row g-0">
+                
+                    <div class="col-md-12">
+                    <div class="card-body">
+                        <h5 class="card-title">Titre : <a href=" {% url 'cellules_detail' cellules.id %} ">{{cellules.titre}}</a> </h5> 
+<br>
+                        <div class="row">
+                            <div class="col-md-4">District : <a href="{% url 'cellules_district' cellules.district %}"><strong>{{cellules.district}}</strong></a></div>
+                            <div class="col-md-4">Groupe : <a href=""><strong>{{cellules.district.groupe}}</strong></a></div>
+                            <div class="col-md-4">Section des : <a href=""><strong>{{cellules.section}}</strong></a></div>
+                        </div>
+                        <br>
+                    <center><p>Date d'ajout :<strong>{{cellules.add_date}}</strong></p></center>
+            
+                    </div>
+                    </div>
+                </div>
+                </div>
+
+            </div>
+        </div> 
+        
+    {% endfor %}
+
+
+
+    
+{% endblock %}
+    
+
+
+
+
+
+
+
+
+    
+
+
+<!----> 
+
+
+
+
+
+
+
+

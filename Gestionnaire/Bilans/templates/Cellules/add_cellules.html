@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block gestion %}
+    <h1>Ajouter le bilan d'une Cellule</h1>
+
+    <form action="" method="post">
+        {% csrf_token %}
+        {{form.as_p}} <br>
+        <button type="submit" class="btn btn-primary">Ajouter</button>
+    </form>
+
+    <script>
+        let user = '{{user.id}}';
+        document.getElementById('user_id').value = user;
+    </script>
+
+
+{% endblock %}

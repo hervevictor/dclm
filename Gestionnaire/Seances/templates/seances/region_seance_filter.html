@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block gestion %}
+
+
+
+        <h1>Region : {{ region_name }} - Séance: {{ seance_type }}</h1>
+        <br>
+        <form method="get" action="">
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Filtrer</button>
+        </form>
+        <br><br>
+        <table class="table datatable">
+            <thead>
+                <tr>
+                    <th>Groupe</th>
+                    <th>Hommes</th>
+                    <th>Femmes</th>
+                    <th>Assistance Totale</th>
+                    <th>Cotisation</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in data %}
+                    <tr>
+                        <td>{{ item.groupe }}</td>
+                        <td>{{ item.total_hommes }}</td>
+                        <td>{{ item.total_femmes }}</td>
+                        <td>{{ item.total_assistance }}</td>
+                        <td>{{ item.total_cotisation }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p>Total Hommes: {{ total_hommes }}</p>
+        <p>Total Femmes: {{ total_femmes }}</p>
+        <p>Total Assistance: {{ total_assistance }}</p>
+        <p>Total Cotisation: {{ total_cotisation }}</p>
+        <p>Nombre de Bilans: {{ seance_filter_count }}</p>
+    
+    
+
+{% endblock %}        

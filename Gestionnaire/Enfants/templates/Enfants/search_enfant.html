@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block gestion %}
+<br>
+
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 col-md-7">
+          <h2>La liste des enfants protant ce nom ({{search_enfant}})  </h2>  
+        </div>
+        <div class="col-12 col-md-5">
+            <form action=" {% url 'search_enfant' %} " method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-9"><input type="text" class="form-control" placeholder="Entrez le nom à rechercher" name="search_enfant"></div>
+                    <div class="col-3"><button type="submit" class="btn btn-primary">valider</button></div>
+                </div>
+                
+                
+            </form>
+        </div>
+    </div>
+</div>
+{% if search_enfants %}    
+    <br>
+    <p>Le nombre est : <strong>{{search_enfant_count}}</strong> </p> 
+    <br> 
+        <section class="container-fluid">
+            <div class="row"> 
+                {% for enfant in search_enfants %}
+                    <div class="col-md-4">
+                    <div class="card">
+                        {% if enfant.search_enfants %}
+                        <img src="{{enfant.enfant_image.url}}" class="card-img-top" alt="...">
+                        {% else %}
+                        <img src="{% static 'assets/img/card.jpg' %}" class="card-img-top" alt="...">
+                        {% endif %}
+                        
+                        <div class="card-body">
+                            <h5 class="card-title"><a href="{% url 'enfant_details' enfant.pk %}">{{enfant}}</a></h5>
+                            <p class="card-text"></p>
+                        </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+
+
+{% else %}
+<br><br><br>
+<br>
+  <strong>Pas d'enfant en ce nom ({{search_enfant}}). <br><br> Veillez entrer un autre nom ou éléments de lettres</strong>. 
+{% endif %}
+
+    <br><br><br><br><br><br><br><br><br>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block gestion %}
+    <div class="container">
+        <br> <br>
+        <h2>Supprimer cet Groupe ({{groupe}}) </h2>
+        <p>Êtes-vous sûre de vouloir supprimer ce Groupe ?</p>
+
+        <form action="" method="post">
+            {% csrf_token %}
+            {{form.as_p}}
+            <br> <br>
+            <a href="{% url 'groupe_details' groupe.pk %}" class="btn btn-warning">Annuler</a>
+            <button type="submit" class="btn btn-danger">Supprimer</button>
+        </form>
+    </div>
+    <br> <br><br> <br>  
+{% endblock %}

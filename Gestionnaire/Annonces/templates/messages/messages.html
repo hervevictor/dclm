@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block gestion %}
+    <h1>La liste de tous les messages  </h1> <br>
+    <p>Le nombre total de gruoupes enrégistré : <strong>{{message_count}}</strong></p> <br>
+        <section class="container-fluid">
+            <div class="row"> 
+            {% if messages %} 
+                {% for message in messages %}
+                    <div class="col-md-4">
+                    <div class="card" style="height: 105px; overflow:scroll;">
+                        
+                        <div class="card-body">
+                            <h5 class="card-title"><a href="{% url 'message_details' message.pk %}">{{message}}</a></h5>
+                            <p class="card-text"></p>
+                        </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% else %}
+                <strong>Pas d'informations pour le moment !</strong>
+            {% endif %}
+            </div>
+        </section> 
+        <br><br><br><br>
+{% endblock %}

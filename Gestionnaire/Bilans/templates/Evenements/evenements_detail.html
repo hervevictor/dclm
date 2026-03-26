@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block gestion %} <br>
+    <h3>Details de cet évenement : </h3>
+    <br>
+    <div class="container">
+
+
+            <div class="col-lg-12">
+                <div class="card mb-3" style="max-width: 100%; ">
+                <div class="row g-0">
+                
+                    <div class="col-md-12">
+                    <div class="card-body"> <br>
+                        <h4 class="">Titre : <strong style="color: rgb(0, 85, 255);">{{evenement.titre}}</strong> </h4> 
+                        <hr>
+                        <h6><small>{{evenement.type_d_evenement}} | {{evenement.date}}</small></h6>
+<br>
+                        <div class="row">
+                            <div class="col-md-4">Emplacement : <strong>{{evenement.emplacement}}</strong></div>
+                            <div class="col-md-4">District : <a href=""><strong>{{evenement.district}}</strong></a></div>
+                            <div class="col-md-4">Groupe : <a href=""><strong>{{evenement.district.groupe}}</strong></a></div>
+                        </div> <br>
+                        <div class="col-12">Description : <strong>{{evenement.billan_de_l_evenement}}</strong></div>
+                        <br>
+                    <center><p>Date d'ajout :<strong>{{evenement.add_date}} par {{evenement.auteur}}</strong></p></center>
+            
+                    </div>
+                    </div>
+                </div>
+                </div>
+
+            </div>
+        
+        <br><br><br>
+        <a href="{% url 'edit_evenements' evenement.pk %}" class="btn btn-success">Modifier</a>
+        <a href="{% url 'delete_evenements' evenement.pk %}" class="btn btn-danger">Supprimer</a>
+    </div>
+{% endblock %}

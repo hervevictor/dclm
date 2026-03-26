@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block gestion %}
+
+<br>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 col-md-7">
+          <h2>Le resultat de votre recherche ({{search_jeune}})  </h2>  
+        </div>
+        <div class="col-12 col-md-5">
+            <form action="{% url 'search_jeune' %}" method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-9"><input type="text" class="form-control" placeholder="Entrez le nom à rechercher" name="search_jeune"></div>
+                    <div class="col-3"><button type="submit" class="btn btn-primary">valider</button></div>
+                </div>
+                
+                
+            </form>
+        </div>
+    </div>
+</div>
+    <br>
+{% if search_jeunes %}
+  
+    <p>Le nombre est : <strong>{{search_jeune_count}}</strong> </p>
+    
+<br>
+    <section class="container-fluid">
+        <div class="row"> 
+            {% for jeune in search_jeunes %}
+                <div class="col-md-4">
+                <div class="card">
+                    {% if jeune.header_image %}
+                    <img src="{{jeune.header_image.url}}" class="card-img-top" alt="...">
+                    {% else %}
+                    <img src="{% static 'assets/img/card.jpg' %}" class="card-img-top" alt="...">
+                    {% endif %}
+                    
+                    <div class="card-body">
+                        <h5 class="card-title"><a href="{% url 'jeune_details' jeune.pk %}">{{jeune}}</a></h5>
+                        <p class="card-text"></p>
+                    </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+<br><br><br>
+{% else %}
+<br><br><br>
+<strong>Pas de jeunes portant ce nom ({{search_jeune}}). <br><br> Veillez entrer un autre nom</strong>
+{% endif %}
+<br><br><br><br><br><br><br><br><br>
+{% endblock %}

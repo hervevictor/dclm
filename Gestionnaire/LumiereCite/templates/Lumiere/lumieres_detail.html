@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block gestion %} <br>
+    <h1>Details de : {{lumiere}} </h1>
+    <hr>
+    <small><strong>{{lumiere.add_date}}</strong> | <strong>{{lumiere.auteur}}</strong>  </small>
+
+    <br><br><br>
+    <div class="container">
+
+        <p>Etablissement : <a href="{% url 'lumiere_filtre_ets' lumiere.etablissements %}"><strong>{{lumiere.etablissements}}</strong></a></p>
+        <p>Enseignant : <strong>{{lumiere.enseignant}}</strong> </p>
+        <p>Nombre de Filles : <strong>{{lumiere.numbre_de_fille}}</strong> </p>
+        <p>Nombre de Garçons : <strong>{{lumiere.numbre_de_garcon}}</strong> </p>
+        <p>Date : <strong>{{lumiere.date}}</strong> </p>
+        <p>Description : <strong>{{lumiere.rapports_suggestions}}</strong> </p>
+    
+
+        <br><br><br>
+        {% if user.is_authenticated %}
+            {% if user.id == 1 or user.id == 2 or user.id == 3 or user.id == lumiere.auteur.id %}
+            <a href="{% url 'edit_lumiere' lumiere.pk %}" class="btn btn-success">Modifier</a>
+            <a href="{% url 'delete_lumiere' lumiere.pk %}" class="btn btn-danger">Supprimer</a>                
+            {% endif %}
+        
+        {% endif %}
+        
+    </div>
+    <br><br><br>
+{% endblock %}
+
+
+
+
+

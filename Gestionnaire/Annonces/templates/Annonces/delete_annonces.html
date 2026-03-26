@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block gestion %} <br><br>
+    <h1>Supprimer {{annonce}} </h1>
+    <br><br>
+    <p>Êtes-vous sûr de vouloir supprimer : {{annonce}} ?</p> <br>
+    <p> <strong>Valider</strong>  pour confirmer ou <strong>Abandonner</strong>  pour annuler</p>
+    <form action="" method="post">
+        {% csrf_token %} <br><br>
+        <a href="{% url 'annonces_list' %}" class="btn btn-warning">Abandonner</a>
+        <button type="submit" class="btn btn-danger">Valider</button>
+    </form>
+    <br><br><br> <br>
+{% endblock %}

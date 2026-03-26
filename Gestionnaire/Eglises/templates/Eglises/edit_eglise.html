@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block gestion %}
+<br> <br>
+    <h2>Modifier les informations : {{annexe}} </h2>
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{form.media}}
+        {{form.as_p}}
+        <br> <br>
+        <button type="submit" class="btn btn-success">Modifier</button>
+    </form>
+    <br> <br>
+{% endblock %}

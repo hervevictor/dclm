@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block gestion %}
+
+
+
+        <h1>Groupe : {{ groupe.name }} - Séance: {{ seance_type }}</h1>
+        <br>
+        <form method="get" action="">
+            {{ form.as_p }}
+            <button type="submit"  class="btn btn-primary">Filtrer</button>
+        </form>
+        <br><br>
+        <table class="table datatable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Église</th>
+                    <th>Hommes</th>
+                    <th>Femmes</th>
+                    <th>Assistance Totale</th>
+                    <th>Cotisation</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in data %}
+                    <tr>
+                        <td>{{ item.date }}</td>
+                        <td>{{ item.eglise }}</td>
+                        <td>{{ item.hommes }}</td>
+                        <td>{{ item.femmes }}</td>
+                        <td>{{ item.assistance }}</td>
+                        <td>{{ item.cotisation }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        
+        <h3>Totaux pour {{ seance_type }} : </h3>
+        <p>Hommes: {{ total_hommes }}</p>
+        <p>Femmes: {{ total_femmes }}</p>
+        <p>Assistance Totale: {{ total_assistance }}</p>
+        <p>Cotisation Totale: {{ total_cotisation }}</p>
+    
+    
+
+{% endblock %}        

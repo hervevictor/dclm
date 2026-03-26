@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% block gestion %}
+
+
+
+
+    <h1>La liste des Bilans par groupe </h1> <br>
+        {% if data %}
+
+         <!-- Formulaire d'importation -->
+         <!-- <form method="post">
+            {% csrf_token %}
+            <label for="file-format">Format de fichier :</label>
+            <select name="file-format" id="file-format">
+                <option value="CSV">CSV</option>
+                <option value="XLS">Excel</option>
+                <option value="PDF">PDF</option>
+            </select>
+            <button type="submit">Exporter</button>
+        </form> -->
+<br>
+        <table class="table datatable">
+          <thead>
+            <tr>
+                <th>Groupe</th>
+                <th>Hommes</th>
+                <th>Femmes</th>
+                <th>Assistance Totale</th>
+                <th>Cotisation</th>
+                <th>Jours de Séance</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in data %}
+                <tr>
+                    <td>{{ item.groupe.name }}</td>
+                    <td><center>{{ item.total_hommes }}</center></td>
+                    <td><center>{{ item.total_femmes }}</center></td>
+                    <td><center>{{ item.total_assistance }}</center></td>
+                    <td><center>{{ item.total_cotisation }}</center></td>
+                    <td><center>
+                        {% for seance_jour in item.seances_jour %}
+                            <a href="{% url 'group_seance_filter' item.groupe.id seance_jour %}">{{ seance_jour }}</a><br>
+                        {% endfor %}</center>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+          </table>
+
+  
+                                
+        {% else %}
+            <strong>Pas d'informations pour le moment !</strong>
+        {% endif %}
+{% endblock %}

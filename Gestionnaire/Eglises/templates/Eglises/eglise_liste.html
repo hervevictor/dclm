@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block gestion %}
+
+
+
+
+    <h1>La liste de toutes les églises  </h1> <br>
+        {% if object_list %}
+        <p>Le nombre total d'Eglises enrégistré : <strong>{{eglises_nombre}}</strong></p> <br>
+            <section class="container-fluid">
+                <div class="row"> 
+                {% for eglise in object_list %}
+                    <div class="col-md-4">
+                    <div class="card">
+                      
+                        <div class="card-body">
+                            <h5 class="card-title"><a href="{% url 'eglise_details' eglise.pk %}">{{eglise}}</a></h5>
+                            <p class="card-text"></p>
+                        </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+            </section>                    
+        {% else %}
+            <strong>Pas d'informations pour le moment !</strong>
+        {% endif %}
+{% endblock %}

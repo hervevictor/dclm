@@ -1,0 +1,204 @@
+
+
+''' 
+def group_view(request):
+    groupes = Groupe.objects.all()
+    data = []
+
+    for groupe in groupes:
+        bilans = Bilan.objects.filter(eglise__groupe=groupe)
+        bilan_groupe_count = bilans.count()
+        total_hommes = bilans.aggregate(Sum('adultes_hommes'))['adultes_hommes__sum'] or 0
+        total_femmes = bilans.aggregate(Sum('adultes_femmes'))['adultes_femmes__sum'] or 0
+        total_jeunes_garcons = bilans.aggregate(Sum('jeunes_garcons'))['jeunes_garcons__sum'] or 0
+        total_jeunes_filles = bilans.aggregate(Sum('jeunes_filles'))['jeunes_filles__sum'] or 0
+        total_enfants_garcons = bilans.aggregate(Sum('enfants_garcons'))['enfants_garcons__sum'] or 0
+        total_enfants_filles = bilans.aggregate(Sum('enfants_filles'))['enfants_filles__sum'] or 0
+        total_cotisation = bilans.aggregate(Sum('cotisation'))['cotisation__sum'] or 0
+
+        total_assistance = (total_hommes + total_femmes +
+                            total_jeunes_garcons + total_jeunes_filles +
+                            total_enfants_garcons + total_enfants_filles)
+        
+         # Récupérer un ensemble unique de jours de séance
+        seances_jour = bilans.values_list('seance__type', flat=True).distinct()
+
+        data.append({
+            'groupe': groupe.name,
+            'total_hommes': total_hommes + total_jeunes_garcons + total_enfants_garcons,
+            'total_femmes': total_femmes + total_jeunes_filles + total_enfants_filles,
+            'total_assistance': total_assistance,
+            'total_cotisation': total_cotisation,
+            'bilan_groupe_count':bilan_groupe_count,
+            
+            'seances_jour': seances_jour,
+        })
+
+    return render(request, 'seances/group_totals.html', {'data': data})
+
+ '''
+
+
+''' 
+def seance_groupe_filter(request, seance_type, groupe_id):
+    
+    groupe = get_object_or_404(Groupe, pk=groupe_id)
+    bilans = Bilan.objects.filter(eglise__groupe=groupe, seance__type=seance_type)
+
+    total_hommes = bilans.aggregate(Sum('adultes_hommes'))['adultes_hommes__sum'] or 0
+    total_femmes = bilans.aggregate(Sum('adultes_femmes'))['adultes_femmes__sum'] or 0
+    total_jeunes_garcons = bilans.aggregate(Sum('jeunes_garcons'))['jeunes_garcons__sum'] or 0
+    total_jeunes_filles = bilans.aggregate(Sum('jeunes_filles'))['jeunes_filles__sum'] or 0
+    total_enfants_garcons = bilans.aggregate(Sum('enfants_garcons'))['enfants_garcons__sum'] or 0
+    total_enfants_filles = bilans.aggregate(Sum('enfants_filles'))['enfants_filles__sum'] or 0
+    total_cotisation = bilans.aggregate(Sum('cotisation'))['cotisation__sum'] or 0
+
+    total_assistance = (total_hommes + total_femmes +
+                        total_jeunes_garcons + total_jeunes_filles +
+                        total_enfants_garcons + total_enfants_filles)
+    
+    context = {
+        'groupe': groupe,
+        'seance_type': seance_type,
+        'bilans': bilans,
+        'total_hommes': total_hommes,
+        'total_femmes': total_femmes,
+        'total_assistance': total_assistance,
+        'total_cotisation': total_cotisation,
+    }
+    
+    return render(request, 'seances/seance_groupe_filter.html', context)
+
+ '''
+
+''' 
+def region_view(request):
+    regions = Region.objects.all()
+    data = []
+
+    for region in regions:
+        #groupes = Groupe.objects.filter(region=region)
+        #bilans = Bilan.objects.filter(eglise__groupe__in=groupes)
+        bilans = Bilan.objects.filter(eglise__region=region)
+
+        bilan_region_count = bilans.count()
+        total_hommes = bilans.aggregate(Sum('adultes_hommes'))['adultes_hommes__sum'] or 0
+        total_femmes = bilans.aggregate(Sum('adultes_femmes'))['adultes_femmes__sum'] or 0
+        total_jeunes_garcons = bilans.aggregate(Sum('jeunes_garcons'))['jeunes_garcons__sum'] or 0
+        total_jeunes_filles = bilans.aggregate(Sum('jeunes_filles'))['jeunes_filles__sum'] or 0
+        total_enfants_garcons = bilans.aggregate(Sum('enfants_garcons'))['enfants_garcons__sum'] or 0
+        total_enfants_filles = bilans.aggregate(Sum('enfants_filles'))['enfants_filles__sum'] or 0
+        total_cotisation = bilans.aggregate(Sum('cotisation'))['cotisation__sum'] or 0
+
+        total_assistance = (total_hommes + total_femmes +
+                            total_jeunes_garcons + total_jeunes_filles +
+                            total_enfants_garcons + total_enfants_filles)
+
+        seances_jour = bilans.values_list('seance__type', flat=True).distinct()
+
+        data.append({
+            'region': region.name,
+            'total_hommes': total_hommes + total_jeunes_garcons + total_enfants_garcons,
+            'total_femmes': total_femmes + total_jeunes_filles + total_enfants_filles,
+            'total_assistance': total_assistance,
+            'total_cotisation': total_cotisation,
+            'bilan_region_count': bilan_region_count,
+            'seances_jour': seances_jour,
+        })
+
+    return render(request, 'seances/region_totals.html', {'data': data})
+
+ '''
+
+
+
+''' 
+def group_seance_filter(request, groupe_id, seance_type):
+    groupe = Groupe.objects.get(pk=groupe_id)
+    bilans = Bilan.objects.filter(eglise__groupe=groupe, seance__type=seance_type)
+    
+    total_hommes = bilans.aggregate(Sum('adultes_hommes'))['adultes_hommes__sum'] or 0
+    total_femmes = bilans.aggregate(Sum('adultes_femmes'))['adultes_femmes__sum'] or 0
+    total_jeunes_garcons = bilans.aggregate(Sum('jeunes_garcons'))['jeunes_garcons__sum'] or 0
+    total_jeunes_filles = bilans.aggregate(Sum('jeunes_filles'))['jeunes_filles__sum'] or 0
+    total_enfants_garcons = bilans.aggregate(Sum('enfants_garcons'))['enfants_garcons__sum'] or 0
+    total_enfants_filles = bilans.aggregate(Sum('enfants_filles'))['enfants_filles__sum'] or 0
+    total_cotisation = bilans.aggregate(Sum('cotisation'))['cotisation__sum'] or 0
+
+    total_assistance = (total_hommes + total_femmes +
+                        total_jeunes_garcons + total_jeunes_filles +
+                        total_enfants_garcons + total_enfants_filles)
+
+    data = {
+        'groupe': groupe.name,
+        'seance_type': seance_type,
+        'total_hommes': total_hommes + total_jeunes_garcons + total_enfants_garcons,
+        'total_femmes': total_femmes + total_jeunes_filles + total_enfants_filles,
+        'total_assistance': total_assistance,
+        'total_cotisation': total_cotisation,
+    }
+
+    return render(request, 'seances/group_seance_filter.html', {'data': data, 'bilans': bilans})
+
+ '''
+
+
+
+
+''' 
+
+def region_seance_filter(request, region_name, seance_type):
+    # Filtrer les bilans par région et type de séance
+    region = Region.objects.get(name=region_name)
+    bilans = Bilan.objects.filter(eglise__groupe__region=region, seance__type=seance_type)
+
+
+     #bilans = Bilan.objects.filter(
+      #  eglise__groupe__region=region_name,
+      #  seance__type=seance_type
+    #) 
+
+    total_hommes = 0
+    total_femmes = 0
+    total_assistance = 0
+    total_cotisation = 0
+    seance_filter_count = bilans.count()
+
+    data = []
+
+    for bilan in bilans:
+        total_hommes += bilan.adultes_hommes + bilan.jeunes_garcons + bilan.enfants_garcons
+        total_femmes += bilan.adultes_femmes + bilan.jeunes_filles + bilan.enfants_filles
+        total_assistance += (bilan.adultes_hommes + bilan.adultes_femmes +
+                            bilan.jeunes_garcons + bilan.jeunes_filles +
+                            bilan.enfants_garcons + bilan.enfants_filles)
+        total_cotisation += bilan.cotisation
+        data.append({
+            'date': bilan.date,
+            'eglise': bilan.eglise,
+            'adultes_hommes': bilan.adultes_hommes,
+            'adultes_femmes': bilan.adultes_femmes,
+            'jeunes_garcons': bilan.jeunes_garcons,
+            'jeunes_filles': bilan.jeunes_filles,
+            'enfants_garcons': bilan.enfants_garcons,
+            'enfants_filles': bilan.enfants_filles,
+            'cotisation': bilan.cotisation,
+        })
+
+    context = {
+        'region_name': region_name,
+        'seance_type': seance_type,
+        'data': data,
+        'total_hommes': total_hommes,
+        'total_femmes': total_femmes,
+        'total_assistance': total_assistance,
+        'total_cotisation': total_cotisation,
+        'seance_filter_count': seance_filter_count
+    }
+
+    return render(request, 'seances/region_seance_filter.html', context)
+
+ '''
+
+
+

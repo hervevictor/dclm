@@ -1,0 +1,487 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Communauté</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="{% static 'images/communaute.png' %}" rel="icon">
+  <link href="{% static 'images/communaute.png' %}" rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{% static 'assets1/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'assets1/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'assets1/vendor/aos/aos.css' %}" rel="stylesheet">
+  <link href="{% static 'assets1/vendor/animate.css/animate.min.css' %}" rel="stylesheet">
+  <link href="{% static 'assets1/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+  <link href="{% static 'assets1/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+
+  <!-- Main CSS File -->
+  <link href="{% static 'assets1/css/main.css' %}" rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: Selecao
+  * Template URL: https://bootstrapmade.com/selecao-bootstrap-template/
+  * Updated: Jul 17 2024 with Bootstrap v5.3.3
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+
+<body class="index-page">
+
+  <header id="header" class="header d-flex align-items-center fixed-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+
+      <a href="{% url 'eglises' %}" class="logo d-flex align-items-center">
+        <h1 class="sitename">COMMUNAUTÉ</h1>
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero section dark-background">
+
+      <div id="hero-carousel" data-bs-interval="5000" class="container carousel carousel-fade" data-bs-ride="carousel">
+
+        <!-- Slide 1 -->
+        <div class="carousel-item active">
+          <div class="carousel-container">
+            <h2 class="animate__animated animate__fadeInDown">COMMUNAUTÉ</h2>
+            <p class="animate__animated animate__fadeInUp">Systéme de gestion  d'une communauté religieuse. Allant des liste des personnes jusqu'aux activités.</p>
+            <a href="#about" class="btn-get-started animate__animated animate__fadeInUp scrollto">Lire plus</a>
+          </div>
+        </div>
+
+       
+
+        
+
+      </div>
+
+      <svg class="hero-waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28 " preserveAspectRatio="none">
+        <defs>
+          <path id="wave-path" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path>
+        </defs>
+        <g class="wave1">
+          <use xlink:href="#wave-path" x="50" y="3"></use>
+        </g>
+        <g class="wave2">
+          <use xlink:href="#wave-path" x="50" y="0"></use>
+        </g>
+        <g class="wave3">
+          <use xlink:href="#wave-path" x="50" y="9"></use>
+        </g>
+      </svg>
+
+    </section><!-- /Hero Section -->
+
+    <!-- About Section -->
+    <section id="about" class="about section">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>À Propos</h2>
+        <p>Qu'est-ce que COMMUNAUTÉ</p>
+      </div><!-- End Section Title -->
+
+      <div class="container">
+
+        <div class="row gy-4">
+
+          <div class="col-lg-6 content" data-aos="fade-up" data-aos-delay="100">
+            <p>
+              Communauté est une application ou un systeme de gestion des églises ou toute assemblée réligieuse.
+              Elle touche les domaines suivants : 
+            </p>
+            <ul>
+              <li><i class="bi bi-check2-circle"></i> <span>La liste des Eglises, Groupes, Régions</span></li>
+              <li><i class="bi bi-check2-circle"></i> <span>Liste des Personnes : Adultes, Jeunes et Enfants</span></li>
+              <li><i class="bi bi-check2-circle"></i> <span>Les Bilans des activités, des séance de culte. </span></li>
+              <li><i class="bi bi-check2-circle"></i> <span>Les particularités :  difficultés et les projets. </span></li>
+              <li><i class="bi bi-check2-circle"></i> <span>Lumière à la cité : Liste des établissements, des participants et des études. </span></li>
+              <li><i class="bi bi-check2-circle"></i> <span>Les Messages du dimanche, les hymnes et les annonces.</span></li>
+            </ul>
+          </div>
+
+          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
+            <p>
+              Communauté est conçue pour facilité la tâche aux responsables d'églises en leurs donnant en temps réel et après des années des informations dont ils auront besoin. Elle a une base de données solide, des barres de recherche et un système de filtre des données par regions, groupes, eglies, séance et par date...  
+              <br> Certains informations(les plus importantes) ne sont accessibles qu'aux responsables et il faut un compte spécifique pour y accéder. Ce système de sécurité permet de garder secret certains infos. Même les églises ne peuvents pas accéder aux infos privées des uns des autres...
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section><!-- /About Section -->
+        
+    <!-- Features Section -->
+    <section id="features" class="features section">
+      <div class="container">
+
+        <div class="tab-content" data-aos="fade-up" data-aos-delay="200">
+
+          <div class="tab-pane fade active show" id="features-tab-1">
+            <div class="row">
+              <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0">
+                <h3>Les informations sur l'église.</h3>
+                <p class="fst-italic">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+                  magna aliqua.
+                </p>
+                <ul>
+                  <li><i class="bi bi-check2-all"></i>
+                    <spab>Ullamco laboris nisi ut aliquip ex ea commodo consequat.</spab>
+                  </li>
+                  <li><i class="bi bi-check2-all"></i> <span>Duis aute irure dolor in reprehenderit in voluptate velit</span>.</li>
+                  <li><i class="bi bi-check2-all"></i> <span>Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate trideta storacalaperda mastiro dolore eu fugiat nulla pariatur.</span></li>
+                </ul>
+                <p>
+                  Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+                  velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+                  culpa qui officia deserunt mollit anim id est laborum
+                </p>
+              </div>
+              <div class="col-lg-6 order-1 order-lg-2 text-center">
+                <img src=" {% static 'assets1/img/working-1.jpg' %} " alt="" class="img-fluid">
+              </div>
+            </div>
+          </div><!-- End Tab Content Item -->
+
+          <div class="tab-pane fade" id="features-tab-2">
+            <div class="row">
+              <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0">
+                <h3>Neque exercitationem debitis soluta quos debitis quo mollitia officia est</h3>
+                <p>
+                  Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+                  velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+                  culpa qui officia deserunt mollit anim id est laborum
+                </p>
+                <p class="fst-italic">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+                  magna aliqua.
+                </p>
+                <ul>
+                  <li><i class="bi bi-check2-all"></i> <span>Ullamco laboris nisi ut aliquip ex ea commodo consequat.</span></li>
+                  <li><i class="bi bi-check2-all"></i> <span>Duis aute irure dolor in reprehenderit in voluptate velit.</span></li>
+                  <li><i class="bi bi-check2-all"></i> <span>Provident mollitia neque rerum asperiores dolores quos qui a. Ipsum neque dolor voluptate nisi sed.</span></li>
+                  <li><i class="bi bi-check2-all"></i> <span>Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate trideta storacalaperda mastiro dolore eu fugiat nulla pariatur.</span></li>
+                </ul>
+              </div>
+              <div class="col-lg-6 order-1 order-lg-2 text-center">
+                <img src="assets/img/working-2.jpg" alt="" class="img-fluid">
+              </div>
+            </div>
+          </div><!-- End Tab Content Item -->
+
+          <div class="tab-pane fade" id="features-tab-3">
+            <div class="row">
+              <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0">
+                <h3>Voluptatibus commodi ut accusamus ea repudiandae ut autem dolor ut assumenda</h3>
+                <p>
+                  Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+                  velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+                  culpa qui officia deserunt mollit anim id est laborum
+                </p>
+                <ul>
+                  <li><i class="bi bi-check2-all"></i> <span>Ullamco laboris nisi ut aliquip ex ea commodo consequat.</span></li>
+                  <li><i class="bi bi-check2-all"></i> <span>Duis aute irure dolor in reprehenderit in voluptate velit.</span></li>
+                  <li><i class="bi bi-check2-all"></i> <span>Provident mollitia neque rerum asperiores dolores quos qui a. Ipsum neque dolor voluptate nisi sed.</span></li>
+                </ul>
+                <p class="fst-italic">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+                  magna aliqua.
+                </p>
+              </div>
+              <div class="col-lg-6 order-1 order-lg-2 text-center">
+                <img src="assets/img/working-3.jpg" alt="" class="img-fluid">
+              </div>
+            </div>
+          </div><!-- End Tab Content Item -->
+
+          <div class="tab-pane fade" id="features-tab-4">
+            <div class="row">
+              <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0">
+                <h3>Omnis fugiat ea explicabo sunt dolorum asperiores sequi inventore rerum</h3>
+                <p>
+                  Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+                  velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+                  culpa qui officia deserunt mollit anim id est laborum
+                </p>
+                <p class="fst-italic">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+                  magna aliqua.
+                </p>
+                <ul>
+                  <li><i class="bi bi-check2-all"></i> <span>Ullamco laboris nisi ut aliquip ex ea commodo consequat.</span></li>
+                  <li><i class="bi bi-check2-all"></i> <span>Duis aute irure dolor in reprehenderit in voluptate velit.</span></li>
+                  <li><i class="bi bi-check2-all"></i> <span>Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate trideta storacalaperda mastiro dolore eu fugiat nulla pariatur.</span></li>
+                </ul>
+              </div>
+              <div class="col-lg-6 order-1 order-lg-2 text-center">
+                <img src="assets/img/working-4.jpg" alt="" class="img-fluid">
+              </div>
+            </div>
+          </div><!-- End Tab Content Item -->
+
+        </div>
+
+      </div>
+    </section><!-- /Features Section -->
+
+       <!-- Services Section -->
+       <section id="services" class="services section">
+
+        <!-- Section Title -->
+        <div class="container section-title" data-aos="fade-up">
+          <h2>informations</h2>
+          <p>Annonces et Hymnes</p>
+        </div><!-- End Section Title -->
+  
+        <div class="container">
+  
+          <div class="row gy-4">
+  
+            
+            <div class="col-lg-6 col-md-6 col-12" data-aos="fade-up" data-aos-delay="600">
+              <div class="service-item position-relative">
+                {% if message %}
+                  <p>
+                    <a href="{{message.message.url}}" class="stretched-link">
+                      <h3> {{message.titre}} </h3>
+                    </a>
+                  </p>
+                  
+                  <p>Hymnes : <strong>{{message.hymnes}}</strong> </p>
+                  <p>date : <strong>{{message.date}}</strong> </p>
+                {% else %}
+                <strong>Aucun message récent disponible. <br> Consulter la liste des messages en cliquant <a href="{% url 'messages' %}">ICI</a> </strong>
+                {% endif %}
+                
+                
+              </div>
+            </div><!-- End Service Item -->
+
+            <div class="col-lg-6 col-md-6 col-12" data-aos="fade-up" data-aos-delay="600">
+              <div class="service-item position-relative">
+                {% if annonce %}
+                  
+                
+                <p>
+                  <a href="{% url 'annonces_list' %}" class="stretched-link">
+                    <h3>{{annonce.titre}}</h3>
+                  </a>
+                </p>
+                
+                <p>Contenu : {{annonce.contenu}} </p>
+                <br>
+                <p>Date de poste : <small>{{annonce.add_date}}  </small> </p>
+
+                {% else %}
+                 <strong>Pas d'annonce récente </strong>
+                {% endif %}
+              </div>
+            </div><!-- End Service Item -->
+  
+          </div>
+  
+        </div>
+  
+      </section><!-- /Services Section -->
+  
+
+    <!-- Call To Action Section -->
+    <section id="call-to-action" class="call-to-action section dark-background">
+
+      <div class="container">
+
+        <div class="row" data-aos="zoom-in" data-aos-delay="100">
+          <div class="col-xl-9 text-center text-xl-start">
+            <h3>Pour visiter l'interface Église</h3>
+            <p>Pour aller sur l'interface des églises et les autres éléments, cliquez sur "COMMUNAUTÉ" (l'icone ou ce button)  </p>
+          </div>
+          <div class="col-xl-3 cta-btn-container text-center">
+            <a class="cta-btn align-middle" href="{% url 'eglises' %}">COMMUNAUTÉ</a>
+          </div>
+        </div>
+
+      </div>
+
+    </section><!-- /Call To Action Section -->
+
+    <!-- Services Section -->
+    <section id="services" class="services section">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Details </h2>
+        <p>Les différents partie de l'application</p>
+      </div><!-- End Section Title -->
+
+      <div class="container">
+
+        <div class="row gy-4">
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="service-item  position-relative">
+              <div class="icon">
+                <i class="bi bi-cash-stack" style="color: #0dcaf0;"></i>
+              </div>
+              <a href="#" class="stretched-link">
+                <h3>Eglises</h3>
+              </a>
+              <p>La liste et les informations (details) sur les églises ainsi que la possibilté de faire des filtres (nombre d'églises par groupe, region et national) et de rechercher une église par son nom.</p>
+            </div>
+          </div><!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="service-item position-relative">
+              <div class="icon">
+                <i class="bi bi-calendar4-week" style="color: #fd7e14;"></i>
+              </div>
+              <a href="#" class="stretched-link">
+                <h3>Groupes</h3>
+              </a>
+              <p>La liste des groupes ainsi que les informations suplémentaire et comme l'église, la possibilité de filtre par régoin et national avec leur nombre.</p>
+            </div>
+          </div><!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="service-item position-relative">
+              <div class="icon">
+                <i class="bi bi-chat-text" style="color: #20c997;"></i>
+              </div>
+              <a href="#" class="stretched-link">
+                <h3>Bilans des Séances et autres</h3>
+              </a>
+              <p>La liste, le filtre par séance (Lundi , Jeudi et dimanche) de voir les séance par groupe, région et le total. Bilan des cellules et évenement spéciaux</p>
+            </div>
+          </div><!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+            <div class="service-item position-relative">
+              <div class="icon">
+                <i class="bi bi-credit-card-2-front" style="color: #df1529;"></i>
+              </div>
+              <a href="#" class="stretched-link">
+                <h3>Personnes</h3>
+              </a>
+              <p>La liste des Jeunes, Enfants et Adultes ainsi que les détails avec les filtre par district, groupe, région et national avec la possibilté de rechercher une personne par son nom.</p>
+            </div>
+          </div><!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
+            <div class="service-item position-relative">
+             
+              <a href="#" class="stretched-link">
+                <h3>Lumière à la cite et particularités</h3>
+              </a>
+              <p>Nous avons la liste des établissements, des participants et les rapports des études. Pour les particularités,les membres de l'église ou autres peuvent poster leurs projets ainsi que leurs difficultés </p>
+            </div>
+          </div><!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
+            <div class="service-item position-relative">
+              
+              <a href="#" class="stretched-link">
+                <h3>Annonces, Messages</h3>
+              </a>
+              <p>Nous avons la liste des annonces et les messages avec les hymnes pour le culte. Sur cette page s'affiche les récents annonces et message. après 6 pour le message et 15 jours pour les annonces ils disparaissent et si avant ces délais un poste est fait il remplace l'ancien. </p>
+            </div>
+          </div><!-- End Service Item -->
+
+        </div>
+
+      </div>
+
+    </section><!-- /Services Section -->
+
+    <!-- Faq Section -->
+    <section id="faq" class="faq section">
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Autres informations</h2>
+        <p>Historique<p>
+      </div><!-- End Section Title -->
+
+      <div class="container" data-aos="fade-up">
+        <div class="row">
+          <div class="col-12">
+            <div class="custom-accordion" id="accordion-faq">
+              <div class="accordion-item">
+                
+
+                <div id="collapse-faq-1" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion-faq">
+                  <div class="accordion-body">
+                    Cette application a été développé en 2021 sous le nom de DCLM_plateforme <a href="">Herve Victor DOAMEKPO</a>  et abandonnée après quelques mois en ligne.
+                    Entre mars et mai 2024 elle est reprise cette fois pas pour DCLM mais pour toutes communauté réligieuse sous le nom de : COMMUNAUTÉ. Tout dans cette nouvelle version a été codé du debut en prenant pour modèle l'ancienne version. Cette mise à jour est plus perfomante et plus vaste que l'autre. 
+                  </div>
+                </div>
+              </div>
+              <!-- .accordion-item -->
+
+
+          </div>
+        </div>
+      </div>
+      </div>
+    </section><!-- /Faq Section -->
+
+
+  </main>
+
+  <footer id="footer" class="footer dark-background">
+    <div class="container">
+      <h3 class="sitename">COMMUNAUTÉ</h3>
+      <p>Systéme de gestion d'une communauté religieuse. Allant des liste des personnes jusqu'aux activités.</p>
+      <div class="social-links d-flex justify-content-center">
+        <a href=""><i class="bi bi-twitter-x"></i></a>
+        <a href=""><i class="bi bi-facebook"></i></a>
+        <a href=""><i class="bi bi-instagram"></i></a>
+        <a href=""><i class="bi bi-skype"></i></a>
+        <a href=""><i class="bi bi-linkedin"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Preloader -->
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+  <script src="{% static 'assets1/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'assets1/vendor/php-email-form/validate.js' %}"></script>
+  <script src="{% static 'assets1/vendor/aos/aos.js' %}"></script>
+  <script src="{% static 'assets1/vendor/glightbox/js/glightbox.min.js' %}"></script>
+  <script src="{% static 'assets1/vendor/imagesloaded/imagesloaded.pkgd.min.js' %}"></script>
+  <script src="{% static 'assets1/vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
+  <script src="{% static 'assets1/vendor/swiper/swiper-bundle.min.js' %}"></script>
+
+  <!-- Main JS File -->
+  <script src="{% static 'assets1/js/main.js' %}"></script>
+
+</body>
+
+</html>

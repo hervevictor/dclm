@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %} 
+{% block gestion %}
+
+
+
+
+{% if Cellules_region %}
+
+    {% if user.is_authenticated %}
+    
+                {% if user.id == 1 or user.id == 2 or user.id == 3 or user.id == 4 or user.id == 5 or user.id == 6 or user.id == 7 or user.id == 8 or user.id == 9 or user.id == 10 or user.id == 11 or user.id == 12 or user.id == 13 or user.id == 14 or user.id == 15 %}
+
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Le nombre de cellules dans cette region ({{regs}}) est ({{Cellules_region_count}})</</h1>
+                            
+                    </div>
+                {% endif %}
+
+    
+                 
+                  {% for cellules in Cellules_region %}
+                  {% if user.id == cellules.auteur.id or user.id == 1 or user.id == 2 or user.id == 3 or user.id == 4 or user.id == 5 or user.id == 6 or user.id == 7 or user.id == 8 or user.id == 9 or user.id == 10 or user.id == 11 or user.id == 12 or user.id == 13 or user.id == 14 or user.id == 15 %}
+
+                    <div class="row">
+
+                        <div class="col-lg-12">
+                            <div class="card mb-3" style="max-width: 100%; ">
+                              <div class="row g-0">
+                              
+                                <div class="col-md-12">
+                                  <div class="card-body">
+                                    <h5 class="card-title">Titre : <a href=" {% url 'cellules_detail' cellules.id %} ">{{cellules.titre}}</a> </h5> 
+  <br>
+                                   <div class="row">
+                                       <div class="col-md-4">Region : <a href="{% url 'cellules_region' cellules.region %}"><strong>{{cellules.region}}</strong></a></div>
+                                       <div class="col-md-4">District : <a href="{% url 'cellules_district' cellules.district %}"><strong>{{cellules.district}}</strong></a></div>
+                                       <div class="col-md-4">Groupe : <a href="{% url 'cellules_groups' cellules.groupe %}"><strong>{{cellules.groupe}}</strong></a></div>                                   </div>
+                                   <br>
+                                  <center><p>Date d'ajout :<strong>{{cellules.add_date}}</strong></p></center>
+                        
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+  
+                        </div>
+                    </div>    
+                    {% endif %}
+                  {% endfor %} 
+
+
+                 
+
+                  {% else %}
+                  Vous n'êtes pas autoriser avisiter cette page. Comment avez-vous trouvez  ce  lien. Voilà un suspect.......Vienez au poste demain je vais annaliser ton cas !
+              {% endif %}
+
+            {% else  %}
+                  Aucune cellule pour cette region ({{regs}})
+                      
+
+
+{% endif %}
+
+{% endblock %}        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block gestion %}
+    <h1>La liste des annonces  </h1>
+    <br>
+    <p>Nombre d'annonces posté : <strong> {{nombre_annonces}} </strong> </p>
+    <br><br>
+        <div class="container-fluid">
+            <div class="row">
+            
+                {% if object_list %}
+                    {% for annonce in object_list %}
+                    <div class="col-12 col-md-6">
+                        <div class="card ">
+                            <div class="card-body">
+                            <h5 class="card-title">{{annonce}}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{annonce.add_date}} par {{annonce.auteur}}</h6> <br> 
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            <br>
+                            <a href="{% url 'edit_annonces' annonce.pk %}" class="card-link btn btn-success">Modifier</a>
+                            <a href="{% url 'delete_annonces' annonce.pk %}" class="card-link btn btn-danger">Supprimer</a>
+                            <br> <br>
+                            </div>
+                        </div>
+                    </div>   
+                    {% endfor %}
+                {% else %}
+                    <strong>Pas d'informations pour le moment !</strong>
+                {% endif %}
+            </div>
+        </div>
+        <br><br><br>
+
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block gestion %} <br>
+<style>
+    h2{
+        font-size: 2.2rem;
+    }
+</style>
+<div class="delete_eglise">
+    <h2>Supprimer {{eglise}} </h2>
+    <br>
+    <p>Êtes-vous sûr de vouloir supprimer : {{eglise}} ?</p> <br> 
+    <p> <strong>Valider</strong>  pour confirmer ou <strong>Abandonner</strong>  pour annuler</p>
+    <form action="" method="post">
+        {% csrf_token %}
+        <br><br>
+        <a href="{% url 'eglise_details' eglise.pk %}" class="btn btn-warning">Abandonner</a>
+        <button type="submit" class="btn btn-danger">Valider</button>
+    </form>
+</div>
+<br><br> <br>
+{% endblock %}

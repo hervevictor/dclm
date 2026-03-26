@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block gestion %}
+
+    
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-4 text-gray-800">Ajouter un bilan de Lumiere</h1>
+    <p>Les champs doivent être remplir avec de vraies données pour éviter des Erreurs. Après le 
+        remplissage cliquez sur <strong>Poster</strong> pour envoyez vos informations 
+        (données saisies). Merci.
+        
+    </p>
+    <br>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{form.media}}
+        {{form.as_p}}
+        <button type="submit" class="btn btn-primary">Poster</button>
+
+</div>
+<script>
+    let user = '{{user.id}}'
+    document.getElementById('bilan_user').value = user;
+</script>
+<!-- /.container-fluid -->
+
+      
+{% endblock %}         

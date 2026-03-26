@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block gestion %}
+    <h1>Ajouter une Adulte</h1>
+
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{form.as_p}}
+        {{form.media}}
+        <br> <br>
+        <button type="submit" class="btn btn-primary">Ajouter</button>
+    </form>
+    
+    <script>
+        let user = '{{user.id}}';
+        document.getElementById('current_user').value = user
+    </script>
+{% endblock %}

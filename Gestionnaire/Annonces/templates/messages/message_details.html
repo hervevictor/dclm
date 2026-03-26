@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block gestion %}
+<br>
+    <h1>Details de : {{message.titre}}  </h1>
+    <br>
+    <br><br>
+        <div class="container-fluid">
+            <div class="row">
+
+                <div class="col-12 col-md-12">
+                    <div class="card ">
+                        <div class="card-body">
+                        <h5 class="card-title"></h5>
+                        <h6 class="card-subtitle mb-2 text-muted"><small>{{message.add_date}} par {{message.auteur}}</small> </h6> <br> 
+                        <p class="card-text"> Hymes :  <strong> {{message.hymnes}} </strong></p>
+                        {% if message.message %}
+                            <p class="card-text"> Message :  <a href="{{message.message.url}} " target="_blank"><strong> message</strong></a></p>
+                        {% else %}
+                        <p class="card-text">Message : <strong>Pas de message pour le moment</strong></p>
+                        {% endif %}
+                        
+                        
+                        <p class="card-text"> Date :  <strong> {{message.date}} </strong></p>
+                        <br>
+                        <a href="{% url 'edite_message' message.pk %}" class="card-link btn btn-success">Modifier</a>
+                        <a href="{% url 'delete_message' message.pk %}" class="card-link btn btn-danger">Supprimer</a>
+                        <br> <br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br><br><br>
+
+{% endblock %}

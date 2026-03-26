@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block gestion %}
+    <h2>La liste d'adultes dans cette region. </h1>
+<br><br>
+
+<section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{eglise}}</h5>
+            <p> Nombre d'adultes dans cette église est <strong>{{adultes_district_nombre}}</p>
+              
+              <br>
+              <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <p>Please select format of file.</p>
+                <select name="file-format" class="form-control my-3">
+                    <option selected>Choose format...</option>
+                    <option>CSV</option>
+                    <option>JSON</option>
+                    <option>PDF</option>
+                    <option>XLS (Excel)</option>
+                  </select>
+                <button class="btn btn-primary" type="submit">Export</button>
+              </form>
+              <br>
+            <!-- Table with stripped rows -->
+            <table class="table datatable">
+              <thead>
+                <tr>
+                  <th>
+                    <b>N</b>om
+                  </th>
+                  <th>Prenom</th>
+                  <th>profession</th>
+                  <th>Status M</th>
+                  <th>Rôle</th>
+                  <th>Baptiser</th>
+                  <th>Contact</th>
+                  <th>Sexe</th>
+
+                </tr>
+              </thead>
+              <tbody>
+
+                {% if adultes_district %}
+                    {% for adulte in adultes_district %}
+                        <tr>
+                        <td><a href="{% url 'adulte_details' adulte.pk %}">{{adulte}}</a></a></td>
+                        <td>{{adulte.prenom}}</td>
+                        <td>{{adulte.profession}}</td>
+                        <td>{{adulte.status_matrimoniale}}</td>
+                        <td>{{adulte.role_dans_leglise}}</td>
+                        <td>{{adulte.baptiser}}</td>
+                        <td>{{adulte.contact}}</td>
+                        <td>{{adulte.sexe}}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                    <strong>Pas de adultes pour cette region ({{regs}}) !</strong>
+                {% endif %}
+             
+              </tbody>
+            </table>
+            <!-- End Table with stripped rows -->
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+
+<br><br><br>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+

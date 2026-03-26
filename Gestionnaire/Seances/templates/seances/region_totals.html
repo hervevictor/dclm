@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block gestion %}
+
+
+
+
+    <h1>La liste des Bilans dans cette région </h1> <br>
+        {% if data %}
+
+        <table class="table datatable">
+          <thead>
+            <tr>
+                <th>Région</th>
+                <th>Hommes</th>
+                <th>Femmes</th>
+                <th>Assistance Totale</th>
+                <th>Cotisation</th>
+                <th>Jours de Séance</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in data %}
+                <tr>
+                    <td>{{ item.region }}</td>
+                    <td><center>{{ item.total_hommes }}</center></td>
+                    <td><center>{{ item.total_femmes }}</center></td>
+                    <td><center>{{ item.total_assistance }}</center></td>
+                    <td><center>{{ item.total_cotisation }}</center></td>
+                    <td><center>
+                        {% for seance_jour in item.seances_jour %}
+                            <a href="{% url 'region_seance_filter' region_name=item.region seance_type=seance_jour %}">{{ seance_jour }}</a><br>
+                        {% endfor %}</center>
+                  </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+          </table>
+               
+        {% else %}
+            <strong>Pas d'informations pour le moment !</strong>
+        {% endif %}
+{% endblock %}

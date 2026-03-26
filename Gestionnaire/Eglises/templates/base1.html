@@ -1,0 +1,116 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="">DCLM</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Eglises
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="{% url 'eglises' %}">Liste</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="{% url 'add_eglise' %}">Ajouter </a></li>
+                </ul>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Personnels
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="{% url 'adultes' %}">Adultes</a></li>
+                  <li><a class="dropdown-item" href="{% url 'jeunes' %}">Jeunes </a></li>
+                  <li><a class="dropdown-item" href="{% url 'enfants' %}">Enfants </a></li>
+                  <li><hr class="dropdown-divider">Ajout : </li>
+                  <li><a class="dropdown-item" href="{% url 'add_adulte' %}">Adultes</a></li>
+                  <li><a class="dropdown-item" href="{% url 'add_jeune' %}">Jeunes</a></li>
+                  <li><a class="dropdown-item" href="{% url 'add_enfant' %}">Enfants</a></li>
+                </ul>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Groupes
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="{% url 'add_groupe' %}">Ajouter</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="{% url 'groupe_liste' %}">Liste</a></li>
+                </ul>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Bilans
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="{% url 'add_cellules' %}">Ajouter Cellule</a></li>
+                  <li><a class="dropdown-item" href="{% url 'add_evenements' %}">Ajouter Evenement</a></li>
+                  <li><a class="dropdown-item" href="{% url 'add_lumieres' %}">Ajouter Lumière à la cité</a></li>
+                  <li><a class="dropdown-item" href="{% url 'add_participants' %}">Ajouter un participant</a></li>
+                  <li><a class="dropdown-item" href="{% url 'add_etablissement' %}">Ajouter un Etablissement</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="{% url 'cellules_list' %}">Liste Cellules</a></li>
+                  <li><a class="dropdown-item" href="{% url 'evenements_list' %}">Liste Evenements</a></li>
+
+                  <li><a class="dropdown-item" href="{% url 'lumieres_list' %}">Liste Lumière à la cité</a></li>
+                  <li><a class="dropdown-item" href="{% url 'participants_list' %}">Liste Participants</a></li>
+                  <li><a class="dropdown-item" href="{% url 'etablissements_list' %}">Liste Établissements</a></li>
+                </ul>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Annonces
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="{% url 'add_annonces' %}">Ajouter</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="{% url 'annonces_list' %}">Liste</a></li>
+                </ul>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Particularités
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="{% url 'add_projects' %}">Ajouter un projet</a></li>
+                  <li><a class="dropdown-item" href="{% url 'add_difficultes' %}">Ajouter une difficultés</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="{% url 'projects_list' %}">Liste des projets</a></li>
+                  <li><a class="dropdown-item" href="{% url 'difficultes_list' %}">Liste des difficultés</a></li>
+                </ul>
+              </li>
+            </ul>
+            <form class="d-flex" role="search">
+              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+          </div>
+        </div>
+      </nav>
+
+    <div class="container-fluid">
+        {% block gestion %}
+        
+        {% endblock %}
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  </body>
+</html>

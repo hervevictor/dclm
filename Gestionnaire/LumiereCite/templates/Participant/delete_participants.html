@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block gestion %}
+
+<br><br>
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-4 text-gray-800">Supprimer ce participant ({{participant}}) ?</h1>
+    
+    <br><br>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p>Il sera definitivement supprimer ! <br> Cliquez sur Abandonner pour annuler. Merci de faire le bon choix.</p> <br><br>
+        <button type="submit" class="btn btn-danger">Supprimer</button>
+        <a href="{% url 'participants_list' %}" class="btn btn-warning">Abandonner</a>
+
+</div>
+<br><br><br><br><br><br><br>
+<!-- /.container-fluid -->
+    
+{% endblock %}
+

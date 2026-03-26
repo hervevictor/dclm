@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block gestion %} <br>
+    <h1>Details de : {{adulte}} </h1>
+    <br>
+    <div class="container">
+        <p>Address : <strong>{{adulte.adresse}}</strong> </p>
+        <p>District : <a href="{% url 'adulte_district' adulte.eglise.pk %}"><strong>{{adulte.eglise}}</strong></a>  </p>
+        <p>Groupe : <a href="{% url 'adulte_groupe' adulte.eglise.groupe %}"><strong>{{adulte.eglise.groupe}}</strong></a> </p>
+        <p>Region : <a href="{% url 'adulte_region' adulte.eglise.region %}"><strong>{{adulte.eglise.region}}</strong></a> </p>
+        <p>Nbre de membres : <strong>{{adulte.nombre_de_membres}}</strong> </p>
+        <p>Téléphone : <strong>{{adulte.telephone}}</strong> </p>
+        <p>BP : <strong>{{adulte.bp}}</strong> </p>
+        <p>Email : <strong>{{adulte.email}}</strong> </p>
+
+        <br><br><br>
+        <a href="{% url 'edit_adulte' adulte.pk %}" class="btn btn-success">Modifier</a>
+        <a href="{% url 'delete_adulte' adulte.pk %}" class="btn btn-danger">Supprimer</a>
+    </div>
+    <br><br><br>
+{% endblock %}

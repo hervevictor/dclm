@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block gestion %}
+    <h2>Modifier les informations : {{annonce}} </h2>
+    <br>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{form.as_p}}
+        <br>
+        <button type="submit" class="btn btn-success">Modifier</button>
+    </form>
+{% endblock %}

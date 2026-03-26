@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block gestion %} <br> 
+    <h2>Ajouter le bilan d'un evenement</h2>
+    <br> 
+    <form action="" method="post">
+        {% csrf_token %}
+        {{form.as_p}} <br> <br>
+        <button type="submit" class="btn btn-primary">Ajouter</button>
+    </form>
+
+    <script>
+        let user = '{{user.id}}';
+        document.getElementById('user_id').value = user;
+    </script>
+
+    <br> <br><br> 
+{% endblock %}

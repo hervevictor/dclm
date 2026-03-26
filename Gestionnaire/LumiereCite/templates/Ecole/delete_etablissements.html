@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block gestion %}
+  
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    <br><br>
+    <!-- Page Heading -->
+    <h1 class="h3 mb-4 text-gray-800">Supprimer cet Etablissement ( {{etablissement}} ) </h1>
+   <center> 
+    <br><br>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p>Cet Etablissement sera definitivement supprimer !</p>
+        <br><br>
+        <button type="submit" class="btn btn-danger">Supprimer</button>
+        <a href="{% url 'etablissements_list' %}" class="btn btn-warning">Abandonner</a>
+</center>
+    <br><br><br><br><br><br>
+</div>
+<!-- /.container-fluid -->
+{% endblock  %}
+

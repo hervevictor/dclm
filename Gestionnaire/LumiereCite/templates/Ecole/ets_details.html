@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block gestion %} <br>
+    <h1>Details de : {{etablissement}} </h1>
+    <hr>
+    <small><strong>{{etablissement.add_date}}</strong> | <strong>{{etablissement.auteur}}</strong>  </small>
+ 
+    <br><br><br>
+    <div class="container">
+      <p>Groupe Titulaire : <strong>{{etablissement.groupe_titulaire}}</strong> </p>
+      <p>Region : <strong>{{etablissement.region}}</strong> </p>
+      <p>Description : <strong>{{etablissement.description}}</strong> </p>
+    
+
+        <br><br><br>
+        {% if user.is_authenticated %}
+        {% if user.id == 1 or user.id == 2 or user.id == 3 or user.id == etablissement.auteur.id %}
+            <a href="{% url 'edit_etablissement' etablissement.pk %}" class="btn btn-success">Modifier</a>
+            <a href="{% url 'delete_etablissement' etablissement.pk %}" class="btn btn-danger">Supprimer</a>
+        {% endif %}
+        
+        {% endif %}
+        
+    </div>
+    <br><br><br><br><br><br>
+{% endblock %}
+
+
+
+
+

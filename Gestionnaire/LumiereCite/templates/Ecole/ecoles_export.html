@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block gestion %}
+
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-4 text-gray-800">Exporter Les Elements de la base de donnée</h1>
+    
+    <br>
+<h3>Export Data</h3>
+<p>exporting from database</p>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <p>Please select format of file.</p>
+    <select name="file-format" class="form-control my-3">
+        <option selected>Choose format...</option>
+        <option>CSV</option>
+        <option>JSON</option>
+        <option>XLS (Excel)</option>
+    </select>
+    <button class="btn btn-primary" type="submit">Export</button>
+</form>
+
+<br><br>
+<a href="{% url 'home' %}" class="btn btn-success">Return Home View</a>
+
+    
+
+</div>
+<!-- /.container-fluid -->
+  
+{% endblock  %}

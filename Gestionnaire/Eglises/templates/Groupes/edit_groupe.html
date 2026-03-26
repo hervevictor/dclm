@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block gestion %}
+    <div class="container">
+        <br> <br>
+        <h2>Editer cet Groupe ({{groupe}}) </h2>
+
+        <form action="" method="post">
+            {% csrf_token %}
+            {{form.as_p}}
+            {{form.media}}
+            <br> <br>
+            <button type="submit" class="btn btn-success">Editer</button>
+        </form>
+    </div>
+    <br> <br>
+{% endblock %}

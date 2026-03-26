@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block gestion %}
+
+    
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-4 text-gray-800">Modifier ce bilan ({{lumiere}}) </h1>
+    
+    <br>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{form.media}}
+        {{form.as_p}}
+        <button type="submit" class="btn btn-primary">Poster</button>
+
+</div>
+<script>
+    let user = '{{user.id}}'
+    document.getElementById('current_user').value = user;
+</script>
+<!-- /.container-fluid -->
+
+      
+{% endblock %}         

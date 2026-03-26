@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block gestion %} <br>
+    <h1>Details de : {{participant.nom}} {{participant.prenom}} </h1>
+    <hr>
+    <small><strong>{{participant.add_date}}</strong> | <strong>{{participant.auteur}}</strong>  </small>
+ 
+    <br><br><br>
+    <div class="container">
+      <p>Sexe : <strong>{{participant.sexe}}</strong> </p>
+      <p>Age : <strong>{{participant.age}}</strong> </p>
+      <p>Classe : <strong>{{participant.classe}}</strong> </p>
+      <p>Etablissement : <strong>{{participant.etablissement}}</strong></p>
+      <p>Eglise : <strong>{{participant.eglise_frequente}}</strong> </p>
+      <p>Residence : <strong>{{participant.residence}}</strong> </p>
+      <p>Numéro de telephone : <strong>{{participant.numero}}</strong> </p>
+      <p>Problème particulier : <strong>{{participant.probleme_particulier}}</strong> </p>
+      <p>Projets : <strong>{{participant.projets}}</strong> </p>
+    
+
+        <br><br><br>
+        {% if user.is_authenticated %}
+          {% if user.id == 1 or user.id == 2 or user.id == 3 or user.id == etablissement.auteur.id %}
+            <a href="{% url 'edit_participant' participant.pk %}" class="btn btn-success">Modifier</a>
+            <a href="{% url 'delete_participant' participant.pk %}" class="btn btn-danger">Supprimer</a>
+          {% endif %}
+        {% endif %}
+        
+      </div>
+    <br><br><br>
+{% endblock %}
+
+
+
+
+

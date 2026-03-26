@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block gestion %}
+    <h2>Le nombre d'enfants dans ce groupe ({{group}}) est <strong> {{enfants_groupe_nombre}} </strong>  </h2>
+<br><br>
+    <section class="container-fluid">
+        <div class="row">
+            
+            
+            <!-- Table with stripped rows -->
+            <table class="table datatable">
+                <thead>
+                  <tr>
+                    <th>
+                      <b>N</b>om
+                    </th>
+                    <th>Prenom</th>
+                    <th>Classe</th>
+                    <th data-type="date" data-format="YYYY/DD/MM">date de naissance</th>
+                    <th>Sexe</th>
+                    <th>Eglise</th>
+                  </tr>
+                </thead>
+                <tbody>
+  
+                  {% if enfants_groupe %}
+                      {% for enfant in enfants_groupe %}
+                          <tr>
+                          <td><a href="{% url 'enfant_details' enfant.pk %}">{{enfant.nom}}</a></td>
+                          <td>{{enfant.prenom}}</td>
+                          <td>{{enfant.classe}}</td>
+                          <td>{{enfant.date_de_naissance}}</td>
+                          <td>{{enfant.sexe}}</td>
+                          <td>{{enfant.eglise}}</td>
+                          </tr>
+                          {% endfor %}
+                      {% else %}
+                      <strong>Pas d'enfants pour ce groupe ({{group}}) !</strong>
+                  {% endif %}
+               
+                </tbody>
+              </table>
+              <!-- End Table with stripped rows -->
+  
+        </div>
+    </section>
+<br><br><br>
+
+{% endblock %}

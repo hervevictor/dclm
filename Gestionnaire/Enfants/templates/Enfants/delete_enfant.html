@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block gestion %} <br>
+    <h2>Delete {{enfant}} </h2>
+    <br>
+    <p>Êtes-vous sûr de vouloir supprimer : {{enfant}} ?</p>
+    <br> <br>
+    <p> <strong>Valider</strong>  pour confirmer ou <strong>Abandonner</strong>  pour annuler</p>
+    <form action="" method="post">
+        {% csrf_token %}
+        <br> <br>
+        <a href="{% url 'enfant_details' enfant.pk %}" class="btn btn-warning">Abandonner</a>
+        <button type="submit" class="btn btn-danger">Valider</button>
+    </form>
+    <br> <br><br> <br>
+{% endblock %}

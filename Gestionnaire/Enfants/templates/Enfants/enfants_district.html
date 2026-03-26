@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block gestion %}
+    <h2>La liste des enfants dans ce district. </h1>
+<br><br>
+
+
+
+
+<section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{eglise}}</h5>
+            <p> Le nombre d'enfants dans cette église est : <strong> {{enfants_district_nombre}} </strong> </p>
+
+            <br>
+              <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <p>Please select format of file.</p>
+                <select name="file-format" class="form-control my-3">
+                    <option selected>Choose format...</option>
+                    <option>CSV</option>
+                    <option>JSON</option>
+                    <option>PDF</option>
+                    <option>XLS (Excel)</option>
+                  </select>
+                <button class="btn btn-primary" type="submit">Export</button>
+              </form>
+              <br>
+
+            <!-- Table with stripped rows -->
+            <table class="table datatable">
+              <thead>
+                <tr>
+                  <th>
+                    <b>N</b>om
+                  </th>
+                  <th>Prenom</th>
+                  <th>Classe</th>
+                  <th data-type="date" data-format="YYYY/DD/MM">date de naissance</th>
+                  <th>Sexe</th>
+                  <th>Eglise</th>
+                </tr>
+              </thead>
+              <tbody>
+
+                {% if enfants_district %}
+                    {% for enfant in enfants_district %}
+                        <tr>
+                        <td><a href="{% url 'enfant_details' enfant.pk %}">{{enfant.nom}}</a></td>
+                        <td>{{enfant.prenom}}</td>
+                        <td>{{enfant.classe}}</td>
+                        <td>{{enfant.date_de_naissance}}</td>
+                        <td>{{enfant.sexe}}</td>
+                        <td>{{enfant.eglise}}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                    <strong>Pas d'enfants pour cette eglise ({{dist}}) !</strong>
+                {% endif %}
+             
+              </tbody>
+            </table>
+            <!-- End Table with stripped rows -->
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+
+<br><br><br>
+{% endblock %}

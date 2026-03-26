@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block gestion %}
+
+    
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Liste des Participants  </h1>
+    <h3 class="h3 mb-0 text-gray-800">Le nombre de Participants contenu dans ce tableau est ({{Participant_list_count}})</h3>
+    <p class="mb-4">Cette table vous offre la possibililité de faire le tri par lettre alphabetique de tous les cases et aussi de selectionner le nombre d'éléments à afficher. </p>
+
+
+
+<section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+
+        <div class="card">
+          <div class="card-body"><br>
+
+              <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <p>Please select format of file.</p>
+                <select name="file-format" class="form-control my-3">
+                    <option selected>Choose format...</option>
+                    <option>CSV</option>
+                    <option>JSON</option>
+                    <option>PDF</option>
+                    <option>XLS (Excel)</option>
+                  </select>
+                <button class="btn btn-primary" type="submit">Export</button>
+              </form>
+              <br><br>
+
+            <!-- Table with stripped rows -->
+            <table class="table datatable">
+              <thead>
+                <tr>
+                    <th>nom & prenom</th>
+                    <th>Age</th>
+                    <th>Sexe</th>
+                    <th>Classe</th>
+                    <th>Etablissement</th>
+                    <th>Contact du part </th>
+                    <th>Eglise fréquenté </th>
+                    <th>Residence</th>
+                </tr>
+              </thead>
+              <tbody>
+
+                {% for participants in Participant_list %}
+
+                <tr>
+                    <td><a href="{% url 'participant_detail' participants.id %}">{{participants.nom}} </a>{{participants.prenom}}</td>
+                    <td>{{participants.age}} </td>
+                    <td>{{participants.sexe}} </td>
+                    <td>{{participants.classe}} </td>
+                    <td>{{participants.etablissement}} </td>
+                    <td>{{participants.numero}} </td>
+                    <td>{{participants.eglise_frequente}} </td>
+                    <td>{{participants.residence}} </td>                                           
+                    
+                </tr>
+            
+
+                {% endfor %}
+             
+              </tbody>
+            </table>
+            <!-- End Table with stripped rows -->
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+</div>
+<!-- /.container-fluid -->
+    
+{% endblock  %}

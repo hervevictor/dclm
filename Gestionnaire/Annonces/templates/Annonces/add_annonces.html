@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block gestion %}
+<!-- Chers Pasteurs, les Jeunes ont un programme le ... c'est un programme à envergue national. veillez passer l'annonce dans vos différents districts -->
+    <h1>Ajouter une Annonce</h1>
+
+    <form action="" method="post">
+        {% csrf_token %} <br>
+        {{form.as_p}} <br><br>
+        <button type="submit" class="btn btn-primary">Ajouter</button>
+    </form>
+
+    <script>
+        let user = '{{user.id}}';
+        document.getElementById('user_id').value = user;
+    </script>
+
+
+{% endblock %}

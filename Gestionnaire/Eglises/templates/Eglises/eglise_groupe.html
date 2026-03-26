@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block gestion %}
+    <h2>La liste des églises dans le groupe de : {{group}} </h2> <br>
+    <p><strong>Nombre : {{eglise_nombre}} </strong></p> <br>
+     
+    <br>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <p>Please select format of file.</p>
+      <select name="file-format" class="form-control my-3">
+          <option selected>Choose format...</option>
+          <option>CSV</option>
+          <option>JSON</option>
+          <option>PDF</option>
+          <option>XLS (Excel)</option>
+        </select>
+      <button class="btn btn-primary" type="submit">Export</button>
+    </form>
+    <br>
+        {% if eglises %}
+            <section class="container-fluid">
+                <div class="row"> 
+                {% for eglise in eglises %}
+
+                <div class="col-md-4">
+                    <div class="card">
+                        {% if eglise.header_image %}
+                          <img src="{{eglise.header_image.url}}" class="card-img-top" alt="...">
+                          {% else %}
+                          <img src="{% static 'assets/img/card.jpg' %}" class="card-img-top" alt="...">
+                        {% endif %}
+                        
+                        <div class="card-body">
+                            <h5 class="card-title"><a href="{% url 'eglise_details' eglise.pk %}">{{eglise}}</a></h5>
+                            <p class="card-text"></p>
+                        </div>
+                        </div>
+                    </div>
+
+                                        
+                {% endfor %}
+                </div>
+            </section>
+            </ul>
+        {% else %}
+            <strong>Pas d'informations pour le moment !</strong>
+        {% endif %}
+{% endblock %}

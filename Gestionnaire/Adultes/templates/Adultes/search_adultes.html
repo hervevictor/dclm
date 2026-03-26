@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block gestion %}
+<br>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 col-md-7">
+          <h2>Le resultat de votre recherche ({{search_adulte}})  </h2>  
+        </div>
+        <div class="col-12 col-md-5">
+            <form action="{% url 'search_adulte' %}" method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-9"><input type="text" class="form-control" placeholder="Entrez le nom à rechercher" name="search_adulte"></div>
+                    <div class="col-3"><button type="submit" class="btn btn-primary">valider</button></div>
+                </div>
+                
+                
+            </form>
+        </div>
+    </div>
+</div>
+
+{% if search_adultes %}
+  
+
+    <br>
+    <p>Le nombre est : <strong>{{search_adulte_count}}</strong> </p>
+     <br>
+
+    <section class="container-fluid">
+        <div class="row"> 
+        {% if search_adultes %}
+            {% for adulte in search_adultes %}
+                <div class="col-md-4">
+                <div class="card">
+                    {% if adulte.header_image %}
+                    <img src="{{adulte.header_image.url}}" class="card-img-top" alt="...">
+                    {% else %}
+                    <img src="{% static 'assets/img/card.jpg' %}" class="card-img-top" alt="...">
+                    {% endif %}
+                    
+                    <div class="card-body">
+                        <h5 class="card-title"><a href="{% url 'adulte_details' adulte.pk %}">{{adulte}}</a></h5>
+                        <p class="card-text"></p>
+                    </div>
+                    </div>
+                </div>
+            {% endfor %}
+            {% else %}
+            <strong>Pas d'informations pour le moment !</strong>
+        {% endif %}
+        </div>
+    </section>
+{% else %}
+<br><br><br>
+<strong>Pas d'Adulte portant ce nom ({{search_adulte}}). <br><br> Veillez entrer un autre nom</strong>
+
+{% endif %}
+<br><br><br><br><br><br><br><br><br>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block gestion %}
+<!-- Chers Pasteurs, les Jeunes ont un programme le ... c'est un programme à envergue national. veillez passer l'annonce dans vos différents districts -->
+    <br>
+    <h1>Se Connecter</h1>
+    <br><br>
+    <form action="" method="post">
+        {% csrf_token %} <br>
+        {{form.as_p}}
+        <br><br>
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+
+    <br><br><br><br><br><br>
+
+{% endblock %}

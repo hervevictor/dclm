@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block gestion %} <br>
+    <h1>Details de : {{enfant}} </h1>
+    <hr>
+    <small><strong>{{enfant.publish}}</strong> | <strong>{{enfant.auteur}}</strong>  </small>
+
+    <br><br><br>
+    <div class="container">
+        
+        
+        {% if enfant.enfant_image %}
+          <p>
+            <img src="{{enfant.enfant_image.url}}" alt="">
+          </p>
+          {% else %}
+          <p>
+            <img src="{% static 'images/profile.png' %}" alt="">
+          </p>
+        {% endif %}
+
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <p>Classe : <strong>{{enfant.classe}}</strong> </p>
+                <p>Sexe : <strong>{{enfant.sexe}}</strong> </p>
+                <p>Téléphone : <strong>{{enfant.telephone}}</strong> </p>
+                <p>District : <a href="{% url 'enfants_district' enfant.eglise.pk %}"><strong>{{enfant.eglise}}</strong></a>  </p>
+                <p>Groupe : <a href="{% url 'enfants_groupe' enfant.eglise.groupe %}"><strong>{{enfant.eglise.groupe}}</strong></a> </p>
+                <p>Region : <a href="{% url 'enfants_region' enfant.eglise.region %}"><strong>{{enfant.eglise.region}}</strong></a> </p>
+                <p>Groupage : <strong>{{enfant.groupe_sanguin}}</strong> </p>
+                <p>Rhesus : <strong>{{enfant.rhesus}}</strong> </p>
+                <p>Avec qui vit-il ? : <strong>{{enfant.avec_qui_vit_il}}</strong> </p>
+                
+                
+            </div>
+            <div class="col-12 col-md-6">
+                <p>Nombre de Frères : <strong>{{enfant.nombre_de_freres}}</strong> </p>
+                <p>Dans l'eglise : <strong>{{enfant.les_freres_sont_ils_dans_leglise}}</strong> </p>
+                <p>Nom des Frères : <strong>{{enfant.nom_des_freres}}</strong> </p>
+                <p>Nombre de Soeurs : <strong>{{enfant.nombre_de_soeurs}}</strong> </p>
+                <p>Dans l'eglise : <strong>{{enfant.les_soeurs_sont_elles_dans_leglise}}</strong> </p>
+                <p>Nom des soeurs : <strong>{{enfant.nom_des_soeurs}}</strong> </p>
+                <p>Nom des parents : <strong>{{enfant.nom_des_parents_ou_tuteurs}}</strong> </p>
+                <p>Dans l'eglise ? : <strong>{{enfant.les_parents_sont_ils_dans_leglise}}</strong> </p>
+                <p>Numéro du parent ou tuteur : <strong>{{enfant.contact}}</strong> </p>
+                
+            </div>
+        </div>
+        <p>Description : <strong>{{enfant.description_sur_l_enfant}}</strong> </p>
+        
+
+        <br><br><br>
+        <a href="{% url 'edit_enfant' enfant.pk %}" class="btn btn-success">Modifier</a>
+        <a href="{% url 'delete_enfant' enfant.pk %}" class="btn btn-danger">Supprimer</a>
+    </div>
+    <br><br><br>
+{% endblock %}
+
+
+
+
+

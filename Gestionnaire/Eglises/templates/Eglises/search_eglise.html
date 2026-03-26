@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block gestion %}
+
+
+
+
+    <h1>Les Resultat de votre recherche ({{searched}})  </h1> <br>
+    
+        {% if searched %}
+        <p>Le nombre d'Eglises trouvé : <strong>{{search_eglise_count}}</strong></p> <br>
+            <section class="container-fluid">
+                <div class="row"> 
+                {% for eglise in search_eglises %}
+                    <div class="col-md-4">
+                    <div class="card">
+                        {% if eglise.header_image %}
+                          <img src="{{eglise.header_image.url}}" class="card-img-top" alt="...">
+                          {% else %}
+                          <img src="{% static 'assets/img/card.jpg' %}" class="card-img-top" alt="...">
+                        {% endif %}
+                        
+                        <div class="card-body">
+                            <h5 class="card-title"><a href="{% url 'eglise_details' eglise.pk %}">{{eglise}}</a></h5>
+                            <p class="card-text"></p>
+                        </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+            </section>   
+            <br><br> <br><br>                 
+        {% else %}
+        <br><br> <br><br> 
+            <strong>Pas d'eglise portant sur votre recherche ({{searched}}) !</strong>
+        {% endif %}
+{% endblock %}

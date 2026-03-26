@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block gestion %}
+
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">Liste de Lumière à la cité.</h1>
+  <br>
+    <center>
+    <h4 class="">Le nombre de Bilan est : ({{lumieres_list_count}})</h4>
+    <p class="mb-4">Cette table vous offre la possibililité de faire le tri par lettre alphabetique de tous les cases et aussi de selectionner le nombre d'éléments à afficher.</p>
+  </center>
+
+<section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+
+        <div class="card">
+          <div class="card-body"><br>
+
+              <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <p>Please select format of file.</p>
+                <select name="file-format" class="form-control my-3">
+                    <option selected>Choose format...</option>
+                    <option>CSV</option>
+                    <option>JSON</option>
+                    <option>PDF</option>
+                    <option>XLS (Excel)</option>
+                  </select>
+                <button class="btn btn-primary" type="submit">Export</button>
+              </form>
+              <br>
+
+            <!-- Table with stripped rows -->
+            <table class="table datatable">
+              <thead>
+                <tr>
+                    <th>Titre</th>
+                    <th>Etablissements</th>
+                    <th>Enseignant</th>
+                    <th>Nbre de filles</th>
+                    <th>Nbre de garçons</th>
+                    <th>Date de l'étude</th>
+                </tr>
+              </thead>
+              <tbody>
+
+                    {% for lumiere in object_list %}
+
+                        <tr>
+                            <td><a href="{% url 'lumiere_detail' lumiere.pk %}">{{lumiere.titre}}</a></td>
+                            <td><a href="{% url 'lumiere_filtre_ets' lumiere.etablissements %}">{{lumiere.etablissements}}</a> </td>
+                            <td>{{lumiere.enseignant}} </td>
+                            <td>{{lumiere.numbre_de_fille}}</td>
+                            <td>{{lumiere.numbre_de_garcon}} </td>
+                            <td>{{lumiere.date}}</td>
+                        </tr>
+                    
+
+                        {% endfor %}
+             
+              </tbody>
+            </table>
+            <!-- End Table with stripped rows -->
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+</div>
+<!-- /.container-fluid -->
+
+  
+{% endblock  %}

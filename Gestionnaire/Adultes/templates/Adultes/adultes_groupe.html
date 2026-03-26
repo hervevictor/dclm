@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block gestion %}
+    <h2>La liste d'adultes dans ce groupe. </h1>
+<br><br>
+
+<section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{group}}</h5>
+            <p> Nombre d'adultes dans ce groupe est <strong>{{adultes_groupe_nombre}}</p>
+
+            <!-- Table with stripped rows -->
+            <table class="table datatable">
+              <thead>
+                <tr>
+                  <th>
+                    <b>N</b>om
+                  </th>
+                  <th>Prenom</th>
+                  <th>profession</th>
+                  <th data-type="date" data-format="YYYY/DD/MM">date de naissance</th>
+                  <th>Sexe</th>
+                </tr>
+              </thead>
+              <tbody>
+
+                {% if adultes_groupe %}
+                    {% for adulte in adultes_groupe %}
+                        <tr>
+                        <td><a href="{% url 'adulte_details' adulte.pk %}">{{adulte.nom}}</a></a></td>
+                        <td>{{adulte.prenom}}</td>
+                        <td>{{adulte.profession}}</td>
+                        <td>{{adulte.date_de_naissance}}</td>
+                        <td>{{adulte.sexe}}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                    <strong>Pas de adultes pour cette region ({{group}}) !</strong>
+                {% endif %}
+             
+              </tbody>
+            </table>
+            <!-- End Table with stripped rows -->
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+
+<br><br><br>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+

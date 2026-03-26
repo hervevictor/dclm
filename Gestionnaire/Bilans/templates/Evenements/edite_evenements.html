@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block gestion %}
+<br> <br>
+    <h2>Modifier les informations : {{evenement}} </h2>
+    <br> 
+    <form action="" method="post">
+        {% csrf_token %}
+        {{form.as_p}}
+        <br> <br>
+        <button type="submit" class="btn btn-success">Modifier</button>
+    </form>
+    <br> <br>
+{% endblock %}

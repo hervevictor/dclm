@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block gestion %}
+
+
+
+
+    <h1>La liste des Bilans </h1> <br>
+        {% if bilans %}
+        <p>Le nombre total de bilan : <strong>{{bilan_count}}</strong></p> <br>
+
+        <form method="post">
+          {% csrf_token %}
+          <label for="file-format">Choisir le format d'exportation :</label>
+          <select name="file-format" id="file-format">
+            <option value="#">Choisir une option</option>
+              <option value="CSV">CSV</option>
+              <option value="JSON">JSON</option>
+              <option value="PDF">PDF</option>
+          </select>
+          <button type="submit">Exporter</button>
+      </form>
+      
+        <table class="table datatable">
+            <thead>
+              <tr>
+                <th>District</th>
+                <th>Séance</th>
+                <th>Date de_la_seance</th>
+                <th>Assistance Adultes</th>
+                <th>Assistance Jeunes</th>
+                <th>Assistance Enfants</th>
+                <th>Total Hommes</th>
+                <th>Total Femmes</th>
+                <th>Total Assistance</th>
+                <th>Cotisation</th>
+              </tr>
+            </thead>
+            <tbody>
+
+                {% for bilan in bilans %}
+                <tr>
+                    <td><a href="{% url 'seance_details' bilan.pk %}">{{ bilan.eglise }}</a> </td>
+                    <td><a href="{% url 'seance_filter' bilan.seance %}">{{ bilan.seance.type }}</a></td>
+                    <td>{{ bilan.date }}</td>
+                    <td>H = {{ bilan.adultes_hommes }}; F = {{ bilan.adultes_femmes }}</td>
+                    <td>G = {{ bilan.jeunes_garcons }} | F = {{ bilan.jeunes_filles }}</td>
+                    <td>G = {{ bilan.enfants_garcons }} | F = {{ bilan.enfants_filles }}</td>
+                    <td><center> {{ bilan.total_hommes }}</center></td>
+                    <td><center>{{ bilan.total_femmes }}</center></td>
+                    <td><center>{{ bilan.total_assistance }}</center></td>
+                    <td><center>{{ bilan.cotisation }}</center></td>
+                </tr>
+                {% endfor %}
+           
+            </tbody>
+          </table>
+
+        <a href="{% url 'add_bilan' %}">Ajouter un Bilan</a>
+        <a href="">Ajouter une Séance</a>
+
+                                
+        {% else %}
+            <strong>Pas d'informations pour le moment !</strong>
+        {% endif %}
+{% endblock %}

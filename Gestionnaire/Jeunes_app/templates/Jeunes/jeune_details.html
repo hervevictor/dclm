@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block gestion %} <br>
+    <h1>Details de : {{jeune}} </h1>
+    <hr>
+    <small><strong>{{jeune.publish}}</strong> | <strong>{{jeune.auteur}}</strong>  </small>
+    <br> <br> <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <p>District : <a href="{% url 'jeune_district' jeune.eglise.pk %}"><strong>{{jeune.eglise}}</strong></a>  </p>
+                <p>Groupe : <a href="{% url 'jeune_groupe' jeune.eglise.groupe %}"><strong>{{jeune.eglise.groupe}}</strong></a> </p>
+                <p>Region : <a href="{% url 'jeune_region' jeune.eglise.region %}"><strong>{{jeune.eglise.region}}</strong></a> </p>
+                <p>Téléphone : <strong>{{jeune.telephone}}</strong> </p>
+                <p>Date de naissance : <strong>{{jeune.date_de_naissance}}</strong> </p>
+                <p>Lieu de naissance : <strong>{{jeune.lieu_de_naissance}}</strong> </p>
+                <p>Sexe : <strong>{{jeune.sexe}}</strong> </p>
+                <p>Groupage : <strong>{{jeune.groupe_sanguin}}</strong> </p>
+                <p>Rhesus : <strong>{{jeune.rhesus}}</strong> </p>
+                <p>Rôle dans l'eglise : <strong>{{jeune.role_dans_leglise}}</strong> </p>
+                <p>Classe ou niveau d'etude : <strong>{{jeune.classe_ou_niveau_d_etude}}</strong> </p>
+                <p>Faculté ou domaine d'emploie : <strong>{{jeune.Faculte_ou_domaine_d_emploie}}</strong> </p>
+                
+            </div>
+            <div class="col-12 col-md-6">
+                <p>Avec qui vit-il ? : <strong>{{jeune.avec_qui_vit_il}}</strong> </p>
+                <p>Nombre de Frères : <strong>{{jeune.nombre_de_freres}}</strong> </p>
+                <p>Dans l'eglise : <strong>{{jeune.les_freres_sont_ils_dans_leglise}}</strong> </p>
+                <p>Nom des Frères : <strong>{{jeune.nom_des_freres}}</strong> </p>
+                <p>Nombre de Soeurs : <strong>{{jeune.nombre_de_soeurs}}</strong> </p>
+                <p>Dans l'eglise : <strong>{{jeune.les_soeurs_sont_elles_dans_leglise}}</strong> </p>
+                <p>Nom des soeurs : <strong>{{jeune.nom_des_soeurs}}</strong> </p>
+                <p>Nom des parents : <strong>{{jeune.nom_des_parents}}</strong> </p>
+                <p>Dans l'eglise ? : <strong>{{jeune.les_parents_sont_ils_dans_leglise}}</strong> </p>
+                <p>Année de Conversion : <strong>{{jeune.annee_de_conversion}}</strong> </p>
+                <p>Baptiser : <strong>{{jeune.baptiser}}</strong> </p>
+                <p>Année de baptème : <strong>{{jeune.annee_de_bapteme}}</strong> </p>
+                <p>Numéro du parent ou tuteur : <strong>{{jeune.numero_de_telephone_des_parents_ou_tuteurs}}</strong> </p>
+                
+            </div>
+        </div>
+        <p>Description : <strong>{{jeune.description}}</strong> </p>
+        
+        <br><br><br>
+        <a href="{% url 'edit_jeune' jeune.pk %}" class="btn btn-success">Modifier</a>
+        <a href="{% url 'delete_jeune' jeune.pk %}" class="btn btn-danger">Supprimer</a>
+    </div>
+{% endblock %}

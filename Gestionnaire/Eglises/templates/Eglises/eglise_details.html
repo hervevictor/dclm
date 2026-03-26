@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block gestion %} <br>
+    <h1>Details de : {{eglise}} </h1>
+    <br> 
+    <hr>
+    <p><small> <strong>{{eglise.publish}}</strong> | <strong>{{eglise.auteur}}</strong></small></p>
+<br>
+    <div class="container">
+        <p>Groupe : <strong><a href="{% url 'eglises_groupe' eglise.groupe %}">{{eglise.groupe}}</a> </strong> </p>
+        <p>Region : <strong><a href="{% url 'eglises_region' eglise.region %}">{{eglise.region}}</a></strong> </p>
+        <p>Ville : <strong>{{eglise.ville}}</strong> </p>
+
+        <p>Pasteur : <strong>{{eglise.nom_du_pasteur}}</strong> </p>
+        <p>Pasteur Adjoint : <strong>{{eglise.nom_du_pasteur_adjoin}}</strong> </p>
+        <p>Dirigeant des Jeunes : <strong>{{eglise.nom_du_dirigeant_des_jeunes}}</strong> </p>
+        <p>Dirigeant Adjoint des Jeunes : <strong>{{eglise.nom_du_dirigeant_adjoin_des_jeunes}}</strong> </p>
+        <p>Dirigeant des Enfants : <strong>{{eglise.nom_du_dirigeant_des_enfants}}</strong> </p>
+        <p>Dirigeant Adjoint des Enfants : <strong>{{eglise.nom_du_dirigeant_adjoin_des_enfants}}</strong> </p>
+
+        <p>Nbre de membres : <strong>{{eglise.nombre_de_membres}}</strong> </p>
+        <p>Téléphone : <strong>{{eglise.telephone}}</strong> </p>
+        <p>BP : <strong>{{eglise.bp}}</strong> </p>
+        <p>Email : <strong>{{eglise.email}}</strong> </p>
+        
+        <p>Description : <strong>{{eglise.description}}</strong> </p>
+
+        <div class="row">
+            <div class="col-12 col-md-6">
+                {% if eglise.body_image %}
+                    <img src="{{eglise.body_image.url}}" class="card-img-top" alt="...">
+                {% endif %}
+            </div>
+            <div class="col-12 col-md-6">
+                {% if eglise.body_image1 %}
+                    <img src="{{eglise.body_image1.url}}" class="card-img-top" alt="...">
+                {% endif %}
+            </div>
+        </div>
+        <br><br><br>
+        {% if user.is_authenticated %}
+            {% if user.id == 1 or user.id == 2 or user.id == 3 or user.id == eglise.auteur.id %}
+                <a href="{% url 'edit_eglise' eglise.pk %}" class="btn btn-success">Modifier</a>
+                <a href="{% url 'delete_eglise' eglise.pk %}" class="btn btn-danger">Supprimer</a>
+            {% endif %}
+        {% endif %}
+        
+    </div>
+
+    <br><br>
+{% endblock %}

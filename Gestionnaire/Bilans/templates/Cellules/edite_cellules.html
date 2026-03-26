@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block gestion %}
+    <h1>Modifier les informations de cette cellule : ({{cellule}} )</h1>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{form.as_p}}
+        <br>
+        <button type="submit" class="btn btn-success">Modifier</button>
+    </form>
+{% endblock %}

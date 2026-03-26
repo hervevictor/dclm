@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block gestion %}
+
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+<br>
+    <!-- Page Heading -->
+    <h1 class="h3 mb-4 text-gray-800">Editer ce Etablissement</h1>
+   <br> 
+    <br>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{form.media}}
+        {{form.as_p}}
+        <br><br>
+        <button type="submit" class="btn btn-success">Editer</button>
+<br><br><br>
+</div>
+<!-- /.container-fluid -->
+  
+{% endblock  %}
