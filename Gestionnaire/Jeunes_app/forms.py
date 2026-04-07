@@ -30,7 +30,7 @@ class JeuneForm(forms.ModelForm):
         widgets = {
             'nom': forms.TextInput(attrs={'class': 'form-control'}),
             'prenom' : forms.TextInput(attrs={'class': 'form-control'}),
-            'eglise' : forms.Select(attrs={'class': 'form-control'}),
+            'eglise' : forms.Select(attrs={'class': 'form-control select-search'}),
             'telephone': forms.NumberInput(attrs={'class': 'form-control'}),
              
             'date_de_naissance' : forms.DateInput(attrs={'class': 'form-control'}),

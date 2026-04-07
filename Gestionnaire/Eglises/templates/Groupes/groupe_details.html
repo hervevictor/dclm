@@ -1,25 +1,26 @@
 {% extends 'base.html' %}
+{% load region_labels %}
 {% block gestion %} <br>
-    <h1>Details du groupe : {{groupe}} </h1> <br>
+    {% labels_for groupe.region as lbl %}
+    <h1>Details du {{ lbl.intermediaire }} : {{groupe}} </h1> <br>
     <br>
     <div class="container">
         <p>Nom : <strong>{{groupe.name}}</strong> </p>
-        <p>Nom du pasteur groupe : <strong>{{groupe.nom_du_pasteur_du_groupe}}</strong> </p>
+        <p>Nom du pasteur {{ lbl.intermediaire }} : <strong>{{groupe.nom_du_pasteur_du_groupe}}</strong> </p>
         <p>Nom du Superviseur des Jeunes : <strong>{{groupe.nom_du_superviseur_des_jeunes}}</strong> </p>
         <p>Nom du Superviseur Adjoin des Jeunes : <strong>{{groupe.nom_du_superviseur_adjoin_des_jeunes}}</strong> </p>
         <p>Nbre de membres : <strong>{{groupe.nombre_de_membres}}</strong> </p>
-        
+
         <p>Region : <strong><a href="{% url 'groupe_region' groupe.region %}">{{groupe.region}}</a> </strong> </p>
 
         <br><br><br> <br>
         {% if user.is_authenticated %}
-            {% if user.id == 1 or user.id == 2 or user.id == 3 or user.id == groupe.auteur.id %}
+            {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' or user.profile.niveau_acces == 'REGION' %}
                 <a href="{% url 'edit_groupe' groupe.pk %}" class="btn btn-success">Modifier</a>
                 <a href="{% url 'delete_groupe' groupe.pk %}" class="btn btn-danger">Supprimer</a>
-            
             {% endif %}
         {% endif %}
-        
+
     </div>
     <br><br> <br>
 {% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block gestion %}
+<div class="container-fluid mt-4">
+    <div class="card shadow-sm col-lg-8 mx-auto">
+        <div class="card-header bg-primary text-white">
+            <h4>{% if object %}Modifier{% else %}Ajouter{% endif %} une Transaction</h4>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.titre.id_for_label }}" class="form-label">Titre de la transaction</label>
+                        {{ form.titre }}
+                        {% if form.titre.errors %}<div class="text-danger small">{{ form.titre.errors }}</div>{% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.type_transaction.id_for_label }}" class="form-label">Type</label>
+                        {{ form.type_transaction }}
+                        {% if form.type_transaction.errors %}<div class="text-danger small">{{ form.type_transaction.errors }}</div>{% endif %}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.montant.id_for_label }}" class="form-label">Montant (FCFA)</label>
+                        {{ form.montant }}
+                        {% if form.montant.errors %}<div class="text-danger small">{{ form.montant.errors }}</div>{% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.date.id_for_label }}" class="form-label">Date</label>
+                        {{ form.date }}
+                        {% if form.date.errors %}<div class="text-danger small">{{ form.date.errors }}</div>{% endif %}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.eglise.id_for_label }}" class="form-label">Église concernée</label>
+                    {{ form.eglise }}
+                    {% if form.eglise.errors %}<div class="text-danger small">{{ form.eglise.errors }}</div>{% endif %}
+                    <div class="form-text">Si laissé vide, la transaction sera globale.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.description.id_for_label }}" class="form-label">Description / Détails</label>
+                    {{ form.description }}
+                    {% if form.description.errors %}<div class="text-danger small">{{ form.description.errors }}</div>{% endif %}
+                </div>
+
+                <div class="mt-4 text-center">
+                    <button type="submit" class="btn btn-primary px-4 btn-lg">
+                        <i class="bi bi-save"></i> Enregistrer
+                    </button>
+                    <a href="{% url 'transaction_list' %}" class="btn btn-secondary px-4 btn-lg">
+                        Annuler
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,67 +1,156 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static region_labels %}
 
 {% block gestion %}
 
 
 
 
-    <h1>La liste des Bilans </h1> <br>
-        {% if bilans %}
-        <p>Le nombre total de bilan : <strong>{{bilan_count}}</strong></p> <br>
+<div class="row align-items-center mb-4">
+  <div class="col">
+    <h1>Rapport Centralisé des Bilans</h1>
+  </div>
+  <div class="col-auto">
+    <a href="{% url 'add_bilan' %}" class="btn btn-success">Ajouter un Bilan</a>
+  </div>
+</div>
 
-        <form method="post">
-          {% csrf_token %}
-          <label for="file-format">Choisir le format d'exportation :</label>
-          <select name="file-format" id="file-format">
-            <option value="#">Choisir une option</option>
-              <option value="CSV">CSV</option>
-              <option value="JSON">JSON</option>
-              <option value="PDF">PDF</option>
-          </select>
-          <button type="submit">Exporter</button>
-      </form>
-      
-        <table class="table datatable">
-            <thead>
-              <tr>
-                <th>District</th>
-                <th>Séance</th>
-                <th>Date de_la_seance</th>
-                <th>Assistance Adultes</th>
-                <th>Assistance Jeunes</th>
-                <th>Assistance Enfants</th>
-                <th>Total Hommes</th>
-                <th>Total Femmes</th>
-                <th>Total Assistance</th>
-                <th>Cotisation</th>
-              </tr>
-            </thead>
-            <tbody>
+{% if bilans or request.GET %}
+<!-- Filtres -->
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <form method="get" class="row g-3">
+      <div class="col-md-2">
+        <label class="form-label small">Région</label>
+        <input type="text" name="region" class="form-control form-control-sm" value="{{ request.GET.region }}"
+          placeholder="Toutes">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label small">Groupe</label>
+        <input type="text" name="groupe" class="form-control form-control-sm" value="{{ request.GET.groupe }}"
+          placeholder="Tous">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label small">District</label>
+        <input type="text" name="district" class="form-control form-control-sm" value="{{ request.GET.district }}"
+          placeholder="Tous">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label small">Du</label>
+        <input type="date" name="start_date" class="form-control form-control-sm" value="{{ request.GET.start_date }}">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label small">Au</label>
+        <input type="date" name="end_date" class="form-control form-control-sm" value="{{ request.GET.end_date }}">
+      </div>
+      <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary btn-sm w-100">Filtrer</button>
+        <a href="{% url 'seances' %}" class="btn btn-outline-secondary btn-sm ms-2">Réinitialiser</a>
+      </div>
+    </form>
+  </div>
+</div>
 
-                {% for bilan in bilans %}
-                <tr>
-                    <td><a href="{% url 'seance_details' bilan.pk %}">{{ bilan.eglise }}</a> </td>
-                    <td><a href="{% url 'seance_filter' bilan.seance %}">{{ bilan.seance.type }}</a></td>
-                    <td>{{ bilan.date }}</td>
-                    <td>H = {{ bilan.adultes_hommes }}; F = {{ bilan.adultes_femmes }}</td>
-                    <td>G = {{ bilan.jeunes_garcons }} | F = {{ bilan.jeunes_filles }}</td>
-                    <td>G = {{ bilan.enfants_garcons }} | F = {{ bilan.enfants_filles }}</td>
-                    <td><center> {{ bilan.total_hommes }}</center></td>
-                    <td><center>{{ bilan.total_femmes }}</center></td>
-                    <td><center>{{ bilan.total_assistance }}</center></td>
-                    <td><center>{{ bilan.cotisation }}</center></td>
-                </tr>
-                {% endfor %}
-           
-            </tbody>
-          </table>
+<!-- Résumé -->
+<div class="row mb-4">
+  <div class="col-md-4">
+    <div class="card border-info shadow-sm bg-light">
+      <div class="card-body py-2">
+        <p class="mb-0 small text-muted">Nombre de rapports</p>
+        <h4 class="mb-0 fw-bold">{{ bilan_count }}</h4>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card border-primary shadow-sm bg-light">
+      <div class="card-body py-2">
+        <p class="mb-0 small text-muted">Total Assistance</p>
+        <h4 class="mb-0 fw-bold">{{ total_assistance_globale }}</h4>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card border-success shadow-sm bg-light">
+      <div class="card-body py-2">
+        <p class="mb-0 small text-muted">Total Cotisations</p>
+        <h4 class="mb-0 fw-bold">{{ total_cotisation_globale|floatformat:2 }} FCFA</h4>
+      </div>
+    </div>
+  </div>
+</div>
 
-        <a href="{% url 'add_bilan' %}">Ajouter un Bilan</a>
-        <a href="">Ajouter une Séance</a>
+<form method="post" class="mb-3">
+  {% csrf_token %}
+  <!-- Conserver les filtres actifs pour l'export -->
+  <input type="hidden" name="region" value="{{ request.GET.region }}">
+  <input type="hidden" name="groupe" value="{{ request.GET.groupe }}">
+  <input type="hidden" name="district" value="{{ request.GET.district }}">
+  <input type="hidden" name="start_date" value="{{ request.GET.start_date }}">
+  <input type="hidden" name="end_date" value="{{ request.GET.end_date }}">
+  <div class="input-group input-group-sm w-auto">
+    <label class="input-group-text"><i class="bi bi-download"></i> Exporter</label>
+    <select name="file-format" class="form-select border-primary" style="max-width: 160px;">
+      <option value="PDF">PDF</option>
+      <option value="XLS">Excel (XLS)</option>
+      <option value="CSV">CSV</option>
+      <option value="JSON">JSON</option>
+    </select>
+    <button type="submit" class="btn btn-outline-primary">Télécharger</button>
+  </div>
+</form>
 
-                                
-        {% else %}
-            <strong>Pas d'informations pour le moment !</strong>
-        {% endif %}
+<table class="table datatable">
+  <thead>
+    <tr>
+      <th>District</th>
+      <th>Séance</th>
+      <th>Date de_la_seance</th>
+      <th>Assistance Adultes</th>
+      <th>Assistance Jeunes</th>
+      <th>Assistance Enfants</th>
+      <th>Total Hommes</th>
+      <th>Total Femmes</th>
+      <th>Total Assistance</th>
+      <th>Cotisation</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    {% for bilan in bilans %}
+    {% labels_for bilan.eglise.region as lbl %}
+    <tr>
+      <td>
+        <a href="{% url 'seance_details' bilan.pk %}">{{ bilan.eglise }}</a>
+        <br><small class="text-muted">{{ lbl.intermediaire }} : {{ bilan.eglise.groupe }}</small>
+      </td>
+      <td><a href="{% url 'seance_filter' bilan.seance %}">{{ bilan.seance.type }}</a></td>
+      <td>{{ bilan.date }}</td>
+      <td>H = {{ bilan.adultes_hommes }}; F = {{ bilan.adultes_femmes }}</td>
+      <td>G = {{ bilan.jeunes_garcons }} | F = {{ bilan.jeunes_filles }}</td>
+      <td>G = {{ bilan.enfants_garcons }} | F = {{ bilan.enfants_filles }}</td>
+      <td>
+        <center> {{ bilan.total_hommes }}</center>
+      </td>
+      <td>
+        <center>{{ bilan.total_femmes }}</center>
+      </td>
+      <td>
+        <center>{{ bilan.total_assistance }}</center>
+      </td>
+      <td>
+        <center>{{ bilan.cotisation }}</center>
+      </td>
+    </tr>
+    {% endfor %}
+
+  </tbody>
+</table>
+
+<a href="{% url 'add_bilan' %}">Ajouter un Bilan</a>
+<a href="">Ajouter une Séance</a>
+
+
+{% else %}
+<strong>Pas d'informations pour le moment !</strong>
+{% endif %}
 {% endblock %}

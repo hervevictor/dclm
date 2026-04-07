@@ -1,19 +1,103 @@
 {% extends 'base.html' %}
 {% block gestion %}
-<br> 
-    <h2>Ajouter un bilan </h2>
-    <br> 
-    <form action="" method="post" enctype="multipart/form-data"> 
-        {% csrf_token %}
-        {{form.as_p}}
-        {{form.media}}
-        <br> <br>
-        <button type="submit" class="btn btn-primary">Ajouter</button>
+
+<div class="pagetitle">
+  <h1>Ajouter un Bilan de Séance</h1>
+  <nav><ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'seances' %}">Séances</a></li>
+    <li class="breadcrumb-item active">Ajouter</li>
+  </ol></nav>
+</div>
+
+<div class="card shadow-sm col-lg-9 mx-auto">
+  <div class="card-header bg-primary text-white">
+    <h5 class="mb-0"><i class="bi bi-journal-plus"></i> Nouveau bilan de séance</h5>
+  </div>
+  <div class="card-body pt-4">
+
+    {% if district_unique %}
+    <div class="alert alert-info d-flex align-items-center mb-4">
+      <i class="bi bi-info-circle-fill me-2 fs-5"></i>
+      <div>Votre district assigné est : <strong>{{ district_unique }}</strong>. Seule cette église est disponible.</div>
+    </div>
+    {% endif %}
+
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger d-flex align-items-center mb-4">
+      <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+      <div>{{ form.non_field_errors }}</div>
+    </div>
+    {% endif %}
+
+    <form method="POST">
+      {% csrf_token %}
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-semibold">Église (District) <span class="text-danger">*</span></label>
+          {{ form.eglise }}
+          {% if form.eglise.errors %}<div class="text-danger small mt-1">{{ form.eglise.errors }}</div>{% endif %}
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-semibold">Type de séance <span class="text-danger">*</span></label>
+          {{ form.seance }}
+          {% if form.seance.errors %}<div class="text-danger small mt-1">{{ form.seance.errors }}</div>{% endif %}
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Date <span class="text-danger">*</span></label>
+        {{ form.date }}
+        {% if form.date.errors %}<div class="text-danger small mt-1">{{ form.date.errors }}</div>{% endif %}
+      </div>
+
+      <hr><h6 class="text-muted mb-3">Participation</h6>
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Adultes Hommes</label>
+          {{ form.adultes_hommes }}
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Adultes Femmes</label>
+          {{ form.adultes_femmes }}
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Cotisation</label>
+          {{ form.cotisation }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-3 mb-3">
+          <label class="form-label">Jeunes Garçons</label>
+          {{ form.jeunes_garcons }}
+        </div>
+        <div class="col-md-3 mb-3">
+          <label class="form-label">Jeunes Filles</label>
+          {{ form.jeunes_filles }}
+        </div>
+        <div class="col-md-3 mb-3">
+          <label class="form-label">Enfants Garçons</label>
+          {{ form.enfants_garcons }}
+        </div>
+        <div class="col-md-3 mb-3">
+          <label class="form-label">Enfants Filles</label>
+          {{ form.enfants_filles }}
+        </div>
+      </div>
+
+      {{ form.auteur }}
+
+      <div class="mt-4 d-flex gap-2">
+        <button type="submit" class="btn btn-primary px-4">
+          <i class="bi bi-save"></i> Enregistrer
+        </button>
+        <a href="{% url 'seances' %}" class="btn btn-outline-secondary px-4">Annuler</a>
+      </div>
     </form>
-    <br> <br><br> <br>
-    <script>
-        let user = '{{user.id}}';
-        document.getElementById('current_user').value = user;
-    </script>
-    
+  </div>
+</div>
+
+<script>
+  document.getElementById('current_user').value = '{{ user.id }}';
+</script>
 {% endblock %}

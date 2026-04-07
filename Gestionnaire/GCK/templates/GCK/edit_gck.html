@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block gestion %}
+<div class="pagetitle">
+  <h1>Modifier le Bilan GCK</h1>
+  <nav><ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'gck_list' %}">GCK</a></li>
+    <li class="breadcrumb-item active">Modifier</li>
+  </ol></nav>
+</div>
+
+<div class="card shadow-sm col-lg-9 mx-auto">
+  <div class="card-header bg-dark text-white">
+    <h5 class="mb-0"><i class="bi bi-pencil-square"></i> Modifier le bilan</h5>
+  </div>
+  <div class="card-body pt-4">
+    <form method="POST">
+      {% csrf_token %}
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Église (District)</label>
+        {{ form.eglise }}
+      </div>
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Date de la croisade</label>
+        {{ form.date }}
+      </div>
+
+      <hr><h6 class="text-muted mb-3">Participation</h6>
+      <div class="row">
+        <div class="col-md-3 mb-3">
+          <label class="form-label">Hommes</label>{{ form.hommes }}
+        </div>
+        <div class="col-md-3 mb-3">
+          <label class="form-label">Femmes</label>{{ form.femmes }}
+        </div>
+        <div class="col-md-3 mb-3">
+          <label class="form-label">Enfants</label>{{ form.enfants }}
+        </div>
+        <div class="col-md-3 mb-3">
+          <label class="form-label fw-semibold text-success">Nouveaux convertis</label>
+          {{ form.nouveaux_convertis }}
+        </div>
+      </div>
+
+      <hr><h6 class="text-muted mb-3">Rapport qualitatif <small>(facultatif)</small></h6>
+      <div class="mb-3">
+        <label class="form-label">Suggestions</label>{{ form.suggestions }}
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Difficultés</label>{{ form.difficultes }}
+      </div>
+
+      {{ form.auteur }}
+
+      <div class="d-flex gap-2 mt-4">
+        <button type="submit" class="btn btn-success px-4">
+          <i class="bi bi-save"></i> Enregistrer
+        </button>
+        <a href="{% url 'gck_detail' object.pk %}" class="btn btn-outline-secondary px-4">Annuler</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.getElementById('current_user').value = '{{ user.id }}';
+</script>
+{% endblock %}

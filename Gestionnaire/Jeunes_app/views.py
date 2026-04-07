@@ -4,6 +4,7 @@ from .models import Jeune
 from Eglises.models import Eglise, Region, Groupe 
 from django.urls import reverse_lazy
 from .forms import JeuneForm
+from Membres.utils import filter_by_rbac
 
 
 from Adultes.resources import JeuneResources
@@ -32,10 +33,13 @@ class JeuneList(ListView):
     model = Jeune 
     template_name = 'Jeunes/jeune_liste.html'
     
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return filter_by_rbac(self.request.user, qs, 'jeune')
+        
     def get_context_data(self, *args, **kwargs):
-        jeunes = Jeune.objects.all().count()
         context = super(JeuneList, self).get_context_data(*args, **kwargs)
-        context["jeunes"] = jeunes
+        context["jeunes"] = self.get_queryset().count()
         return context
     
 class JeuneDetails(DetailView):
@@ -57,6 +61,7 @@ class DeleteJeune(DeleteView):
 def FilteJeunesDistrict(request, dist):
     eglise = get_object_or_404(Eglise, pk=dist)
     jeunes_district = Jeune.objects.filter(eglise=dist)
+    jeunes_district = filter_by_rbac(request.user, jeunes_district, 'jeune')
     jeunes_district_nombre = jeunes_district.count()
     
     
@@ -124,6 +129,7 @@ def FilteJeunesDistrict(request, dist):
 def FilteJeunesRegion(request, regs):
     region = get_object_or_404(Region, name=regs)
     jeunes_region = Jeune.objects.filter(eglise__region=region)
+    jeunes_region = filter_by_rbac(request.user, jeunes_region, 'jeune')
     jeunes_region_nombre = jeunes_region.count()
     
     context = {
@@ -138,6 +144,7 @@ def FilteJeunesRegion(request, regs):
 def FilteJeunesGroupe(request, group):
     groupe = get_object_or_404(Groupe, name=group)
     jeunes_groupe = Jeune.objects.filter(eglise__groupe=groupe)
+    jeunes_groupe = filter_by_rbac(request.user, jeunes_groupe, 'jeune')
     jeunes_groupe_nombre = jeunes_groupe.count()
     
     context = {

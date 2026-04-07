@@ -16,7 +16,9 @@
 
   <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+    rel="stylesheet">
 
   <!-- Vendor CSS Files -->
   <link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -31,6 +33,9 @@
   <link href="{% static 'assets/css/style.css' %} " rel="stylesheet">
 
   <link href="{% static 'css/main.css' %} " rel="stylesheet">
+
+  <!-- Tom Select (recherche dans les selects) -->
+  <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -73,7 +78,7 @@
           </a>
         </li><!-- End Search Icon-->
 
-       
+
 
         <li class="nav-item dropdown pe-3">
 
@@ -85,13 +90,13 @@
               {% else %}
               Connexion
               {% endif %}
-              
+
             </span>
           </a><!-- End Profile Iamge Icon -->
 
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             {% if user.is_authenticated %}
-              
+
             <li class="dropdown-header">
               <h6>{{user.last_name}}</h6>
               <span>{{user.first_name}}</span>
@@ -116,17 +121,17 @@
                 <span>Deconnexion</span>
               </a>
             </li>
-          
-          {% else %}
-          <li>
-            <a class="dropdown-item d-flex align-items-center" href="{% url 'login' %}">
-              <i class="bi bi-person"></i>
-              <span>Se Connecter</span>
-            </a>
-          </li>
+
+            {% else %}
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="{% url 'login' %}">
+                <i class="bi bi-person"></i>
+                <span>Se Connecter</span>
+              </a>
+            </li>
             <li>
               <hr class="dropdown-divider">
-            </li>            
+            </li>
 
             <li>
               <a class="dropdown-item d-flex align-items-center" href="{% url 'register' %}">
@@ -137,9 +142,9 @@
             <li>
               <hr class="dropdown-divider">
             </li>
-            
-          {% endif %}
-            
+
+            {% endif %}
+
 
           </ul><!-- End Profile Dropdown Items -->
         </li><!-- End Profile Nav -->
@@ -155,17 +160,16 @@
     <ul class="sidebar-nav" id="sidebar-nav">
 
       {% if user.is_authenticated %}
-            {% if user.id == 1 or user.id == 2 or user.id == 3 %}
-              <li class="nav-item">
-                <a class="nav-link " href="{% url 'dashboard' %}">
-                  <i class="bi bi-grid"></i>
-                  <span>Dashboard</span>
-                </a>
-              </li><!-- End Dashboard Nav -->
-            {% endif %}
-        
-        {% endif %}
-      
+      {% if user.is_superuser or user.profile.niveau_acces in 'ADMIN,COMPTABLE' %}
+      <li class="nav-item">
+        <a class="nav-link " href="{% url 'dashboard' %}">
+          <i class="bi bi-grid"></i>
+          <span>Dashboard</span>
+        </a>
+      </li><!-- End Dashboard Nav -->
+      {% endif %}
+      {% endif %}
+
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
@@ -173,17 +177,15 @@
         </a>
         <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           {% if user.is_authenticated %}
-            {% if user.id == 1 or user.id == 2 or user.id == 3 %}
+          {% if user.is_superuser or user.profile.niveau_acces in 'ADMIN,REGION,GROUPE' %}
+          <li>
+            <a href="{% url 'add_eglise' %}">
+              <i class="bi bi-circle"></i><span>Ajouter</span>
+            </a>
+          </li>
+          {% endif %}
+          {% endif %}
 
-              <li>
-                <a href="{% url 'add_eglise' %}">
-                  <i class="bi bi-circle"></i><span>Ajouter</span>
-                </a>
-              </li>  
-            {% endif %}
-        
-        {% endif %}
-          
           <li>
             <a href="{% url 'eglises' %}">
               <i class="bi bi-circle"></i><span>Liste</span>
@@ -198,17 +200,15 @@
         </a>
         <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           {% if user.is_authenticated %}
-            {% if user.id == 1 or user.id == 2 or user.id == 3 %}
-              <li>
-                <a href="{% url 'add_groupe' %}">
-                  <i class="bi bi-circle"></i><span>Ajouter</span>
-                </a>
-              </li>
-                
-            {% endif %}
-        
-        {% endif %}
-          
+          {% if user.is_superuser or user.profile.niveau_acces in 'ADMIN,REGION' %}
+          <li>
+            <a href="{% url 'add_groupe' %}">
+              <i class="bi bi-circle"></i><span>Ajouter</span>
+            </a>
+          </li>
+          {% endif %}
+          {% endif %}
+
           <li>
             <a href="{% url 'groupe_liste' %}">
               <i class="bi bi-circle"></i><span>Liste</span>
@@ -219,31 +219,28 @@
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-layout-text-window-reverse"></i><span>Personnels</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-layout-text-window-reverse"></i><span>Personnels</span><i
+            class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           {% if user.is_authenticated %}
-            {% if user.id == 1 or user.id == 2 or user.id == 3 %}                
-            
-              <li>
-                <a href="{% url 'add_enfant' %}">
-                  <i class="bi bi-circle"></i><span>Ajouter Enfants</span>
-                </a>
-              </li>
-              <li>
-                <a href="{% url 'add_jeune' %}">
-                  <i class="bi bi-circle"></i><span>Ajouter Jeunes</span>
-                </a>
-              </li>
-              <li>
-                <a href="{% url 'add_adulte' %}">
-                  <i class="bi bi-circle"></i><span>Ajouter Adultes</span>
-                </a>
-              </li>
-              <br>
-            {% endif %}
-        
-        {% endif %}
+          <li>
+            <a href="{% url 'add_enfant' %}">
+              <i class="bi bi-circle"></i><span>Ajouter Enfants</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'add_jeune' %}">
+              <i class="bi bi-circle"></i><span>Ajouter Jeunes</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'add_adulte' %}">
+              <i class="bi bi-circle"></i><span>Ajouter Adultes</span>
+            </a>
+          </li>
+          <br>
+          {% endif %}
           <li>
             <a href="{% url 'enfants' %}">
               <i class="bi bi-circle"></i><span>Liste Enfants</span>
@@ -269,28 +266,24 @@
         </a>
         <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           {% if user.is_authenticated %}
-            {% if user.id == 1 or user.id == 2 or user.id == 3 %}
+          <li>
+            <a href="{% url 'add_cellules' %}">
+              <i class="bi bi-circle"></i><span>Ajouter Cellule</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'add_evenements' %}">
+              <i class="bi bi-circle"></i><span>Ajouter Evenement</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'add_bilan' %}">
+              <i class="bi bi-circle"></i><span>Ajouter Seance</span>
+            </a>
+          </li>
+          <hr>
+          {% endif %}
 
-              <li>
-                <a href="{% url 'add_cellules' %}">
-                  <i class="bi bi-circle"></i><span>Ajouter Cellule</span>
-                </a>
-              </li>
-              <li>
-                <a href="{% url 'add_evenements' %}">
-                  <i class="bi bi-circle"></i><span>Ajouter Evenement</span>
-                </a>
-              </li>
-              <li>
-                <a href="{% url 'add_bilan' %}">
-                  <i class="bi bi-circle"></i><span>Ajouter Seance</span>
-                </a>
-              </li>
-            <hr>   
-            {% endif %}
-        
-        {% endif %}
-          
 
           <li>
             <a href="{% url 'cellules_list' %}">
@@ -304,12 +297,47 @@
           </li>
           <li>
             <a href="{% url 'seances' %}">
-              <i class="bi bi-circle"></i><span>Liste Seances</span>
+              <i class="bi bi-circle"></i><span>Liste Centralisée</span>
             </a>
           </li>
-          
+          {% if user.profile.niveau_acces == 'ADMIN' or user.profile.niveau_acces == 'REGION' or user.profile.niveau_acces == 'GROUPE' or user.profile.niveau_acces == 'COMPTABLE' %}
+          <li>
+            <a href="{% url 'region_totals' %}">
+              <i class="bi bi-circle"></i><span>Totaux par Région</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'group_totals' %}">
+              <i class="bi bi-circle"></i><span>Totaux par Groupe</span>
+            </a>
+          </li>
+          {% endif %}
         </ul>
-      </li> <br>
+      </li>
+
+      <!-- Finances (superadmin, ADMIN, COMPTABLE uniquement) -->
+      {% if user.is_authenticated %}
+      {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' or user.profile.niveau_acces == 'COMPTABLE' %}
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#finances-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-cash-stack"></i><span>Finances</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="finances-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="{% url 'transaction_list' %}">
+              <i class="bi bi-circle"></i><span>Liste Transactions</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'transaction_create' %}">
+              <i class="bi bi-circle"></i><span>Nouvelle Transaction</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      {% endif %}
+      {% endif %}
+      <br>
 
       <!-- Lumiere à la cite  -->
       <li class="nav-item">
@@ -318,27 +346,26 @@
         </a>
         <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           {% if user.is_authenticated %}
-            {% if user.id == 1 or user.id == 2 or user.id == 3 %}
-              <li>
-                <a href="{% url 'add_lumieres' %}">
-                  <i class="bi bi-circle"></i><span>Ajouter Lumiere à la cité</span>
-                </a>
-              </li>
-              <li>
-                <a href="{% url 'add_participants' %}">
-                  <i class="bi bi-circle"></i><span>Ajouter Participants</span>
-                </a>
-              </li>
-              <li>
-                <a href="{% url 'add_etablissement' %}">
-                  <i class="bi bi-circle"></i><span>Ajouter Etablissement</span>
-                </a>
-              </li> <hr>
-                
-            {% endif %}
-        
+          {% if user.is_superuser or user.profile.niveau_acces in 'ADMIN,REGION' %}
+          <li>
+            <a href="{% url 'add_lumieres' %}">
+              <i class="bi bi-circle"></i><span>Ajouter Lumiere à la cité</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'add_participants' %}">
+              <i class="bi bi-circle"></i><span>Ajouter Participants</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'add_etablissement' %}">
+              <i class="bi bi-circle"></i><span>Ajouter Etablissement</span>
+            </a>
+          </li>
+          <hr>
           {% endif %}
-          
+          {% endif %}
+
           <li>
             <a href="{% url 'lumieres_list' %}">
               <i class="bi bi-circle"></i><span>Liste Lumiere à la cité</span>
@@ -356,8 +383,8 @@
           </li>
         </ul>
       </li><!-- End Lumiere à la cite -->
-      
-      
+
+
 
       <!-- Les Particularités -->
 
@@ -378,40 +405,34 @@
           </li>
           <br>
           {% if user.is_authenticated %}
-          {% if user.id == 1 or user.id == 2 or user.id == 3 %}
-
-            <li>
-              <a href="{% url 'projects_list' %}">
-                <i class="bi bi-circle"></i><span>Liste Projet</span>
-              </a>
-            </li>
-            <li>
-              <a href="{% url 'difficultes_list' %}">
-                <i class="bi bi-circle"></i><span>Liste Difficulté</span>
-              </a>
-            </li> 
+          <li>
+            <a href="{% url 'projects_list' %}">
+              <i class="bi bi-circle"></i><span>Liste Projet</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'difficultes_list' %}">
+              <i class="bi bi-circle"></i><span>Liste Difficulté</span>
+            </a>
+          </li>
           {% endif %}
-      
-      {% endif %}
-          
+
         </ul>
       </li><!-- End Icons Nav -->
       <hr>
       <br>
       <li class="nav-heading">Annonce</li>
       {% if user.is_authenticated %}
-            {% if user.id == 1 or user.id == 2 or user.id == 3 %}
-              <li class="nav-item">
-                <a class="nav-link collapsed" href="{% url 'add_annonces' %}">
-                  <i class="bi bi-question-circle"></i>
-                  <span>Ajouter</span>
-                </a>
-              </li><!-- End F.A.Q Page Nav -->
-                
-            {% endif %}
-        
-        {% endif %}
-      
+      {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' %}
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'add_annonces' %}">
+          <i class="bi bi-question-circle"></i>
+          <span>Ajouter</span>
+        </a>
+      </li><!-- End F.A.Q Page Nav -->
+      {% endif %}
+      {% endif %}
+
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="{% url 'annonces_list' %}">
@@ -420,23 +441,64 @@
         </a>
       </li><!-- End Profile Page Nav -->
 
+      <!-- ======= GCK ======= -->
+      {% if user.is_authenticated %}
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#gck-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-globe2"></i><span>GCK</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="gck-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="{% url 'add_gck' %}">
+              <i class="bi bi-circle"></i><span>Ajouter un bilan</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'gck_list' %}">
+              <i class="bi bi-circle"></i><span>Liste des bilans</span>
+            </a>
+          </li>
+          {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' or user.profile.niveau_acces == 'COMPTABLE' %}
+          <li>
+            <a href="{% url 'gck_national' %}">
+              <i class="bi bi-circle"></i><span>Rapport National</span>
+            </a>
+          </li>
+          {% endif %}
+        </ul>
+      </li>
+      {% endif %}
+      <hr>
+
+      <!-- ******** Gestion des utilisateurs (superadmin uniquement) ******** -->
+      {% if user.is_authenticated and user.is_superuser %}
+      <hr>
+      <li class="nav-heading">Administration</li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'user_list' %}">
+          <i class="bi bi-people"></i>
+          <span>Gestion des comptes</span>
+        </a>
+      </li>
+      {% endif %}
+
       <!-- ******** message ******** -->
       <li class="nav-heading">Messages</li>
       {% if user.is_authenticated %}
-            {% if user.id == 1 or user.id == 2 or user.id == 3 %}
-              <li class="nav-item">
-                <a class="nav-link collapsed" href="{% url 'add_message' %}">
-                  <i class="bi bi-question-circle"></i>
-                  <span>Ajouter</span>
-                </a>
-              </li><!-- End F.A.Q Page Nav -->
+      {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' %}
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'add_message' %}">
+          <i class="bi bi-question-circle"></i>
+          <span>Ajouter</span>
+        </a>
+      </li><!-- End F.A.Q Page Nav -->
 
-              
-                
-            {% endif %}
-        
-        {% endif %}
-      
+
+
+      {% endif %}
+
+      {% endif %}
+
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="{% url 'messages' %}">
@@ -457,8 +519,8 @@
 
     <section class="section dashboard">
       {% block gestion %}
-        
-        {% endblock %}
+
+      {% endblock %}
     </section>
 
   </main><!-- End #main -->
@@ -477,7 +539,8 @@
     </div>
   </footer><!-- End Footer -->
 
-  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+      class="bi bi-arrow-up-short"></i></a>
 
   <!-- Vendor JS Files -->
   <script src="{% static 'assets/vendor/apexcharts/apexcharts.min.js' %}"></script>
@@ -491,6 +554,20 @@
 
   <!-- Template Main JS File -->
   <script src="{% static 'assets/js/main.js' %}"></script>
+
+  <!-- Tom Select -->
+  <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('.select-search').forEach(function (el) {
+        new TomSelect(el, {
+          create: false,
+          sortField: { field: 'text', direction: 'asc' },
+          placeholder: 'Rechercher...',
+        });
+      });
+    });
+  </script>
 
 </body>
 

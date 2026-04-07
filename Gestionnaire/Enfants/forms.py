@@ -21,7 +21,7 @@ class EnfantForm(forms.ModelForm):
         widgets = {
             'nom': forms.TextInput(attrs={'class': 'form-control'}),
             'prenom' : forms.TextInput(attrs={'class': 'form-control'}),
-            'eglise' : forms.Select(attrs={'class': 'form-control'}),            
+            'eglise' : forms.Select(attrs={'class': 'form-control select-search'}),            
             'date_de_naissance' : forms.DateInput(attrs={'class': 'form-control'}),
             'lieu_de_naissance' : forms.TextInput(attrs={'class': 'form-control'}),
             'classe' : forms.TextInput(attrs={'class': 'form-control'}),

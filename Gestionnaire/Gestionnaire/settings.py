@@ -53,6 +53,9 @@ INSTALLED_APPS = [
     'Membres.apps.MembresConfig',
     
     'Seances.apps.SeancesConfig',
+    'Finances.apps.FinancesConfig',
+    'GCK.apps.GckConfig',
+    'simple_history',
 ]
 
 MIDDLEWARE = [
@@ -63,6 +66,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
 ROOT_URLCONF = 'Gestionnaire.urls'

@@ -3,7 +3,8 @@ from django.views.generic import CreateView, UpdateView, DeleteView, ListView, D
 from .models import Adulte
 from django.urls import reverse_lazy
 from .forms import AdulteForm
-from Eglises.models import Eglise, Region, Groupe 
+from Eglises.models import Eglise, Region, Groupe
+from Membres.utils import filter_by_rbac
 
 from .resources import AdulteResources
 from django.http import HttpResponse
@@ -26,10 +27,13 @@ class AdulteList(ListView):
     model = Adulte 
     template_name = 'Adultes/adulte_liste.html'
     
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return filter_by_rbac(self.request.user, qs, 'adulte')
+        
     def get_context_data(self, *args, **kwargs):
-        adultes = Adulte.objects.all().count()
         context = super(AdulteList, self).get_context_data(*args, **kwargs)
-        context["adultes"] = adultes
+        context["adultes"] = self.get_queryset().count()
         return context
 
 class AdulteDetails(DetailView):
@@ -51,6 +55,7 @@ class DeleteAdulte(DeleteView):
 def FilteAdultesDistrict(request, dist):
     eglise = get_object_or_404(Eglise, pk=dist)
     adultes_district = Adulte.objects.filter(eglise=dist)
+    adultes_district = filter_by_rbac(request.user, adultes_district, 'adulte')
     adultes_district_nombre = adultes_district.count()
     
     resource = AdulteResources()
@@ -116,6 +121,7 @@ def FilteAdultesDistrict(request, dist):
 def FilteAdultesRegion(request, regs):
     region = get_object_or_404(Region, name=regs)
     adultes_region = Adulte.objects.filter(eglise__region=region)
+    adultes_region = filter_by_rbac(request.user, adultes_region, 'adulte')
     adultes_region_nombre = adultes_region.count()
     
     context = {
@@ -130,6 +136,7 @@ def FilteAdultesRegion(request, regs):
 def FilteAdultesGroupe(request, group):
     groupe = get_object_or_404(Groupe, name=group)
     adultes_groupe = Adulte.objects.filter(eglise__groupe=groupe)
+    adultes_groupe = filter_by_rbac(request.user, adultes_groupe, 'adulte')
     adultes_groupe_nombre = adultes_groupe.count()
     
     context = {

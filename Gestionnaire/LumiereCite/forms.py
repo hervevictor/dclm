@@ -22,8 +22,8 @@ class EtablissementForm(forms.ModelForm):
         
         widgets = {
             'name' : forms.TextInput(attrs={'class':'form-control'}),
-            'groupe_titulaire' : forms.Select(choices=groupe_choix, attrs={'class':'form-control'}),
-            'region' : forms.Select(choices=reg_choix, attrs={'class':'form-control'}),
+            'groupe_titulaire' : forms.Select(choices=groupe_choix, attrs={'class':'form-control select-search'}),
+            'region' : forms.Select(choices=reg_choix, attrs={'class':'form-control select-search'}),
             'description' : forms.Textarea(attrs={'class':'form-control'}),
             'auteur' : forms.TextInput(attrs={'class': 'form-control', 'placeholder':'username', 'id':'ets_user', 'value':'', 'type':'hidden'}),
         }

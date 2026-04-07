@@ -1,12 +1,14 @@
 {% extends 'base.html' %}
+{% load region_labels %}
 {% block gestion %} <br>
+    {% labels_for eglise.region as lbl %}
     <h1>Details de : {{eglise}} </h1>
-    <br> 
+    <br>
     <hr>
     <p><small> <strong>{{eglise.publish}}</strong> | <strong>{{eglise.auteur}}</strong></small></p>
 <br>
     <div class="container">
-        <p>Groupe : <strong><a href="{% url 'eglises_groupe' eglise.groupe %}">{{eglise.groupe}}</a> </strong> </p>
+        <p>{{ lbl.intermediaire }} : <strong><a href="{% url 'eglises_groupe' eglise.groupe %}">{{eglise.groupe}}</a> </strong> </p>
         <p>Region : <strong><a href="{% url 'eglises_region' eglise.region %}">{{eglise.region}}</a></strong> </p>
         <p>Ville : <strong>{{eglise.ville}}</strong> </p>
 
@@ -21,7 +23,7 @@
         <p>Téléphone : <strong>{{eglise.telephone}}</strong> </p>
         <p>BP : <strong>{{eglise.bp}}</strong> </p>
         <p>Email : <strong>{{eglise.email}}</strong> </p>
-        
+
         <p>Description : <strong>{{eglise.description}}</strong> </p>
 
         <div class="row">
@@ -37,13 +39,14 @@
             </div>
         </div>
         <br><br><br>
-        {% if user.is_authenticated %}
-            {% if user.id == 1 or user.id == 2 or user.id == 3 or user.id == eglise.auteur.id %}
-                <a href="{% url 'edit_eglise' eglise.pk %}" class="btn btn-success">Modifier</a>
-                <a href="{% url 'delete_eglise' eglise.pk %}" class="btn btn-danger">Supprimer</a>
-            {% endif %}
+
+        {% if peut_modifier %}
+            <a href="{% url 'edit_eglise' eglise.pk %}" class="btn btn-success">Modifier</a>
         {% endif %}
-        
+        {% if peut_supprimer %}
+            <a href="{% url 'delete_eglise' eglise.pk %}" class="btn btn-danger">Supprimer</a>
+        {% endif %}
+
     </div>
 
     <br><br>

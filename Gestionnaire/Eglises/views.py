@@ -3,6 +3,7 @@ from django.views.generic import CreateView, UpdateView, DeleteView, ListView, D
 from .models import Eglise, Groupe, Region
 from .forms import EgliseForm, GroupeForm
 from django.urls import reverse_lazy
+from django.contrib.auth.decorators import login_required
 
 from Adultes.resources import EgliseResources
 from django.http import HttpResponse
@@ -14,15 +15,17 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 from reportlab.lib import colors
 
 from Jeunes_app.models import Jeune
-from Adultes.models import Adulte 
+from Adultes.models import Adulte
 from Enfants.models import Enfant
 
 from Annonces.models import Message, Annonce
 from datetime import timedelta
 from django.utils import timezone
+from Membres.utils import filter_by_rbac, RBACMixin, AdminOnlyMixin
 
 
 
+@login_required(login_url='/membres/login/')
 def index(request):
     # Calculer la date limite du message
     date_limit = timezone.now().date() - timedelta(days=6)
@@ -53,13 +56,15 @@ def index(request):
     return render(request, 'index.html', {'message':message, 'annonce':annonce})
 
 
+@login_required(login_url='/membres/login/')
 def dashboard(request):
-    eglises = Eglise.objects.all().count()
-    groupes = Groupe.objects.all().count()
-    regions = Region.objects.all().count()
-    adultes = Adulte.objects.all().count()
-    jeunes = Jeune.objects.all().count()
-    enfants = Enfant.objects.all().count()
+    user = request.user
+    eglises = filter_by_rbac(user, Eglise.objects.all(), 'eglise').count()
+    groupes = filter_by_rbac(user, Groupe.objects.all(), 'groupe').count()
+    regions = filter_by_rbac(user, Region.objects.all(), 'region').count()
+    adultes = filter_by_rbac(user, Adulte.objects.all(), 'adulte').count()
+    jeunes = filter_by_rbac(user, Jeune.objects.all(), 'jeune').count()
+    enfants = filter_by_rbac(user, Enfant.objects.all(), 'enfant').count()
     
     context = {
         'eglises':eglises,
@@ -73,35 +78,79 @@ def dashboard(request):
 
 
 
-class AddEglise(CreateView):
-    model = Eglise 
-    #fields = '__all__'
+class AddEglise(RBACMixin, CreateView):
+    model = Eglise
     form_class = EgliseForm
     template_name = 'Eglises/add_eglise.html'
 
 
 class EgliseList(ListView):
-    model = Eglise 
+    model = Eglise
     template_name = 'Eglises/eglise_liste.html'
-    
+
+    def get_queryset(self):
+        # Accessible à tous (connecté ou non) — affiche toutes les églises
+        return Eglise.objects.all()
+
     def get_context_data(self, *args, **kwargs):
-        eglises_nombre = Eglise.objects.all().count()
         context = super(EgliseList, self).get_context_data(*args, **kwargs)
-        context["eglises_nombre"] = eglises_nombre
+        context["eglises_nombre"] = self.get_queryset().count()
         return context
-    
+
+
 class EgliseDetails(DetailView):
-    model = Eglise 
+    model = Eglise
     template_name = 'Eglises/eglise_details.html'
- 
-class EditEglise(UpdateView):
-    model = Eglise 
-    #fields = '__all__'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['peut_modifier'] = can_edit_eglise(self.request.user, self.object)
+        context['peut_supprimer'] = (
+            self.request.user.is_authenticated and (
+                self.request.user.is_superuser or (
+                    hasattr(self.request.user, 'profile') and
+                    self.request.user.profile.niveau_acces == 'ADMIN'
+                )
+            )
+        )
+        return context
+
+
+def can_edit_eglise(user, eglise):
+    """Retourne True si l'utilisateur a le droit de modifier cette église."""
+    if not user.is_authenticated:
+        return False
+    if user.is_superuser:
+        return True
+    if not hasattr(user, 'profile'):
+        return False
+    profil = user.profile
+    if profil.niveau_acces in ['ADMIN', 'COMPTABLE']:
+        return True
+    if profil.niveau_acces == 'REGION' and profil.region_assignee:
+        return eglise.region.strip().lower() == profil.region_assignee.strip().lower()
+    if profil.niveau_acces == 'GROUPE' and profil.groupe_assigne:
+        return eglise.groupe.strip().lower() == profil.groupe_assigne.strip().lower()
+    if profil.niveau_acces == 'DISTRICT' and profil.district_assigne:
+        return eglise.nom.strip().lower() == profil.district_assigne.strip().lower()
+    return False
+
+
+class EditEglise(RBACMixin, UpdateView):
+    model = Eglise
     form_class = EgliseForm
-    template_name = 'Eglises/edit_Eglise.html'   
-    
-class DeleteEglise(DeleteView):
-    model = Eglise 
+    template_name = 'Eglises/edit_Eglise.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        eglise = self.get_object()
+        if not can_edit_eglise(request.user, eglise):
+            from django.core.exceptions import PermissionDenied
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+
+
+class DeleteEglise(AdminOnlyMixin, DeleteView):
+    model = Eglise
     template_name = 'Eglises/delete_Eglise.html'
     success_url = reverse_lazy('eglises')
 
@@ -191,26 +240,13 @@ def EgliseRegion(request, regs):
 
 ''' Groupes '''
 
-def AddGroupe(request):
-    form = GroupeForm()
-    if request.method == 'POST':
-        form = GroupeForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('groupe_liste')
-        
-    context = {
-        'form' : form
-    }
-    return render(request, 'Groupes/add_groupe.html', context)
-
-class AddGroupe(CreateView):
-    model = Groupe 
-    #fields = '__all__'
+class AddGroupe(RBACMixin, CreateView):
+    model = Groupe
     form_class = GroupeForm
     template_name = 'Groupes/add_groupe.html'
-    
 
+
+@login_required(login_url='/membres/login/')
 def Groupes(request):
     groupes = Groupe.objects.all()
     groupes_nombre = groupes.count()
@@ -221,6 +257,7 @@ def Groupes(request):
     }
     return render(request, 'Groupes/groupe_liste.html', context)
 
+@login_required(login_url='/membres/login/')
 def groupeDetails(request, id):
     #groupe = Groupe.objects.filter(pk=id)
     groupe = get_object_or_404(Groupe, pk=id)
@@ -229,6 +266,7 @@ def groupeDetails(request, id):
     }
     return render(request, 'Groupes/groupe_details.html', context)
 
+@login_required(login_url='/membres/login/')
 def EditGroupe(request, pk):
     groupe = Groupe.objects.get(id=pk)
     form = GroupeForm(instance=groupe)
@@ -244,6 +282,7 @@ def EditGroupe(request, pk):
     }
     return render(request, 'Groupes/edit_groupe.html', context)
 
+@login_required(login_url='/membres/login/')
 def DeleteGroupe(request, pk):
     groupe = Groupe.objects.get(id=pk)
     if request.method == 'POST':
@@ -256,6 +295,7 @@ def DeleteGroupe(request, pk):
     return render(request, 'Groupes/delete_groupe.html', context)
 
  
+@login_required(login_url='/membres/login/')
 def FiltreGroupeRegion(request, regs):
     groupe_region = Groupe.objects.filter(region=regs)
     groupe_region_count = groupe_region.count()

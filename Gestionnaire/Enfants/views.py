@@ -4,6 +4,7 @@ from .models import Enfant
 from django.urls import reverse_lazy
 from .forms import  EnfantForm
 from Eglises.models import Eglise, Region, Groupe 
+from Membres.utils import filter_by_rbac
 
 
 from Adultes.resources import EnfantResources
@@ -30,10 +31,13 @@ class EnfantList(ListView):
     model = Enfant 
     template_name = 'Enfants/enfant_liste.html'
     
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return filter_by_rbac(self.request.user, qs, 'enfant')
+        
     def get_context_data(self, *args, **kwargs):
-        enfants = Enfant.objects.all().count()
         context = super(EnfantList, self).get_context_data(*args, **kwargs)
-        context["enfants"] = enfants
+        context["enfants"] = self.get_queryset().count()
         return context
 
 
@@ -59,6 +63,7 @@ class DeleteEnfant(DeleteView):
 def FilteEnfantsDistrict(request, dist):
     eglise = get_object_or_404(Eglise, pk=dist)
     enfants_district = Enfant.objects.filter(eglise=dist)
+    enfants_district = filter_by_rbac(request.user, enfants_district, 'enfant')
     enfants_district_nombre = enfants_district.count()
     
     
@@ -126,6 +131,7 @@ def FilteEnfantsDistrict(request, dist):
 def FilteEnfantsRegion(request, regs):
     region = get_object_or_404(Region, name=regs)
     enfants_region = Enfant.objects.filter(eglise__region=region)
+    enfants_region = filter_by_rbac(request.user, enfants_region, 'enfant')
     enfants_region_nombre = enfants_region.count()
     
     context = {
@@ -140,6 +146,7 @@ def FilteEnfantsRegion(request, regs):
 def FilteEnfantsGroupe(request, group):
     groupe = get_object_or_404(Groupe, name=group)
     enfants_groupe = Enfant.objects.filter(eglise__groupe=groupe)
+    enfants_groupe = filter_by_rbac(request.user, enfants_groupe, 'enfant')
     enfants_groupe_nombre = enfants_groupe.count()
     
     context = {

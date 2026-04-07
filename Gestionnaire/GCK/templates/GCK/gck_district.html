@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load region_labels %}
+{% block gestion %}
+{% labels_for eglise.region as lbl %}
+<div class="pagetitle">
+  <h1>GCK — {{ lbl.local }} : {{ eglise.nom }}</h1>
+  <nav><ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'gck_list' %}">GCK</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'gck_groupe' eglise.groupe %}">{{ lbl.intermediaire }} {{ eglise.groupe }}</a></li>
+    <li class="breadcrumb-item active">{{ eglise.nom }}</li>
+  </ol></nav>
+</div>
+
+{% include 'GCK/_totaux_cards.html' %}
+
+<div class="card shadow-sm mb-3">
+  <div class="card-body">
+    <form method="get" class="row g-2">
+      <div class="col-md-4">
+        <input type="date" name="start_date" class="form-control form-control-sm" value="{{ start_date }}" placeholder="Du">
+      </div>
+      <div class="col-md-4">
+        <input type="date" name="end_date" class="form-control form-control-sm" value="{{ end_date }}" placeholder="Au">
+      </div>
+      <div class="col-md-4 d-flex gap-1">
+        <button type="submit" class="btn btn-primary btn-sm w-100">Filtrer</button>
+        <a href="{% url 'gck_district' eglise.pk %}" class="btn btn-outline-secondary btn-sm">&#x21BA;</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>Date</th>
+            <th class="text-center">Hommes</th>
+            <th class="text-center">Femmes</th>
+            <th class="text-center">Enfants</th>
+            <th class="text-center">Total</th>
+            <th class="text-center text-success">Convertis</th>
+            <th>Suggestions</th>
+            <th>Difficultés</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for bilan in bilans %}
+          <tr>
+            <td>{{ bilan.date|date:"d/m/Y" }}</td>
+            <td class="text-center">{{ bilan.hommes }}</td>
+            <td class="text-center">{{ bilan.femmes }}</td>
+            <td class="text-center">{{ bilan.enfants }}</td>
+            <td class="text-center fw-bold">{{ bilan.total_participants }}</td>
+            <td class="text-center text-success fw-bold">{{ bilan.nouveaux_convertis }}</td>
+            <td>{{ bilan.suggestions|truncatechars:40|default:"—" }}</td>
+            <td>{{ bilan.difficultes|truncatechars:40|default:"—" }}</td>
+            <td>
+              <a href="{% url 'gck_detail' bilan.pk %}" class="btn btn-sm btn-outline-info">
+                <i class="bi bi-eye"></i>
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="9" class="text-center text-muted py-4">Aucun bilan pour ce district.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

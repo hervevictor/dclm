@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
-from Eglises.models import Eglise, Groupe, Region 
+from Eglises.models import Eglise, Groupe, Region
 from django.urls import reverse
+from simple_history.models import HistoricalRecords
 
 
 class Seance(models.Model):
@@ -23,15 +24,17 @@ class Bilan(models.Model):
     date = models.DateField() 
     add_date = models.DateField(auto_now_add=True)
     auteur = models.ForeignKey(User, on_delete=models.CASCADE)
+    history = HistoricalRecords()
 
     def __str__(self):
-        return f"{self.eglise.name} - {self.seance.type} - {self.seance.date}"
+        return f"{self.eglise.nom} - {self.seance.type} - {self.date}"
     
     def get_absolute_url(self):
         return reverse("seance_details", args={str(self.pk)}) 
     
     class Meta:
-        ordering = ['-add_date'] 
+        ordering = ['-add_date']
+        unique_together = ('eglise', 'seance', 'date')
     
     @property
     def total_hommes(self):

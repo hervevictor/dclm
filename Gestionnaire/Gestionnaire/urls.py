@@ -32,6 +32,8 @@ urlpatterns = [
     path('membres/', include('django.contrib.auth.urls')),
     path('membres/', include('Membres.urls')),
     path('seances/', include('Seances.urls')),
+    path('finances/', include('Finances.urls')),
+    path('gck/', include('GCK.urls')),
     
     
     

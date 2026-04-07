@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load region_labels %}
+{% block gestion %}
+{% labels_for bilan.eglise.region as lbl %}
+<div class="pagetitle">
+  <h1>Bilan GCK — {{ bilan.eglise.nom }}</h1>
+  <nav><ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'gck_list' %}">GCK</a></li>
+    <li class="breadcrumb-item active">Détail</li>
+  </ol></nav>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-journal-text"></i> {{ bilan }}</span>
+        <small>Par {{ bilan.auteur }}</small>
+      </div>
+      <div class="card-body pt-4">
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <p><strong>Église :</strong> <a href="{% url 'eglise_details' bilan.eglise.pk %}">{{ bilan.eglise.nom }}</a></p>
+            <p><strong>{{ lbl.intermediaire }} :</strong> <a href="{% url 'gck_groupe' bilan.eglise.groupe %}">{{ bilan.eglise.groupe }}</a></p>
+            <p><strong>Région :</strong> <a href="{% url 'gck_region' bilan.eglise.region %}">{{ bilan.eglise.region }}</a></p>
+          </div>
+          <div class="col-md-6">
+            <p><strong>Date :</strong> {{ bilan.date|date:"d/m/Y" }}</p>
+            <p><strong>Enregistré le :</strong> {{ bilan.created|date:"d/m/Y H:i" }}</p>
+          </div>
+        </div>
+
+        <hr>
+        <h6 class="text-muted mb-3">Participation</h6>
+        <div class="row text-center">
+          <div class="col-3">
+            <div class="card border-primary">
+              <div class="card-body py-3">
+                <div class="small text-muted">Hommes</div>
+                <h3 class="text-primary mb-0">{{ bilan.hommes }}</h3>
+              </div>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="card border-info">
+              <div class="card-body py-3">
+                <div class="small text-muted">Femmes</div>
+                <h3 class="text-info mb-0">{{ bilan.femmes }}</h3>
+              </div>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="card border-warning">
+              <div class="card-body py-3">
+                <div class="small text-muted">Enfants</div>
+                <h3 class="text-warning mb-0">{{ bilan.enfants }}</h3>
+              </div>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="card border-success">
+              <div class="card-body py-3">
+                <div class="small text-muted">Convertis</div>
+                <h3 class="text-success mb-0">{{ bilan.nouveaux_convertis }}</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="alert alert-secondary mt-3 text-center">
+          <strong>Total participants :</strong> {{ bilan.total_participants }}
+        </div>
+
+        {% if bilan.suggestions %}
+        <hr>
+        <h6 class="text-muted">Suggestions</h6>
+        <p>{{ bilan.suggestions|linebreaks }}</p>
+        {% endif %}
+
+        {% if bilan.difficultes %}
+        <hr>
+        <h6 class="text-muted">Difficultés rencontrées</h6>
+        <p>{{ bilan.difficultes|linebreaks }}</p>
+        {% endif %}
+
+        <hr>
+        <div class="d-flex gap-2 mt-3">
+          {% if peut_modifier %}
+          <a href="{% url 'edit_gck' bilan.pk %}" class="btn btn-success">
+            <i class="bi bi-pencil"></i> Modifier
+          </a>
+          {% endif %}
+          {% if peut_supprimer %}
+          <a href="{% url 'delete_gck' bilan.pk %}" class="btn btn-danger">
+            <i class="bi bi-trash"></i> Supprimer
+          </a>
+          {% endif %}
+          <a href="{% url 'gck_list' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Retour
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

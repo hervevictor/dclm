@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+{% load region_labels %}
+{% block gestion %}
+<div class="pagetitle">
+  <h1>Croisade Mondiale avec Kumuyi (GCK)</h1>
+</div>
+
+<!-- Statistiques globales -->
+<div class="row mb-4">
+  <div class="col-md-2">
+    <div class="card border-dark border-2 text-center shadow-sm">
+      <div class="card-body py-3">
+        <div class="text-muted small">Bilans</div>
+        <h4 class="mb-0 fw-bold">{{ bilan_count }}</h4>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="card border-primary border-2 text-center shadow-sm">
+      <div class="card-body py-3">
+        <div class="text-muted small">Hommes</div>
+        <h4 class="mb-0 text-primary">{{ total_hommes }}</h4>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="card border-info border-2 text-center shadow-sm">
+      <div class="card-body py-3">
+        <div class="text-muted small">Femmes</div>
+        <h4 class="mb-0 text-info">{{ total_femmes }}</h4>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="card border-warning border-2 text-center shadow-sm">
+      <div class="card-body py-3">
+        <div class="text-muted small">Enfants</div>
+        <h4 class="mb-0 text-warning">{{ total_enfants }}</h4>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="card border-secondary border-2 text-center shadow-sm">
+      <div class="card-body py-3">
+        <div class="text-muted small">Total</div>
+        <h4 class="mb-0">{{ total_participants }}</h4>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <a href="?convertis={% if avec_convertis == '1' %}0{% else %}1{% endif %}&region={{ selected_region }}&groupe={{ selected_groupe }}&district={{ selected_district }}&start_date={{ start_date }}&end_date={{ end_date }}"
+       class="text-decoration-none">
+      <div class="card border-success border-2 text-center shadow-sm {% if avec_convertis == '1' %}bg-success text-white{% endif %}"
+           style="cursor:pointer;" title="{% if avec_convertis == '1' %}Voir tous les bilans{% else %}Filtrer : avec nouveaux convertis uniquement{% endif %}">
+        <div class="card-body py-3">
+          <div class="{% if avec_convertis == '1' %}text-white{% else %}text-muted{% endif %} small">
+            Convertis {% if avec_convertis == '1' %}<i class="bi bi-funnel-fill"></i>{% endif %}
+          </div>
+          <h4 class="mb-0 {% if avec_convertis == '1' %}text-white{% else %}text-success{% endif %}">{{ total_convertis }}</h4>
+          <div class="small {% if avec_convertis == '1' %}text-white opacity-75{% else %}text-muted{% endif %}">
+            {% if avec_convertis == '1' %}Cliquer pour annuler{% else %}Cliquer pour filtrer{% endif %}
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- Filtres + bouton ajouter -->
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h6 class="mb-0 fw-semibold">Filtres</h6>
+      <a href="{% url 'add_gck' %}" class="btn btn-dark btn-sm">
+        <i class="bi bi-plus-circle"></i> Ajouter un bilan
+      </a>
+    </div>
+    <form method="get" class="row g-2">
+      <div class="col-md-2">
+        <label class="form-label small mb-1">Région</label>
+        <select name="region" class="form-select form-select-sm select-search">
+          <option value="">— Toutes —</option>
+          {% for r in all_regions %}
+          <option value="{{ r.name }}" {% if selected_region == r.name %}selected{% endif %}>{{ r.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label small mb-1">Groupe</label>
+        <select name="groupe" class="form-select form-select-sm select-search">
+          <option value="">— Tous —</option>
+          {% for g in all_groupes %}
+          <option value="{{ g.name }}" {% if selected_groupe == g.name %}selected{% endif %}>{{ g.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small mb-1">District (Église)</label>
+        <select name="district" class="form-select form-select-sm select-search">
+          <option value="">— Tous —</option>
+          {% for e in all_eglises %}
+          <option value="{{ e.nom }}" {% if selected_district == e.nom %}selected{% endif %}>{{ e.nom }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label small mb-1">Du</label>
+        <input type="date" name="start_date" class="form-control form-control-sm" value="{{ start_date }}">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label small mb-1">Au</label>
+        <input type="date" name="end_date" class="form-control form-control-sm" value="{{ end_date }}">
+      </div>
+      <input type="hidden" name="convertis" value="{{ avec_convertis }}">
+      <div class="col-md-1 d-flex align-items-end gap-1">
+        <button type="submit" class="btn btn-primary btn-sm w-100">
+          <i class="bi bi-funnel"></i>
+        </button>
+        <a href="{% url 'gck_list' %}" class="btn btn-outline-secondary btn-sm" title="Réinitialiser">&#x21BA;</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Export -->
+<form method="post" class="mb-3">
+  {% csrf_token %}
+  <!-- Transmettre les filtres actifs -->
+  <input type="hidden" name="region" value="{{ selected_region }}">
+  <input type="hidden" name="groupe" value="{{ selected_groupe }}">
+  <input type="hidden" name="district" value="{{ selected_district }}">
+  <input type="hidden" name="start_date" value="{{ start_date }}">
+  <input type="hidden" name="end_date" value="{{ end_date }}">
+  <input type="hidden" name="convertis" value="{{ avec_convertis }}">
+  <div class="input-group input-group-sm w-auto">
+    <label class="input-group-text"><i class="bi bi-download"></i> Exporter</label>
+    <select name="file-format" class="form-select border-dark" style="max-width:160px;">
+      <option value="PDF">PDF</option>
+      <option value="XLS">Excel (XLS)</option>
+    </select>
+    <button type="submit" class="btn btn-outline-dark">Télécharger</button>
+  </div>
+  {% if avec_convertis == '1' %}
+  <small class="text-muted ms-2"><i class="bi bi-funnel-fill text-success"></i> Filtre actif : avec convertis uniquement</small>
+  {% endif %}
+</form>
+
+<!-- Liens rapports hiérarchiques -->
+{% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' or user.profile.niveau_acces == 'COMPTABLE' %}
+<div class="mb-3">
+  <a href="{% url 'gck_national' %}" class="btn btn-outline-dark btn-sm">
+    <i class="bi bi-globe"></i> Rapport National
+  </a>
+</div>
+{% endif %}
+
+<!-- Tableau -->
+<div class="card shadow-sm">
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>Date</th>
+            <th>Église (District)</th>
+            <th>Groupe</th>
+            <th>Région</th>
+            <th class="text-center">Hommes</th>
+            <th class="text-center">Femmes</th>
+            <th class="text-center">Enfants</th>
+            <th class="text-center">Total</th>
+            <th class="text-center text-success">Convertis</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for bilan in bilans %}
+          {% labels_for bilan.eglise.region as lbl %}
+          <tr>
+            <td>{{ bilan.date|date:"d/m/Y" }}</td>
+            <td>
+              <a href="{% url 'gck_district' bilan.eglise.pk %}">{{ bilan.eglise.nom }}</a>
+            </td>
+            <td>
+              <small class="text-muted">{{ lbl.intermediaire }}</small><br>
+              <a href="{% url 'gck_groupe' bilan.eglise.groupe %}">{{ bilan.eglise.groupe }}</a>
+            </td>
+            <td><a href="{% url 'gck_region' bilan.eglise.region %}">{{ bilan.eglise.region }}</a></td>
+            <td class="text-center">{{ bilan.hommes }}</td>
+            <td class="text-center">{{ bilan.femmes }}</td>
+            <td class="text-center">{{ bilan.enfants }}</td>
+            <td class="text-center fw-bold">{{ bilan.total_participants }}</td>
+            <td class="text-center text-success fw-bold">{{ bilan.nouveaux_convertis }}</td>
+            <td>
+              <a href="{% url 'gck_detail' bilan.pk %}" class="btn btn-sm btn-outline-info">
+                <i class="bi bi-eye"></i>
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="10" class="text-center text-muted py-4">Aucun bilan GCK trouvé.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
