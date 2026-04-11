@@ -118,7 +118,19 @@
     <div class="mt-2 text-muted small">Chargement des données…</div>
   </div>
 
-  <!-- ── Histogrammes ─────────────────────────────────────────────────────── -->
+  <!-- ── Toggle Histogramme / Donut ──────────────────────────────────────── -->
+  <div class="d-flex justify-content-end mb-3">
+    <div class="btn-group btn-group-sm" role="group">
+      <button type="button" class="btn btn-primary active" id="btn-bar" onclick="setChartType('bar')">
+        <i class="bi bi-bar-chart-fill"></i> Histogramme
+      </button>
+      <button type="button" class="btn btn-outline-primary" id="btn-doughnut" onclick="setChartType('doughnut')">
+        <i class="bi bi-pie-chart-fill"></i> Donut
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Graphiques ────────────────────────────────────────────────────────── -->
   <div id="charts-wrap">
 
     <!-- Participation par programme -->
@@ -130,7 +142,8 @@
         <i class="bi bi-bar-chart fs-1 opacity-25"></i>
         <div class="mt-1">Aucune donnée</div>
       </div>
-      <canvas id="chartProgramme" style="max-height:340px;"></canvas>
+      <canvas id="chartProgramme"         class="chart-bar"      style="max-height:340px;"></canvas>
+      <canvas id="chartProgrammeDoughnut" class="chart-doughnut d-none" style="max-height:360px;"></canvas>
     </div>
 
     <!-- Détail GCK Soir (adultes / jeunes / enfants) -->
@@ -142,7 +155,8 @@
         <i class="bi bi-bar-chart fs-1 opacity-25"></i>
         <div class="mt-1">Aucune donnée</div>
       </div>
-      <canvas id="chartCategorie" style="max-height:300px;"></canvas>
+      <canvas id="chartCategorie"         class="chart-bar"      style="max-height:300px;"></canvas>
+      <canvas id="chartCategorieDoughnut" class="chart-doughnut d-none" style="max-height:340px;"></canvas>
     </div>
 
     <!-- Tableau récapitulatif -->
@@ -177,6 +191,22 @@ const REGIONS = {{ regions_json|safe }};
 const GROUPES = {{ groupes_json|safe }};
 
 let chartP = null, chartCat = null;
+let chartPD = null, chartCatD = null;
+let currentChartType = 'bar';
+
+function setChartType(type) {
+  currentChartType = type;
+  document.querySelectorAll('.chart-bar').forEach(el => el.classList.toggle('d-none', type !== 'bar'));
+  document.querySelectorAll('.chart-doughnut').forEach(el => el.classList.toggle('d-none', type !== 'doughnut'));
+  const btnBar  = document.getElementById('btn-bar');
+  const btnDnut = document.getElementById('btn-doughnut');
+  btnBar.classList.toggle('btn-primary', type === 'bar');
+  btnBar.classList.toggle('btn-outline-primary', type !== 'bar');
+  btnBar.classList.toggle('active', type === 'bar');
+  btnDnut.classList.toggle('btn-primary', type === 'doughnut');
+  btnDnut.classList.toggle('btn-outline-primary', type !== 'doughnut');
+  btnDnut.classList.toggle('active', type === 'doughnut');
+}
 
 const selAnnee  = document.getElementById('sel-annee');
 const selRegion = document.getElementById('sel-region');
@@ -321,6 +351,57 @@ function renderCharts(data) {
       }
     }
   });
+
+  // ─ Donut Programme (GCK / Conférence / Impact — totaux) ────────────────────
+  const dnutColors = [
+    'rgba(30,100,210,0.85)', 'rgba(245,158,11,0.85)', 'rgba(6,182,212,0.85)'
+  ];
+  const dnutBorders = ['rgba(20,70,160,1)', 'rgba(180,120,5,1)', 'rgba(8,145,178,1)'];
+  const dnutOpts = {
+    responsive: true,
+    plugins: {
+      legend: { position: 'right', labels: { usePointStyle: true, padding: 16 } },
+      tooltip: { callbacks: { label: ctx => ` ${ctx.label} : ${ctx.parsed.toLocaleString('fr-FR')} pers.` } }
+    },
+    cutout: '60%'
+  };
+  const sumArr = arr => (arr||[]).reduce((a,b)=>a+b,0);
+
+  if (chartPD) chartPD.destroy();
+  chartPD = new Chart(document.getElementById('chartProgrammeDoughnut'), {
+    type: 'doughnut',
+    data: {
+      labels: ['GCK Soir', 'Conférence Ministres', 'Académie Impact'],
+      datasets: [{
+        data: [sumArr(data.gck_total), sumArr(data.conf_total), sumArr(data.impact_total)],
+        backgroundColor: dnutColors,
+        borderColor: dnutBorders,
+        borderWidth: 2,
+        hoverOffset: 8
+      }]
+    },
+    options: dnutOpts
+  });
+
+  // ─ Donut Catégorie (Adultes / Jeunes / Enfants — totaux) ───────────────────
+  if (chartCatD) chartCatD.destroy();
+  chartCatD = new Chart(document.getElementById('chartCategorieDoughnut'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Adultes', 'Jeunes', 'Enfants'],
+      datasets: [{
+        data: [sumArr(data.gck_adultes), sumArr(data.gck_jeunes), sumArr(data.gck_enfants)],
+        backgroundColor: ['rgba(16,185,129,0.85)', 'rgba(59,130,246,0.85)', 'rgba(249,115,22,0.85)'],
+        borderColor:     ['rgba(5,150,105,1)',      'rgba(37,99,235,1)',     'rgba(234,88,12,1)'],
+        borderWidth: 2,
+        hoverOffset: 8
+      }]
+    },
+    options: dnutOpts
+  });
+
+  // Appliquer le type de vue courant aux nouveaux graphiques
+  setChartType(currentChartType);
 }
 
 // ── Tableau ────────────────────────────────────────────────────────────────────

@@ -125,7 +125,19 @@
     <div class="mt-2 text-muted small">Chargement des données…</div>
   </div>
 
-  <!-- ── Histogrammes ─────────────────────────────────────────────────────── -->
+  <!-- ── Toggle Histogramme / Donut ──────────────────────────────────────── -->
+  <div class="d-flex justify-content-end mb-3">
+    <div class="btn-group btn-group-sm" role="group">
+      <button type="button" class="btn btn-danger active" id="btn-bar" onclick="setChartType('bar')">
+        <i class="bi bi-bar-chart-fill"></i> Histogramme
+      </button>
+      <button type="button" class="btn btn-outline-danger" id="btn-doughnut" onclick="setChartType('doughnut')">
+        <i class="bi bi-pie-chart-fill"></i> Donut
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Graphiques ────────────────────────────────────────────────────────── -->
   <div id="charts-wrap">
     <!-- Voeux -->
     <div class="chart-card mb-4">
@@ -136,7 +148,8 @@
         <i class="bi bi-bar-chart fs-1 opacity-25"></i>
         <div class="mt-1">Aucune donnée</div>
       </div>
-      <canvas id="chartVoeux" style="max-height:320px;"></canvas>
+      <canvas id="chartVoeux"         class="chart-bar"      style="max-height:320px;"></canvas>
+      <canvas id="chartVoeuxDoughnut" class="chart-doughnut d-none" style="max-height:360px;"></canvas>
     </div>
 
     <!-- Contributions -->
@@ -148,7 +161,8 @@
         <i class="bi bi-bar-chart fs-1 opacity-25"></i>
         <div class="mt-1">Aucune donnée</div>
       </div>
-      <canvas id="chartContrib" style="max-height:320px;"></canvas>
+      <canvas id="chartContrib"         class="chart-bar"      style="max-height:320px;"></canvas>
+      <canvas id="chartContribDoughnut" class="chart-doughnut d-none" style="max-height:360px;"></canvas>
     </div>
   </div>
 
@@ -162,6 +176,22 @@ const REGIONS    = {{ regions_json|safe }};
 const GROUPES    = {{ groupes_json|safe }};  // {region: [groupes]}
 
 let chartV = null, chartC = null;
+let chartVD = null, chartCD = null;
+let currentChartType = 'bar';
+
+function setChartType(type) {
+  currentChartType = type;
+  document.querySelectorAll('.chart-bar').forEach(el => el.classList.toggle('d-none', type !== 'bar'));
+  document.querySelectorAll('.chart-doughnut').forEach(el => el.classList.toggle('d-none', type !== 'doughnut'));
+  const btnBar  = document.getElementById('btn-bar');
+  const btnDnut = document.getElementById('btn-doughnut');
+  btnBar.classList.toggle('btn-danger', type === 'bar');
+  btnBar.classList.toggle('btn-outline-danger', type !== 'bar');
+  btnBar.classList.toggle('active', type === 'bar');
+  btnDnut.classList.toggle('btn-danger', type === 'doughnut');
+  btnDnut.classList.toggle('btn-outline-danger', type !== 'doughnut');
+  btnDnut.classList.toggle('active', type === 'doughnut');
+}
 
 // ── Peupler les dropdowns ──────────────────────────────────────────────────────
 
@@ -373,6 +403,53 @@ function renderCharts(data, level) {
       ...(level === 'membre' ? { onClick: onMemberClick, onHover: (e,el) => { e.native.target.style.cursor = el.length ? 'pointer' : 'default'; } } : {})
     }
   });
+
+  // ─ Donuts ──────────────────────────────────────────────────────────────────
+  const sumArr = arr => (arr||[]).reduce((a,b)=>a+b,0);
+  const FCFA_tip = ctx => ` ${ctx.label} : ${ctx.parsed.toLocaleString('fr-FR')} FCFA`;
+  const dnutBaseOpts = {
+    responsive: true,
+    cutout: '60%',
+    plugins: {
+      legend: { position: 'right', labels: { usePointStyle: true, padding: 16 } },
+      tooltip: { callbacks: { label: FCFA_tip } }
+    }
+  };
+
+  if (chartVD) chartVD.destroy();
+  chartVD = new Chart(document.getElementById('chartVoeuxDoughnut'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Montant promis', 'Total payé'],
+      datasets: [{
+        data: [sumArr(data.promis_voeux), sumArr(data.paye_voeux)],
+        backgroundColor: ['rgba(30,100,210,0.85)', 'rgba(16,185,129,0.85)'],
+        borderColor:     ['rgba(20,70,160,1)',      'rgba(5,150,105,1)'],
+        borderWidth: 2,
+        hoverOffset: 8
+      }]
+    },
+    options: dnutBaseOpts
+  });
+
+  if (chartCD) chartCD.destroy();
+  chartCD = new Chart(document.getElementById('chartContribDoughnut'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Objectif', 'Total versé'],
+      datasets: [{
+        data: [sumArr(data.objectif_contrib), sumArr(data.paye_contrib)],
+        backgroundColor: ['rgba(245,158,11,0.85)', 'rgba(6,182,212,0.85)'],
+        borderColor:     ['rgba(217,119,6,1)',      'rgba(8,145,178,1)'],
+        borderWidth: 2,
+        hoverOffset: 8
+      }]
+    },
+    options: dnutBaseOpts
+  });
+
+  // Appliquer le type de vue courant aux nouveaux graphiques
+  setChartType(currentChartType);
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
