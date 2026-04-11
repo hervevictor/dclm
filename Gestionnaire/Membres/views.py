@@ -21,7 +21,7 @@ class UserRegister(CreateView):
 class UserEditeProfile(RBACMixin, UpdateView):
     form_class = EditUserForm
     template_name = 'registration/edit_compte.html'
-    success_url = reverse_lazy('dashboard')  # Redirige vers le tableau de bord, pas login
+    success_url = reverse_lazy('profil')
 
     def get_object(self):
         return self.request.user

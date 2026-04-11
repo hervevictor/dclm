@@ -59,6 +59,13 @@ def index(request):
 @login_required(login_url='/membres/login/')
 def dashboard(request):
     user = request.user
+
+    # Seuls les admins et le compte national (COMPTABLE) ont accès au dashboard
+    if not user.is_superuser:
+        profile = getattr(user, 'profile', None)
+        if not profile or profile.niveau_acces not in ('ADMIN', 'COMPTABLE'):
+            return redirect('eglises')
+
     eglises = filter_by_rbac(user, Eglise.objects.all(), 'eglise').count()
     groupes = filter_by_rbac(user, Groupe.objects.all(), 'groupe').count()
     regions = filter_by_rbac(user, Region.objects.all(), 'region').count()
