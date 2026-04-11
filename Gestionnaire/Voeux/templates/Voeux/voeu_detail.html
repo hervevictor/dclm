@@ -1,0 +1,256 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block gestion %}
+<div class="container mt-4">
+  <div class="col-lg-9 mx-auto">
+
+    <!-- En-tête -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header {% if voeu.est_solde %}bg-success{% else %}bg-primary{% endif %} text-white d-flex justify-content-between align-items-center">
+        <h4 class="mb-0"><i class="bi bi-heart-fill"></i> Détail du Voeu</h4>
+        <a href="{% url 'voeu_list' %}" class="btn btn-light btn-sm"><i class="bi bi-arrow-left"></i> Retour</a>
+      </div>
+      <div class="card-body">
+        <div class="row mb-2">
+          <div class="col-md-3 fw-bold">Membre :</div>
+          <div class="col-md-9">
+            {{ voeu.membre }}
+            {% if voeu.membre %}
+            <a href="{% url 'stats_membre' voeu.membre.pk %}" class="btn btn-outline-primary btn-sm ms-2">
+              <i class="bi bi-bar-chart-fill"></i> Statistiques
+            </a>
+            {% endif %}
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-md-3 fw-bold">Église :</div>
+          <div class="col-md-9"><a href="{% url 'voeu_district' voeu.eglise.pk %}">{{ voeu.eglise.nom }}</a></div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-md-3 fw-bold">Date du voeu :</div>
+          <div class="col-md-9">{{ voeu.date_voeu|date:"d F Y" }}</div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-md-3 fw-bold">Détails :</div>
+          <div class="col-md-9">{{ voeu.details|linebreaks|default:"—" }}</div>
+        </div>
+        <hr>
+        <div class="row">
+          <div class="col-md-4 text-center">
+            <h6 class="text-primary">Montant Promis</h6>
+            <h4>{{ voeu.montant_promis|floatformat:0 }} FCFA</h4>
+          </div>
+          <div class="col-md-4 text-center">
+            <h6 class="text-success">Total Payé</h6>
+            <h4>{{ voeu.total_paye|floatformat:0 }} FCFA</h4>
+          </div>
+          <div class="col-md-4 text-center">
+            <h6 class="text-warning">Restant</h6>
+            <h4>{{ voeu.montant_restant|floatformat:0 }} FCFA</h4>
+          </div>
+        </div>
+        <div class="mt-3">
+          <div class="progress" style="height:12px;">
+            <div class="progress-bar {% if voeu.est_solde %}bg-success{% else %}bg-primary{% endif %} progress-bar-striped"
+              style="width:{{ voeu.pourcentage }}%" role="progressbar">{{ voeu.pourcentage }}%</div>
+          </div>
+        </div>
+        {% if voeu.est_solde %}
+        <div class="alert alert-success mt-3 mb-0"><i class="bi bi-check-circle-fill"></i> Ce voeu est entièrement soldé.</div>
+        {% endif %}
+
+        <div class="text-end mt-4">
+          {% if peut_modifier_montant %}
+          <a href="{% url 'modifier_montant_voeu' voeu.pk %}" class="btn btn-warning text-dark">
+            <i class="bi bi-pencil-square"></i> Modifier le montant
+          </a>
+          {% endif %}
+          {% if peut_modifier %}
+          <a href="{% url 'add_versement_voeu' voeu.pk %}" class="btn btn-success">
+            <i class="bi bi-cash-coin"></i> Ajouter un versement
+          </a>
+          <a href="{% url 'edit_voeu' voeu.pk %}" class="btn btn-primary">
+            <i class="bi bi-pencil"></i> Modifier
+          </a>
+          {% endif %}
+          {% if peut_supprimer %}
+          <a href="{% url 'delete_voeu' voeu.pk %}" class="btn btn-outline-danger">
+            <i class="bi bi-trash"></i> Supprimer
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Versements -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-light">
+        <h5 class="mb-0"><i class="bi bi-list-check"></i> Historique des versements</h5>
+      </div>
+      <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Date</th>
+              <th class="text-end">Montant (FCFA)</th>
+              <th>Notes</th>
+              <th>Saisi par</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for v in versements %}
+            <tr>
+              <td>{{ v.date|date:"d/m/Y" }}</td>
+              <td class="text-end fw-bold text-success">{{ v.montant|floatformat:0 }}</td>
+              <td>{{ v.notes|default:"—" }}</td>
+              <td class="small text-muted">{% if v.auteur %}{{ v.auteur.get_full_name|default:v.auteur.username }}{% else %}—{% endif %}</td>
+              <td class="text-end">
+                {% if v.pk in versements_corrigeables %}
+                <a href="{% url 'corriger_versement_voeu' v.pk %}" class="btn btn-sm btn-outline-warning" title="Corriger ce versement">
+                  <i class="bi bi-pencil-square"></i>
+                </a>
+                {% endif %}
+                {% if peut_supprimer %}
+                <a href="{% url 'delete_versement_voeu' v.pk %}" class="btn btn-sm btn-outline-danger" title="Supprimer">
+                  <i class="bi bi-trash"></i>
+                </a>
+                {% endif %}
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="text-center py-4 text-muted">Aucun versement enregistré.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Historique des modifications du montant promis -->
+    {% if historiques or historiques_masques %}
+    <div class="card shadow-sm border-warning mb-4">
+      <div class="card-header bg-warning bg-opacity-25 d-flex align-items-center gap-2 flex-wrap">
+        <i class="bi bi-clock-history text-warning fs-5"></i>
+        <h5 class="mb-0">Historique des modifications du montant promis</h5>
+        <span class="badge bg-warning text-dark">{{ historiques|length }} ce mois</span>
+        {% if historiques_masques %}
+        <a href="{% url 'historique_global' %}?section=voeux" class="badge bg-secondary text-decoration-none">
+          {{ historiques_masques }} entrée{{ historiques_masques|pluralize }} masquée{{ historiques_masques|pluralize }} (&gt;7j) — Voir tout
+        </a>
+        {% endif %}
+        {% if is_admin and historiques %}
+        <form method="post" action="{% url 'vider_historiques_voeu' voeu.pk %}" class="ms-auto"
+              onsubmit="return confirm('Vider tout l\'historique des modifications de montant pour ce voeu ?')">
+          {% csrf_token %}
+          <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i> Vider tout</button>
+        </form>
+        {% endif %}
+      </div>
+      <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Date</th>
+              <th class="text-end">Ancien montant</th>
+              <th class="text-center"><i class="bi bi-arrow-right"></i></th>
+              <th class="text-end">Nouveau montant</th>
+              <th>Justification</th>
+              <th>Modifié par</th>
+              {% if is_admin %}<th></th>{% endif %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for h in historiques %}
+            <tr>
+              <td class="small text-muted">{{ h.created|date:"d/m/Y H:i" }}</td>
+              <td class="text-end text-danger fw-bold">{{ h.ancien_montant|floatformat:0 }} FCFA</td>
+              <td class="text-center text-muted"><i class="bi bi-arrow-right"></i></td>
+              <td class="text-end text-success fw-bold">{{ h.nouveau_montant|floatformat:0 }} FCFA</td>
+              <td class="small">{{ h.justification }}</td>
+              <td class="small text-muted">{% if h.auteur %}{{ h.auteur.get_full_name|default:h.auteur.username }}{% else %}—{% endif %}</td>
+              {% if is_admin %}
+              <td>
+                <form method="post" action="{% url 'delete_historique_voeu' h.pk %}"
+                      onsubmit="return confirm('Supprimer cette entrée d\'historique ?')">
+                  {% csrf_token %}
+                  <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                </form>
+              </td>
+              {% endif %}
+            </tr>
+            {% empty %}
+            <tr><td colspan="7" class="text-center py-3 text-muted small">Aucune modification ces 7 derniers jours.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Historique des corrections de versements -->
+    {% if versement_corrections or vc_masques %}
+    <div class="card shadow-sm border-secondary">
+      <div class="card-header bg-secondary bg-opacity-10 d-flex align-items-center gap-2 flex-wrap">
+        <i class="bi bi-pencil-square text-secondary fs-5"></i>
+        <h5 class="mb-0">Historique des corrections de versements</h5>
+        <span class="badge bg-secondary">{{ versement_corrections|length }} ce mois</span>
+        {% if vc_masques %}
+        <a href="{% url 'historique_global' %}?section=versements_voeux" class="badge bg-secondary text-decoration-none">
+          {{ vc_masques }} entrée{{ vc_masques|pluralize }} masquée{{ vc_masques|pluralize }} (&gt;7j) — Voir tout
+        </a>
+        {% endif %}
+        {% if is_admin and versement_corrections %}
+        <form method="post" action="{% url 'vider_corrections_versements_voeu' voeu.pk %}" class="ms-auto"
+              onsubmit="return confirm('Vider tout l\'historique des corrections de versements ?')">
+          {% csrf_token %}
+          <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i> Vider tout</button>
+        </form>
+        {% endif %}
+      </div>
+      <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Date versement</th>
+              <th>Corrigé le</th>
+              <th class="text-end">Ancien montant</th>
+              <th class="text-center"><i class="bi bi-arrow-right"></i></th>
+              <th class="text-end">Nouveau montant</th>
+              <th>Justification</th>
+              <th>Corrigé par</th>
+              {% if is_admin %}<th></th>{% endif %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for h in versement_corrections %}
+            <tr>
+              <td class="small">{{ h.versement.date|date:"d/m/Y" }}</td>
+              <td class="small text-muted">{{ h.created|date:"d/m/Y H:i" }}</td>
+              <td class="text-end text-danger fw-bold">{{ h.ancien_montant|floatformat:0 }} FCFA</td>
+              <td class="text-center text-muted"><i class="bi bi-arrow-right"></i></td>
+              <td class="text-end text-success fw-bold">{{ h.nouveau_montant|floatformat:0 }} FCFA</td>
+              <td class="small">{{ h.justification }}</td>
+              <td class="small text-muted">{% if h.auteur %}{{ h.auteur.get_full_name|default:h.auteur.username }}{% else %}—{% endif %}</td>
+              {% if is_admin %}
+              <td>
+                <form method="post" action="{% url 'delete_historique_versement_voeu' h.pk %}"
+                      onsubmit="return confirm('Supprimer cette correction ?')">
+                  {% csrf_token %}
+                  <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                </form>
+              </td>
+              {% endif %}
+            </tr>
+            {% empty %}
+            <tr><td colspan="8" class="text-center py-3 text-muted small">Aucune correction ces 7 derniers jours.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

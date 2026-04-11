@@ -1,20 +1,210 @@
 {% extends 'base.html' %}
-{% block gestion %} <br>
-    <h1>Details de : {{adulte}} </h1>
-    <br>
-    <div class="container">
-        <p>Address : <strong>{{adulte.adresse}}</strong> </p>
-        <p>District : <a href="{% url 'adulte_district' adulte.eglise.pk %}"><strong>{{adulte.eglise}}</strong></a>  </p>
-        <p>Groupe : <a href="{% url 'adulte_groupe' adulte.eglise.groupe %}"><strong>{{adulte.eglise.groupe}}</strong></a> </p>
-        <p>Region : <a href="{% url 'adulte_region' adulte.eglise.region %}"><strong>{{adulte.eglise.region}}</strong></a> </p>
-        <p>Nbre de membres : <strong>{{adulte.nombre_de_membres}}</strong> </p>
-        <p>Téléphone : <strong>{{adulte.telephone}}</strong> </p>
-        <p>BP : <strong>{{adulte.bp}}</strong> </p>
-        <p>Email : <strong>{{adulte.email}}</strong> </p>
+{% load static %}
+{% block gestion %}
 
-        <br><br><br>
-        <a href="{% url 'edit_adulte' adulte.pk %}" class="btn btn-success">Modifier</a>
-        <a href="{% url 'delete_adulte' adulte.pk %}" class="btn btn-danger">Supprimer</a>
+<div class="container-fluid mt-4">
+
+  <!-- En-tête -->
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h3 class="mb-0">
+      <i class="bi bi-person-fill text-primary"></i>
+      {{ adulte.nom }} {{ adulte.prenom }}
+    </h3>
+    <div class="d-flex gap-2">
+      <a href="{% url 'edit_adulte' adulte.pk %}" class="btn btn-success btn-sm">
+        <i class="bi bi-pencil-fill"></i> Modifier
+      </a>
+      <a href="{% url 'delete_adulte' adulte.pk %}" class="btn btn-danger btn-sm">
+        <i class="bi bi-trash-fill"></i> Supprimer
+      </a>
+      <a href="javascript:history.back()" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> Retour
+      </a>
     </div>
-    <br><br><br>
+  </div>
+
+  <div class="row g-4">
+
+    <!-- Colonne gauche : photo + localisation -->
+    <div class="col-12 col-md-4">
+
+      <!-- Photo -->
+      <div class="card shadow-sm mb-3 text-center">
+        <div class="card-body">
+          {% if adulte.adulte_image %}
+            <img src="{{ adulte.adulte_image.url }}" alt="Photo"
+                 class="img-fluid rounded-circle mb-2"
+                 style="width:150px;height:150px;object-fit:cover;">
+          {% else %}
+            <img src="{% static 'images/profile.png' %}" alt="Photo"
+                 class="img-fluid rounded-circle mb-2"
+                 style="width:150px;height:150px;object-fit:cover;">
+          {% endif %}
+          <h5 class="mb-0">{{ adulte.nom }} {{ adulte.prenom }}</h5>
+          <span class="badge bg-primary mt-1">{{ adulte.role_dans_leglise }}</span>
+        </div>
+      </div>
+
+      <!-- Localisation -->
+      <div class="card shadow-sm mb-3">
+        <div class="card-header bg-light fw-semibold">
+          <i class="bi bi-geo-alt-fill text-danger"></i> Localisation
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item d-flex justify-content-between">
+            <span class="text-muted">District</span>
+            <a href="{% url 'adulte_district' adulte.eglise.pk %}">
+              <strong>{{ adulte.eglise }}</strong>
+            </a>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span class="text-muted">Groupe</span>
+            <a href="{% url 'adulte_groupe' adulte.eglise.groupe %}">
+              <strong>{{ adulte.eglise.groupe }}</strong>
+            </a>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span class="text-muted">Région</span>
+            <a href="{% url 'adulte_region' adulte.eglise.region %}">
+              <strong>{{ adulte.eglise.region }}</strong>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Méta -->
+      <div class="card shadow-sm">
+        <div class="card-header bg-light fw-semibold">
+          <i class="bi bi-info-circle"></i> Méta
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item d-flex justify-content-between">
+            <span class="text-muted">Ajouté le</span>
+            <strong>{{ adulte.publish|date:"d/m/Y" }}</strong>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span class="text-muted">Auteur</span>
+            <strong>{{ adulte.auteur }}</strong>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Colonne droite : détails -->
+    <div class="col-12 col-md-8">
+
+      <!-- Identité -->
+      <div class="card shadow-sm mb-3">
+        <div class="card-header bg-light fw-semibold">
+          <i class="bi bi-person-vcard-fill text-primary"></i> Identité
+        </div>
+        <div class="card-body">
+          <div class="row g-2">
+            <div class="col-6">
+              <div class="text-muted small">Nom</div>
+              <strong>{{ adulte.nom }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Prénom</div>
+              <strong>{{ adulte.prenom }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Date de naissance</div>
+              <strong>{{ adulte.date_de_naissance|date:"d/m/Y"|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Lieu de naissance</div>
+              <strong>{{ adulte.lieu_de_naissance|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Sexe</div>
+              <strong>{{ adulte.sexe|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Statut matrimonial</div>
+              <strong>{{ adulte.status_matrimoniale|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Groupe sanguin</div>
+              <strong>{{ adulte.groupe_sanguin|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Rhésus</div>
+              <strong>{{ adulte.rhesus|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Profession</div>
+              <strong>{{ adulte.profession|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Nombre d'enfants</div>
+              <strong>{{ adulte.nombre_d_enfant|default:"—" }}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contacts -->
+      <div class="card shadow-sm mb-3">
+        <div class="card-header bg-light fw-semibold">
+          <i class="bi bi-telephone-fill text-success"></i> Contacts
+        </div>
+        <div class="card-body">
+          <div class="row g-2">
+            <div class="col-6">
+              <div class="text-muted small">Téléphone</div>
+              <strong>{{ adulte.contact|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">WhatsApp</div>
+              <strong>{{ adulte.contact_whatsapp|default:"—" }}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vie spirituelle -->
+      <div class="card shadow-sm mb-3">
+        <div class="card-header bg-light fw-semibold">
+          <i class="bi bi-heart-fill text-danger"></i> Vie spirituelle
+        </div>
+        <div class="card-body">
+          <div class="row g-2">
+            <div class="col-6">
+              <div class="text-muted small">Rôle dans l'église</div>
+              <strong>{{ adulte.role_dans_leglise|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Année de conversion</div>
+              <strong>{{ adulte.annee_de_conversion|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Baptisé</div>
+              <strong>{{ adulte.baptiser|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Année de baptême</div>
+              <strong>{{ adulte.annee_de_bapteme|default:"—" }}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      {% if adulte.description_sur_vous_et_votre_famille %}
+      <div class="card shadow-sm">
+        <div class="card-header bg-light fw-semibold">
+          <i class="bi bi-chat-text-fill text-secondary"></i> Description sur vous et votre famille
+        </div>
+        <div class="card-body">
+          <p class="mb-0" style="white-space:pre-line;">{{ adulte.description_sur_vous_et_votre_famille }}</p>
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+
 {% endblock %}

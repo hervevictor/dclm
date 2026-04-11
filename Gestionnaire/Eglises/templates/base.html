@@ -448,25 +448,178 @@
           <i class="bi bi-globe2"></i><span>GCK</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="gck-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+          <!-- Vue mensuelle combinée -->
           <li>
-            <a href="{% url 'add_gck' %}">
-              <i class="bi bi-circle"></i><span>Ajouter un bilan</span>
+            <a href="{% url 'gck_mensuel' %}">
+              <i class="bi bi-calendar3"></i><span>Vue mensuelle GCK</span>
+            </a>
+          </li>
+          <li><hr class="my-1 opacity-25"></li>
+          <!-- Séances du Soir -->
+          <li>
+            <a href="{% url 'gck_list' %}">
+              <i class="bi bi-moon-stars-fill"></i><span>Séances du Soir</span>
             </a>
           </li>
           <li>
-            <a href="{% url 'gck_list' %}">
-              <i class="bi bi-circle"></i><span>Liste des bilans</span>
+            <a href="{% url 'add_gck' %}">
+              <i class="bi bi-circle"></i><span style="font-size:.85em;padding-left:.5rem">Ajouter un bilan</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'gck_convertis' %}">
+              <i class="bi bi-circle text-success"></i><span style="font-size:.85em;padding-left:.5rem">Convertis</span>
+            </a>
+          </li>
+          <li><hr class="my-1 opacity-25"></li>
+          <!-- Conférence des Ministres -->
+          <li>
+            <a href="{% url 'conference_list' %}" style="color:#d97706">
+              <i class="bi bi-sunrise-fill"></i><span>Conférence des Ministres</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'add_conference' %}">
+              <i class="bi bi-circle"></i><span style="font-size:.85em;padding-left:.5rem">Ajouter un rapport</span>
+            </a>
+          </li>
+          <li><hr class="my-1 opacity-25"></li>
+          <!-- Académie d'Impact -->
+          <li>
+            <a href="{% url 'impact_list' %}" style="color:#7c3aed">
+              <i class="bi bi-lightning-charge-fill"></i><span>Académie d'Impact</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'add_impact' %}">
+              <i class="bi bi-circle"></i><span style="font-size:.85em;padding-left:.5rem">Ajouter un rapport</span>
             </a>
           </li>
           {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' or user.profile.niveau_acces == 'COMPTABLE' %}
+          <li><hr class="my-1 opacity-25"></li>
           <li>
             <a href="{% url 'gck_national' %}">
-              <i class="bi bi-circle"></i><span>Rapport National</span>
+              <i class="bi bi-globe"></i><span>Rapport National (Soir)</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'gck_recapitulatif' %}">
+              <i class="bi bi-table"></i><span>Récapitulatif TOGO</span>
+            </a>
+          </li>
+          {% endif %}
+          <li><hr class="my-1 opacity-25"></li>
+          <li>
+            <a href="{% url 'stats_gck' %}" style="color:#2563eb">
+              <i class="bi bi-bar-chart-fill"></i><span>Statistiques Participation</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      {% endif %}
+      <hr>
+
+      <!-- ======= Voeux & Contributions ======= -->
+      {% if user.is_authenticated %}
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#voeux-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-heart-fill" style="color:#e74c3c"></i><span>Voeux &amp; Contributions</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="voeux-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+          <!-- Voeux -->
+          <li>
+            <a href="{% url 'voeu_list' %}">
+              <i class="bi bi-heart"></i><span>Liste des Voeux</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'add_voeu' %}">
+              <i class="bi bi-circle"></i><span style="font-size:.85em;padding-left:.5rem">Nouveau Voeu</span>
+            </a>
+          </li>
+          {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' or user.profile.niveau_acces == 'COMPTABLE' or user.profile.niveau_acces == 'REGION' %}
+          <li>
+            <a href="{% url 'voeu_national' %}">
+              <i class="bi bi-globe"></i><span style="font-size:.85em;padding-left:.5rem">Vue Nationale</span>
+            </a>
+          </li>
+          {% endif %}
+          <li><hr class="my-1 opacity-25"></li>
+          <!-- Contributions -->
+          <li>
+            <a href="{% url 'contribution_list' %}">
+              <i class="bi bi-wallet2"></i><span>Liste des Contributions</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'add_contribution' %}">
+              <i class="bi bi-circle"></i><span style="font-size:.85em;padding-left:.5rem">Nouvelle Contribution</span>
+            </a>
+          </li>
+          {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' or user.profile.niveau_acces == 'COMPTABLE' or user.profile.niveau_acces == 'REGION' %}
+          <li>
+            <a href="{% url 'contribution_national' %}">
+              <i class="bi bi-globe"></i><span style="font-size:.85em;padding-left:.5rem">Vue Nationale</span>
+            </a>
+          </li>
+          {% endif %}
+          <li><hr class="my-1 opacity-25"></li>
+          <!-- Types (admin seulement) -->
+          {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' or user.profile.niveau_acces == 'COMPTABLE' %}
+          <li>
+            <a href="{% url 'type_list' %}">
+              <i class="bi bi-tags"></i><span style="font-size:.85em;padding-left:.5rem">Types de Contribution</span>
+            </a>
+          </li>
+          {% endif %}
+          <!-- Historique global (admin/superadmin) -->
+          {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' %}
+          <li>
+            <a href="{% url 'historique_global' %}">
+              <i class="bi bi-clock-history"></i><span style="font-size:.85em;padding-left:.5rem">Historique modifications</span>
+            </a>
+          </li>
+          {% endif %}
+          <li><hr class="my-1 opacity-25"></li>
+          <li>
+            <a href="{% url 'stats_voeux' %}" style="color:#dc3545">
+              <i class="bi bi-bar-chart-fill"></i><span style="font-size:.85em;padding-left:.5rem">Statistiques</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      {% endif %}
+
+      <!-- ======= Retraites ======= -->
+      {% if user.is_authenticated %}
+      {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' or user.profile.niveau_acces == 'COMPTABLE' or user.profile.niveau_acces == 'REGION' %}
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#retraites-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-sunrise-fill text-warning"></i><span>Retraites</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="retraites-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="{% url 'retraite_list' %}">
+              <i class="bi bi-list-ul"></i><span>Liste des rapports</span>
+            </a>
+          </li>
+          {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' or user.profile.niveau_acces == 'COMPTABLE' or user.profile.niveau_acces == 'REGION' %}
+          <li>
+            <a href="{% url 'add_retraite' %}">
+              <i class="bi bi-circle"></i><span style="font-size:.85em;padding-left:.5rem">Nouveau rapport</span>
+            </a>
+          </li>
+          {% endif %}
+          {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' or user.profile.niveau_acces == 'COMPTABLE' %}
+          <li>
+            <a href="{% url 'retraite_national' %}">
+              <i class="bi bi-globe"></i><span style="font-size:.85em;padding-left:.5rem">Vue Nationale</span>
             </a>
           </li>
           {% endif %}
         </ul>
       </li>
+      {% endif %}
       {% endif %}
       <hr>
 
@@ -566,8 +719,13 @@
           placeholder: 'Rechercher...',
         });
       });
+      // Signal que TomSelect est prêt
+      document.dispatchEvent(new Event('tomselect:ready'));
     });
   </script>
+
+  <!-- Bloc JS pages (exécuté après init TomSelect) -->
+  {% block extra_js %}{% endblock %}
 
 </body>
 

@@ -1,49 +1,78 @@
-<div class="row mb-4">
-  <div class="col">
-    <div class="card border-primary text-center shadow-sm">
-      <div class="card-body py-3">
-        <div class="small text-muted">Hommes</div>
-        <h4 class="text-primary mb-0">{{ total_hommes }}</h4>
+<div class="row g-2 mb-4">
+  <!-- Adultes H/F -->
+  <div class="col-md-4 col-12">
+    <div class="card border-primary shadow-sm h-100">
+      <div class="card-header bg-primary text-white text-center py-1">
+        <small class="fw-bold">ADULTES &nbsp;—&nbsp; <span class="fs-6">{{ total_adultes }}</span></small>
+      </div>
+      <div class="card-body py-2">
+        <div class="row text-center g-0">
+          <div class="col-6 border-end">
+            <div class="text-muted" style="font-size:.72rem">Hommes</div>
+            <strong class="text-primary fs-5">{{ total_adultes_h }}</strong>
+          </div>
+          <div class="col-6">
+            <div class="text-muted" style="font-size:.72rem">Femmes</div>
+            <strong class="text-info fs-5">{{ total_adultes_f }}</strong>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-  <div class="col">
-    <div class="card border-info text-center shadow-sm">
-      <div class="card-body py-3">
-        <div class="small text-muted">Femmes</div>
-        <h4 class="text-info mb-0">{{ total_femmes }}</h4>
+  <!-- Jeunes H/F -->
+  <div class="col-md-4 col-12">
+    <div class="card border-warning shadow-sm h-100">
+      <div class="card-header bg-warning text-dark text-center py-1">
+        <small class="fw-bold">JEUNES &nbsp;—&nbsp; <span class="fs-6">{{ total_jeunes }}</span></small>
+      </div>
+      <div class="card-body py-2">
+        <div class="row text-center g-0">
+          <div class="col-6 border-end">
+            <div class="text-muted" style="font-size:.72rem">Hommes</div>
+            <strong class="text-warning fs-5">{{ total_jeunes_h }}</strong>
+          </div>
+          <div class="col-6">
+            <div class="text-muted" style="font-size:.72rem">Femmes</div>
+            <strong style="color:#c0392b" class="fs-5">{{ total_jeunes_f }}</strong>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-  <div class="col">
-    <div class="card border-warning text-center shadow-sm">
-      <div class="card-body py-3">
-        <div class="small text-muted">Enfants</div>
-        <h4 class="text-warning mb-0">{{ total_enfants }}</h4>
+  <!-- Enfants / Total / Convertis / Bilans en grille 2×2 -->
+  <div class="col-md-4 col-12">
+    <div class="row g-2 h-100">
+      <div class="col-6">
+        <div class="card border-secondary text-center shadow-sm h-100">
+          <div class="card-body py-2 d-flex flex-column justify-content-center">
+            <div class="text-muted small">Enfants</div>
+            <h5 class="mb-0">{{ total_enfants }}</h5>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-  <div class="col">
-    <div class="card border-secondary text-center shadow-sm">
-      <div class="card-body py-3">
-        <div class="small text-muted">Total participants</div>
-        <h4 class="mb-0">{{ total_participants }}</h4>
+      <div class="col-6">
+        <div class="card border-dark text-center shadow-sm h-100">
+          <div class="card-body py-2 d-flex flex-column justify-content-center">
+            <div class="text-muted small">Total</div>
+            <h5 class="mb-0 fw-bold">{{ total_participants }}</h5>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-  <div class="col">
-    <div class="card border-success text-center shadow-sm">
-      <div class="card-body py-3">
-        <div class="small text-muted">Nouveaux convertis</div>
-        <h4 class="text-success mb-0">{{ total_convertis }}</h4>
+      <div class="col-6">
+        <div class="card border-success text-center shadow-sm h-100">
+          <div class="card-body py-2 d-flex flex-column justify-content-center">
+            <div class="text-muted small">Convertis</div>
+            <h5 class="mb-0 text-success fw-bold">{{ total_convertis }}</h5>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-  <div class="col">
-    <div class="card border-dark text-center shadow-sm">
-      <div class="card-body py-3">
-        <div class="small text-muted">Bilans</div>
-        <h4 class="mb-0">{{ bilan_count }}</h4>
+      <div class="col-6">
+        <div class="card bg-dark text-white text-center shadow-sm h-100">
+          <div class="card-body py-2 d-flex flex-column justify-content-center">
+            <div class="small opacity-75">Bilans</div>
+            <h5 class="mb-0">{{ bilan_count }}</h5>
+          </div>
+        </div>
       </div>
     </div>
   </div>

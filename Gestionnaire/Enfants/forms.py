@@ -22,7 +22,7 @@ class EnfantForm(forms.ModelForm):
             'nom': forms.TextInput(attrs={'class': 'form-control'}),
             'prenom' : forms.TextInput(attrs={'class': 'form-control'}),
             'eglise' : forms.Select(attrs={'class': 'form-control select-search'}),            
-            'date_de_naissance' : forms.DateInput(attrs={'class': 'form-control'}),
+            'date_de_naissance' : forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}, format='%Y-%m-%d'),
             'lieu_de_naissance' : forms.TextInput(attrs={'class': 'form-control'}),
             'classe' : forms.TextInput(attrs={'class': 'form-control'}),
             'sexe' : forms.Select(choices=sexs_choice, attrs={'class': 'form-control'}),

@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block gestion %}
+<div class="container mt-4">
+  <div class="col-lg-10 mx-auto">
+
+    <!-- En-tête de la retraite -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h4 class="mb-0">
+          <i class="bi bi-sunrise-fill"></i>
+          {{ retraite.get_type_retraite_display }} {{ retraite.annee }}
+          — {{ retraite.region.name }}
+        </h4>
+        <div class="d-flex gap-2 flex-wrap">
+          {% if peut_modifier %}
+          <a href="{% url 'edit_retraite' retraite.pk %}" class="btn btn-outline-dark btn-sm">
+            <i class="bi bi-pencil"></i> Modifier
+          </a>
+          {% endif %}
+          <a href="{% url 'retraite_list' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left"></i> Retour
+          </a>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row g-2">
+          <div class="col-md-4">
+            <span class="text-muted small">Région</span><br>
+            <a href="{% url 'retraite_region' retraite.region.name %}">{{ retraite.region.name }}</a>
+          </div>
+          <div class="col-md-2">
+            <span class="text-muted small">Année</span><br>
+            <strong>{{ retraite.annee }}</strong>
+          </div>
+          <div class="col-md-4">
+            <span class="text-muted small">Dates</span><br>
+            {{ retraite.date_debut|date:"d F Y" }}
+            {% if retraite.date_fin %} → {{ retraite.date_fin|date:"d F Y" }}{% endif %}
+            <span class="badge bg-secondary ms-1">{{ retraite.nb_jours }} jour{{ retraite.nb_jours|pluralize }}</span>
+          </div>
+          <div class="col-md-2">
+            <span class="text-muted small">Églises</span><br>
+            <strong>{{ retraite.nombre_eglises }}</strong>
+          </div>
+          {% if retraite.lieu %}
+          <div class="col-md-4">
+            <span class="text-muted small">Lieu</span><br>{{ retraite.lieu }}
+          </div>
+          {% endif %}
+          {% if retraite.theme %}
+          <div class="col-md-8">
+            <span class="text-muted small">Thème</span><br><em>{{ retraite.theme }}</em>
+          </div>
+          {% endif %}
+          {% if retraite.notes %}
+          <div class="col-12 mt-2">
+            <div class="alert alert-light border mb-0">
+              <strong>Observations :</strong><br>{{ retraite.notes|linebreaks }}
+            </div>
+          </div>
+          {% endif %}
+        </div>
+
+        {% if peut_supprimer %}
+        <div class="text-end mt-3">
+          <a href="{% url 'delete_retraite' retraite.pk %}" class="btn btn-outline-danger btn-sm">
+            <i class="bi bi-trash"></i> Supprimer cette retraite
+          </a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Totaux globaux -->
+    {% if jours %}
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-2">
+        <div class="card border-0 bg-primary bg-opacity-10 text-center py-2">
+          <div class="small text-muted">Adultes</div>
+          <div class="fw-bold fs-5">{{ retraite.total_adultes }}</div>
+          <div class="small text-muted">H {{ retraite.adultes_h }} / F {{ retraite.adultes_f }}</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-2">
+        <div class="card border-0 bg-info bg-opacity-10 text-center py-2">
+          <div class="small text-muted">Jeunes</div>
+          <div class="fw-bold fs-5">{{ retraite.total_jeunes }}</div>
+          <div class="small text-muted">H {{ retraite.jeunes_h }} / F {{ retraite.jeunes_f }}</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-2">
+        <div class="card border-0 bg-secondary bg-opacity-10 text-center py-2">
+          <div class="small text-muted">Enfants</div>
+          <div class="fw-bold fs-5">{{ retraite.enfants }}</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-2">
+        <div class="card border-0 bg-success bg-opacity-10 text-center py-2">
+          <div class="small text-muted">Total</div>
+          <div class="fw-bold fs-4 text-success">{{ retraite.total_participants }}</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-2">
+        <div class="card border-0 bg-warning bg-opacity-15 text-center py-2">
+          <div class="small text-muted">Convertis</div>
+          <div class="fw-bold fs-4 text-warning">{{ retraite.nouveaux_convertis }}</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-2">
+        <div class="card border-0 bg-dark bg-opacity-10 text-center py-2">
+          <div class="small text-muted">Jours saisis</div>
+          <div class="fw-bold fs-4">{{ jours|length }}<span class="small text-muted">/{{ retraite.nb_jours }}</span></div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Rapports journaliers -->
+    <div class="card shadow-sm">
+      <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="bi bi-calendar3"></i> Rapports journaliers</h5>
+        {% if peut_modifier %}
+        <a href="{% url 'add_jour_retraite' retraite.pk %}" class="btn btn-success btn-sm">
+          <i class="bi bi-plus-circle"></i> Ajouter un jour
+        </a>
+        {% endif %}
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Jour</th>
+                <th>Date</th>
+                <th class="text-end">Ad. H</th>
+                <th class="text-end">Ad. F</th>
+                <th class="text-end">Je. H</th>
+                <th class="text-end">Je. F</th>
+                <th class="text-end">Enf.</th>
+                <th class="text-end fw-bold">Total</th>
+                <th class="text-end">Convertis</th>
+                <th class="text-end">Saisi par</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for j in jours %}
+              <tr>
+                <td><span class="badge bg-secondary">Jour {{ j.numero_jour }}</span></td>
+                <td class="fw-semibold">{{ j.date|date:"d/m/Y" }}</td>
+                <td class="text-end">{{ j.adultes_h }}</td>
+                <td class="text-end">{{ j.adultes_f }}</td>
+                <td class="text-end">{{ j.jeunes_h }}</td>
+                <td class="text-end">{{ j.jeunes_f }}</td>
+                <td class="text-end">{{ j.enfants }}</td>
+                <td class="text-end fw-bold text-success">{{ j.total_participants }}</td>
+                <td class="text-end text-warning fw-bold">{{ j.nouveaux_convertis }}</td>
+                <td class="text-end small text-muted">
+                  {% if j.auteur %}{{ j.auteur.get_full_name|default:j.auteur.username }}{% else %}—{% endif %}
+                </td>
+                <td class="text-end">
+                  {% if peut_modifier %}
+                  <a href="{% url 'edit_jour_retraite' j.pk %}" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-pencil"></i>
+                  </a>
+                  {% endif %}
+                  {% if peut_supprimer %}
+                  <a href="{% url 'delete_jour_retraite' j.pk %}" class="btn btn-sm btn-outline-danger">
+                    <i class="bi bi-trash"></i>
+                  </a>
+                  {% endif %}
+                </td>
+              </tr>
+              {% if j.notes_jour %}
+              <tr class="table-light">
+                <td></td>
+                <td colspan="10" class="small text-muted fst-italic py-1">
+                  <i class="bi bi-chat-left-text"></i> {{ j.notes_jour }}
+                </td>
+              </tr>
+              {% endif %}
+              {% empty %}
+              <tr>
+                <td colspan="11" class="text-center py-5 text-muted">
+                  <i class="bi bi-calendar-x fs-2 d-block mb-2"></i>
+                  Aucun rapport journalier saisi.
+                  {% if peut_modifier %}
+                  <br><a href="{% url 'add_jour_retraite' retraite.pk %}" class="btn btn-success btn-sm mt-2">
+                    <i class="bi bi-plus-circle"></i> Saisir le premier jour
+                  </a>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+            {% if jours %}
+            <tfoot class="table-dark fw-bold">
+              <tr>
+                <td colspan="2">TOTAL — {{ jours|length }} jour{{ jours|length|pluralize }}</td>
+                <td class="text-end">{{ tot_ah }}</td>
+                <td class="text-end">{{ tot_af }}</td>
+                <td class="text-end">{{ tot_jh }}</td>
+                <td class="text-end">{{ tot_jf }}</td>
+                <td class="text-end">{{ tot_enf }}</td>
+                <td class="text-end text-success">{{ tot_participants }}</td>
+                <td class="text-end text-warning">{{ tot_conv }}</td>
+                <td colspan="2"></td>
+              </tr>
+            </tfoot>
+            {% endif %}
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

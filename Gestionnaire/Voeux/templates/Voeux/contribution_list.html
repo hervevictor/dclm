@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block gestion %}
+<div class="container-fluid mt-4">
+  <div class="row align-items-center mb-3">
+    <div class="col">
+      <h2><i class="bi bi-wallet2 text-info"></i> Contributions</h2>
+    </div>
+    <div class="col-auto d-flex gap-2">
+      <form method="post" action="?{{ request.GET.urlencode }}" class="d-inline">
+        {% csrf_token %}
+        <input type="hidden" name="file-format" value="XLS">
+        <button type="submit" class="btn btn-outline-success btn-sm">
+          <i class="bi bi-file-earmark-excel"></i> Excel
+        </button>
+      </form>
+      <form method="post" action="?{{ request.GET.urlencode }}" class="d-inline">
+        {% csrf_token %}
+        <input type="hidden" name="file-format" value="PDF">
+        <button type="submit" class="btn btn-outline-danger btn-sm">
+          <i class="bi bi-file-earmark-pdf"></i> PDF
+        </button>
+      </form>
+      <a href="{% url 'add_contribution' %}" class="btn btn-success btn-sm">
+        <i class="bi bi-plus-circle"></i> Nouvelle Contribution
+      </a>
+    </div>
+  </div>
+
+  <!-- Filtres -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <form method="get" class="row g-2">
+        <div class="col-md-2">
+          <label class="form-label small">Région</label>
+          <select name="region" class="form-select form-select-sm select-search">
+            <option value="">Toutes</option>
+            {% for r in all_regions %}
+            <option value="{{ r.name }}" {% if selected_region == r.name %}selected{% endif %}>{{ r.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label small">Groupe</label>
+          <select name="groupe" class="form-select form-select-sm select-search">
+            <option value="">Tous</option>
+            {% for g in all_groupes %}
+            <option value="{{ g.name }}" {% if selected_groupe == g.name %}selected{% endif %}>{{ g.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small">Église (District)</label>
+          <select name="eglise" class="form-select form-select-sm select-search">
+            <option value="">Toutes</option>
+            {% for e in all_eglises %}
+            <option value="{{ e.pk }}" {% if selected_eglise == e.pk|stringformat:"s" %}selected{% endif %}>{{ e.nom }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small">Type</label>
+          <select name="type" class="form-select form-select-sm select-search">
+            <option value="">Tous</option>
+            {% for t in all_types %}
+            <option value="{{ t.pk }}" {% if selected_type == t.pk|stringformat:"s" %}selected{% endif %}>{{ t.nom }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-2 d-flex align-items-end gap-2">
+          <button type="submit" class="btn btn-primary btn-sm flex-grow-1">Filtrer</button>
+          <a href="{% url 'contribution_list' %}" class="btn btn-outline-secondary btn-sm">Réinit.</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Totaux -->
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="card border-info border-2 shadow-sm">
+        <div class="card-body text-center">
+          <h6 class="text-info">Nombre</h6>
+          <h4>{{ contrib_count }} contribution{{ contrib_count|pluralize }}</h4>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-secondary border-2 shadow-sm">
+        <div class="card-body text-center">
+          <h6 class="text-secondary">Total Objectif</h6>
+          <h4>{{ total_objectif|floatformat:0 }} FCFA</h4>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-success border-2 shadow-sm">
+        <div class="card-body text-center">
+          <h6 class="text-success">Total Versé</h6>
+          <h4>{{ total_verse|floatformat:0 }} FCFA</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tableau -->
+  <div class="card shadow-sm">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Membre</th>
+              <th>Église</th>
+              <th>Type</th>
+              <th>Date</th>
+              <th class="text-end">Objectif</th>
+              <th class="text-end">Versé</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in contribs %}
+            <tr>
+              <td><strong>{{ c.membre }}</strong></td>
+              <td>
+                <a href="{% url 'contribution_district' c.eglise.pk %}" class="text-decoration-none">{{ c.eglise.nom }}</a>
+              </td>
+              <td><span class="badge bg-info text-dark">{{ c.type_contribution }}</span></td>
+              <td>{{ c.date_contribution|date:"d/m/Y" }}</td>
+              <td class="text-end">{{ c.montant_objectif|floatformat:0|default:"—" }}</td>
+              <td class="text-end text-success fw-bold">{{ c.total_verse|floatformat:0 }}</td>
+              <td>
+                {% if c.montant_objectif %}
+                  {% if c.est_solde %}<span class="badge bg-success">Soldé</span>
+                  {% else %}<span class="badge bg-warning text-dark">En cours</span>{% endif %}
+                {% else %}
+                  <span class="badge bg-secondary">Ouvert</span>
+                {% endif %}
+              </td>
+              <td>
+                <a href="{% url 'contribution_detail' c.pk %}" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a>
+                <a href="{% url 'edit_contribution' c.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="8" class="text-center py-5 text-muted">Aucune contribution trouvée.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block gestion %}
+<div class="container mt-4">
+  <div class="card shadow-sm col-lg-8 mx-auto">
+    <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+      <h4 class="mb-0"><i class="bi bi-wallet2"></i> Nouvelle Contribution</h4>
+      <a href="{% url 'contribution_list' %}" class="btn btn-light btn-sm"><i class="bi bi-arrow-left"></i> Retour</a>
+    </div>
+    <div class="card-body">
+      <form method="post" id="contrib-form">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="mb-3">
+          <label class="form-label fw-semibold">{{ field.label }}</label>
+          {{ field }}
+          {% if field.help_text %}<div class="form-text text-muted">{{ field.help_text }}</div>{% endif %}
+          {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+        </div>
+        {% endfor %}
+        <div class="d-flex gap-2 justify-content-end mt-4">
+          <a href="{% url 'contribution_list' %}" class="btn btn-outline-secondary">Annuler</a>
+          <button type="submit" class="btn btn-info text-white"><i class="bi bi-check-circle"></i> Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('tomselect:ready', function () {
+  const egliseEl = document.getElementById('id_eglise');
+  const membreEl = document.getElementById('id_membre');
+  if (!egliseEl || !membreEl) return;
+
+  function chargerMembres(egliseId, membreSelectionne) {
+    const ts = membreEl.tomselect;
+    if (!ts) return;
+    if (!egliseId) {
+      ts.clear(); ts.clearOptions();
+      ts.addOption({value: '', text: '---------'});
+      ts.refreshOptions(false);
+      return;
+    }
+    fetch('/voeux/api/membres/' + egliseId + '/')
+      .then(r => r.json())
+      .then(data => {
+        ts.clear();
+        ts.clearOptions();
+        ts.addOption({value: '', text: '---------'});
+        data.membres.forEach(m => ts.addOption({value: String(m.id), text: m.text}));
+        ts.refreshOptions(false);
+        if (membreSelectionne) ts.setValue(String(membreSelectionne));
+      });
+  }
+
+  const tsEglise = egliseEl.tomselect;
+  if (tsEglise) {
+    tsEglise.on('change', function(val) { chargerMembres(val, null); });
+  }
+
+  if (egliseEl.value) chargerMembres(egliseEl.value, null);
+});
+</script>
+{% endblock %}

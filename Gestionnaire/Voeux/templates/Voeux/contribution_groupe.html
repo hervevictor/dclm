@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block gestion %}
+<div class="container-fluid mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2><i class="bi bi-diagram-3-fill text-info"></i> Contributions — Groupe {{ groupe.name }}</h2>
+    <a href="{% url 'contribution_list' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Retour</a>
+  </div>
+
+  <!-- Filtre type -->
+  <div class="card shadow-sm mb-3">
+    <div class="card-body py-2">
+      <form method="get" class="d-flex gap-3 align-items-end">
+        <div>
+          <label class="form-label small mb-1">Type</label>
+          <select name="type" class="form-select form-select-sm select-search" style="min-width:200px;">
+            <option value="">Tous</option>
+            {% for t in all_types %}
+            <option value="{{ t.pk }}" {% if selected_type == t.pk|stringformat:"s" %}selected{% endif %}>{{ t.nom }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary btn-sm">Filtrer</button>
+        <a href="{% url 'contribution_groupe' groupe.name %}" class="btn btn-outline-secondary btn-sm">Réinit.</a>
+      </form>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-4"><div class="card border-info shadow-sm text-center"><div class="card-body"><h6 class="text-info">Nombre</h6><h4>{{ contrib_count }}</h4></div></div></div>
+    <div class="col-md-4"><div class="card border-secondary shadow-sm text-center"><div class="card-body"><h6 class="text-secondary">Objectif</h6><h4>{{ total_objectif|floatformat:0 }} FCFA</h4></div></div></div>
+    <div class="col-md-4"><div class="card border-success shadow-sm text-center"><div class="card-body"><h6 class="text-success">Versé</h6><h4>{{ total_verse|floatformat:0 }} FCFA</h4></div></div></div>
+  </div>
+
+  {% for item in eglises_data %}
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-light d-flex justify-content-between">
+      <strong><a href="{% url 'contribution_district' item.eglise.pk %}">{{ item.eglise.nom }}</a></strong>
+      <span class="small text-muted">{{ item.count }} contrib. — Versé : <span class="text-success">{{ item.total_verse|floatformat:0 }}</span> FCFA</span>
+    </div>
+    <div class="card-body p-0">
+      <table class="table table-sm table-hover mb-0">
+        <thead class="table-light"><tr><th>Membre</th><th>Type</th><th>Date</th><th class="text-end">Objectif</th><th class="text-end">Versé</th><th>Statut</th><th></th></tr></thead>
+        <tbody>
+          {% for c in item.contribs %}
+          <tr>
+            <td>{{ c.membre }}</td>
+            <td><span class="badge bg-info text-dark">{{ c.type_contribution }}</span></td>
+            <td>{{ c.date_contribution|date:"d/m/Y" }}</td>
+            <td class="text-end">{{ c.montant_objectif|floatformat:0|default:"—" }}</td>
+            <td class="text-end text-success">{{ c.total_verse|floatformat:0 }}</td>
+            <td>{% if c.montant_objectif %}{% if c.est_solde %}<span class="badge bg-success">Soldé</span>{% else %}<span class="badge bg-warning text-dark">En cours</span>{% endif %}{% else %}<span class="badge bg-secondary">Ouvert</span>{% endif %}</td>
+            <td><a href="{% url 'contribution_detail' c.pk %}" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% empty %}
+  <div class="alert alert-info">Aucune contribution pour ce groupe.</div>
+  {% endfor %}
+</div>
+{% endblock %}

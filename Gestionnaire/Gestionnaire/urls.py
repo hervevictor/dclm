@@ -34,6 +34,8 @@ urlpatterns = [
     path('seances/', include('Seances.urls')),
     path('finances/', include('Finances.urls')),
     path('gck/', include('GCK.urls')),
+    path('voeux/', include('Voeux.urls')),
+    path('retraites/', include('Retraites.urls')),
     
     
     

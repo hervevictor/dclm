@@ -1,0 +1,374 @@
+{% extends 'base.html' %}
+{% block gestion %}
+<div class="pagetitle">
+  <h1><i class="bi bi-calendar3"></i> GCK — Vue Mensuelle</h1>
+  <nav><ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'gck_list' %}">GCK</a></li>
+    <li class="breadcrumb-item active">Vue mensuelle</li>
+  </ol></nav>
+</div>
+
+<!-- ─── Filtres ─────────────────────────────────────────────────────────────── -->
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <form method="get" class="row g-2 align-items-end" id="filtre-form">
+      <!-- Mois -->
+      <div class="col-md-2">
+        <label class="form-label small mb-1">Mois</label>
+        <select name="mois" class="form-select form-select-sm">
+          {% for val, lbl in mois_fr %}{% if val %}
+          <option value="{{ val }}" {% if mois == val %}selected{% endif %}>{{ lbl }}</option>
+          {% endif %}{% endfor %}
+        </select>
+      </div>
+      <!-- Année -->
+      <div class="col-md-1">
+        <label class="form-label small mb-1">Année</label>
+        <select name="annee" class="form-select form-select-sm">
+          {% for a in annees %}
+          <option value="{{ a }}" {% if annee == a|stringformat:"s" %}selected{% endif %}>{{ a }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <!-- Région -->
+      <div class="col-md-2">
+        <label class="form-label small mb-1">Région</label>
+        <select name="region" class="form-select form-select-sm select-search">
+          <option value="">Toutes</option>
+          {% for r in all_regions %}
+          <option value="{{ r.name }}" {% if region == r.name %}selected{% endif %}>{{ r.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <!-- Groupe -->
+      <div class="col-md-2">
+        <label class="form-label small mb-1">Groupe</label>
+        <select name="groupe" class="form-select form-select-sm select-search">
+          <option value="">Tous</option>
+          {% for g in all_groupes %}
+          <option value="{{ g.name }}" {% if groupe == g.name %}selected{% endif %}>{{ g.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <!-- District (saisie libre) -->
+      <div class="col-md-2">
+        <label class="form-label small mb-1">District</label>
+        <input type="text" name="district" class="form-control form-control-sm"
+               value="{{ district }}" placeholder="Nom du district">
+      </div>
+      <!-- Actions -->
+      <div class="col-md-3 d-flex gap-1 align-items-end">
+        <button type="submit" class="btn btn-dark btn-sm flex-grow-1">
+          <i class="bi bi-search"></i> Afficher
+        </button>
+        <a href="{% url 'gck_mensuel' %}" class="btn btn-outline-secondary btn-sm" title="Réinitialiser">&#x21BA;</a>
+      </div>
+    </form>
+
+    <!-- Exports -->
+    <div class="d-flex gap-2 mt-2">
+      <form method="post" action="?{{ request.GET.urlencode }}" class="d-inline">
+        {% csrf_token %}
+        <input type="hidden" name="file-format" value="XLS">
+        <button type="submit" class="btn btn-outline-success btn-sm">
+          <i class="bi bi-file-earmark-excel"></i> Export Excel
+        </button>
+      </form>
+      <form method="post" action="?{{ request.GET.urlencode }}" class="d-inline">
+        {% csrf_token %}
+        <input type="hidden" name="file-format" value="PDF">
+        <button type="submit" class="btn btn-outline-danger btn-sm">
+          <i class="bi bi-file-earmark-pdf"></i> Export PDF
+        </button>
+      </form>
+      <span class="text-muted small ms-2 align-self-center">
+        GCK de <strong>{{ mois_label }} {{ annee }}</strong>
+        {% if region %} · {{ region }}{% endif %}
+        {% if groupe %} · {{ groupe }}{% endif %}
+        {% if district %} · {{ district }}{% endif %}
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Résumé des 3 sections ─────────────────────────────────────────────── -->
+<div class="row g-3 mb-4">
+  <!-- Soir -->
+  <div class="col-md-4">
+    <div class="card shadow-sm h-100 border-dark">
+      <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-moon-stars-fill"></i> Séances du Soir</span>
+        <span class="badge bg-light text-dark">{{ count_soir }} bilan{{ count_soir|pluralize }}</span>
+      </div>
+      <div class="card-body py-3 text-center">
+        <div class="row g-0">
+          <div class="col-4 border-end">
+            <div class="text-muted small">Adultes</div>
+            <h5 class="mb-0">{{ totaux_soir.total_adultes }}</h5>
+          </div>
+          <div class="col-4 border-end">
+            <div class="text-muted small">Jeunes</div>
+            <h5 class="mb-0">{{ totaux_soir.total_jeunes }}</h5>
+          </div>
+          <div class="col-4">
+            <div class="text-muted small">Total</div>
+            <h5 class="mb-0 fw-bold">{{ totaux_soir.total_participants }}</h5>
+          </div>
+        </div>
+        <hr class="my-2">
+        <div class="text-success fw-bold">{{ totaux_soir.total_convertis }} converti{{ totaux_soir.total_convertis|pluralize }}</div>
+      </div>
+      <div class="card-footer bg-transparent">
+        <a href="{% url 'gck_list' %}?mois={{ mois }}&annee={{ annee }}{% if region %}&region={{ region }}{% endif %}{% if groupe %}&groupe={{ groupe }}{% endif %}{% if district %}&district={{ district }}{% endif %}"
+           class="btn btn-dark btn-sm w-100">
+          <i class="bi bi-arrow-right-circle"></i> Voir les bilans
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Conférence des Ministres -->
+  <div class="col-md-4">
+    <div class="card shadow-sm h-100" style="border-color:#78350f">
+      <div class="card-header text-white d-flex justify-content-between align-items-center" style="background:#78350f">
+        <span><i class="bi bi-sunrise-fill"></i> Conférence des Ministres</span>
+        <span class="badge bg-light text-dark">{{ count_conf }} rapport{{ count_conf|pluralize }}</span>
+      </div>
+      <div class="card-body py-3 text-center">
+        <div class="row g-0">
+          <div class="col-4 border-end">
+            <div class="text-muted small">Adultes</div>
+            <h5 class="mb-0">{{ totaux_conf.total_adultes }}</h5>
+          </div>
+          <div class="col-4 border-end">
+            <div class="text-muted small">Jeunes</div>
+            <h5 class="mb-0">{{ totaux_conf.total_jeunes }}</h5>
+          </div>
+          <div class="col-4">
+            <div class="text-muted small">Total</div>
+            <h5 class="mb-0 fw-bold">{{ totaux_conf.total_participants }}</h5>
+          </div>
+        </div>
+        <hr class="my-2">
+        <div class="text-success fw-bold">{{ totaux_conf.total_convertis }} converti{{ totaux_conf.total_convertis|pluralize }}</div>
+      </div>
+      <div class="card-footer bg-transparent">
+        <a href="{% url 'conference_list' %}?mois={{ mois }}{% if region %}&region={{ region }}{% endif %}{% if groupe %}&groupe={{ groupe }}{% endif %}{% if district %}&district={{ district }}{% endif %}"
+           class="btn btn-sm w-100 text-white" style="background:#78350f">
+          <i class="bi bi-arrow-right-circle"></i> Voir les rapports
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Académie d'Impact -->
+  <div class="col-md-4">
+    <div class="card shadow-sm h-100" style="border-color:#7c3aed">
+      <div class="card-header text-white d-flex justify-content-between align-items-center" style="background:#7c3aed">
+        <span><i class="bi bi-lightning-charge-fill"></i> Académie d'Impact</span>
+        <span class="badge bg-light text-dark">{{ count_impact }} rapport{{ count_impact|pluralize }}</span>
+      </div>
+      <div class="card-body py-3 text-center">
+        <div class="row g-0">
+          <div class="col-4 border-end">
+            <div class="text-muted small">Adultes</div>
+            <h5 class="mb-0">{{ totaux_impact.total_adultes }}</h5>
+          </div>
+          <div class="col-4 border-end">
+            <div class="text-muted small">Jeunes</div>
+            <h5 class="mb-0">{{ totaux_impact.total_jeunes }}</h5>
+          </div>
+          <div class="col-4">
+            <div class="text-muted small">Total</div>
+            <h5 class="mb-0 fw-bold">{{ totaux_impact.total_participants }}</h5>
+          </div>
+        </div>
+        <hr class="my-2">
+        <div class="text-success fw-bold">{{ totaux_impact.total_convertis }} converti{{ totaux_impact.total_convertis|pluralize }}</div>
+      </div>
+      <div class="card-footer bg-transparent">
+        <a href="{% url 'impact_list' %}?mois={{ mois }}{% if region %}&region={{ region }}{% endif %}{% if groupe %}&groupe={{ groupe }}{% endif %}{% if district %}&district={{ district }}{% endif %}"
+           class="btn btn-sm w-100 text-white" style="background:#7c3aed">
+          <i class="bi bi-arrow-right-circle"></i> Voir les rapports
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Onglets par section ────────────────────────────────────────────────── -->
+<ul class="nav nav-tabs mb-3" id="gckTabs" role="tablist">
+  <li class="nav-item">
+    <button class="nav-link active fw-semibold" data-bs-toggle="tab" data-bs-target="#tab-soir">
+      <i class="bi bi-moon-stars-fill"></i> Séances du Soir ({{ count_soir }})
+    </button>
+  </li>
+  <li class="nav-item">
+    <button class="nav-link fw-semibold" data-bs-toggle="tab" data-bs-target="#tab-conf" style="color:#78350f">
+      <i class="bi bi-sunrise-fill"></i> Conférence des Ministres ({{ count_conf }})
+    </button>
+  </li>
+  <li class="nav-item">
+    <button class="nav-link fw-semibold" data-bs-toggle="tab" data-bs-target="#tab-impact" style="color:#7c3aed">
+      <i class="bi bi-lightning-charge-fill"></i> Académie d'Impact ({{ count_impact }})
+    </button>
+  </li>
+</ul>
+
+<div class="tab-content">
+
+  <!-- ── Soir ── -->
+  <div class="tab-pane fade show active" id="tab-soir">
+    <div class="card shadow-sm">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-dark">
+              <tr>
+                <th>Date</th><th>Église</th><th>Groupe</th><th>Région</th>
+                <th class="text-center">Adultes</th><th class="text-center">Jeunes</th>
+                <th class="text-center">Enfants</th><th class="text-center fw-bold">Total</th>
+                <th class="text-center text-success">Convertis</th><th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for b in bilans_soir %}
+              <tr>
+                <td>{{ b.date|date:"d/m/Y" }}</td>
+                <td>{{ b.eglise.nom }}</td>
+                <td><small class="text-muted">{{ b.eglise.groupe }}</small></td>
+                <td><small class="text-muted">{{ b.eglise.region }}</small></td>
+                <td class="text-center">{{ b.total_adultes }}</td>
+                <td class="text-center">{{ b.total_jeunes }}</td>
+                <td class="text-center">{{ b.enfants }}</td>
+                <td class="text-center fw-bold">{{ b.total_participants }}</td>
+                <td class="text-center text-success fw-bold">{{ b.nouveaux_convertis }}</td>
+                <td><a href="{% url 'gck_detail' b.pk %}" class="btn btn-sm btn-outline-dark"><i class="bi bi-eye"></i></a></td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="10" class="text-center text-muted py-4">Aucun bilan pour cette sélection.</td></tr>
+              {% endfor %}
+            </tbody>
+            {% if bilans_soir %}
+            <tfoot class="table-dark fw-bold">
+              <tr>
+                <td colspan="4">TOTAUX</td>
+                <td class="text-center">{{ totaux_soir.total_adultes }}</td>
+                <td class="text-center">{{ totaux_soir.total_jeunes }}</td>
+                <td class="text-center">{{ totaux_soir.total_enfants }}</td>
+                <td class="text-center">{{ totaux_soir.total_participants }}</td>
+                <td class="text-center text-success">{{ totaux_soir.total_convertis }}</td>
+                <td></td>
+              </tr>
+            </tfoot>
+            {% endif %}
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Conférence ── -->
+  <div class="tab-pane fade" id="tab-conf">
+    <div class="card shadow-sm">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead style="background:#78350f; color:white;">
+              <tr>
+                <th>Date</th><th>Église</th><th>Groupe</th><th>Région</th>
+                <th class="text-center">Adultes</th><th class="text-center">Jeunes</th>
+                <th class="text-center">Enfants</th><th class="text-center fw-bold">Total</th>
+                <th class="text-center">Convertis</th><th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for b in bilans_conf %}
+              <tr>
+                <td>{{ b.date|date:"d/m/Y" }}</td>
+                <td>{{ b.eglise.nom }}</td>
+                <td><small class="text-muted">{{ b.eglise.groupe }}</small></td>
+                <td><small class="text-muted">{{ b.eglise.region }}</small></td>
+                <td class="text-center">{{ b.total_adultes }}</td>
+                <td class="text-center">{{ b.total_jeunes }}</td>
+                <td class="text-center">{{ b.enfants }}</td>
+                <td class="text-center fw-bold">{{ b.total_participants }}</td>
+                <td class="text-center text-success fw-bold">{{ b.nouveaux_convertis }}</td>
+                <td><a href="{% url 'conference_detail' b.pk %}" class="btn btn-sm btn-outline-warning"><i class="bi bi-eye"></i></a></td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="10" class="text-center text-muted py-4">Aucun rapport de conférence pour cette sélection.</td></tr>
+              {% endfor %}
+            </tbody>
+            {% if bilans_conf %}
+            <tfoot style="background:#78350f; color:white; font-weight:bold;">
+              <tr>
+                <td colspan="4">TOTAUX</td>
+                <td class="text-center">{{ totaux_conf.total_adultes }}</td>
+                <td class="text-center">{{ totaux_conf.total_jeunes }}</td>
+                <td class="text-center">{{ totaux_conf.total_enfants }}</td>
+                <td class="text-center">{{ totaux_conf.total_participants }}</td>
+                <td class="text-center">{{ totaux_conf.total_convertis }}</td>
+                <td></td>
+              </tr>
+            </tfoot>
+            {% endif %}
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Impact ── -->
+  <div class="tab-pane fade" id="tab-impact">
+    <div class="card shadow-sm">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead style="background:#7c3aed; color:white;">
+              <tr>
+                <th>Date</th><th>Église</th><th>Groupe</th><th>Région</th>
+                <th class="text-center">Adultes</th><th class="text-center">Jeunes</th>
+                <th class="text-center">Enfants</th><th class="text-center fw-bold">Total</th>
+                <th class="text-center">Convertis</th><th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for b in bilans_impact %}
+              <tr>
+                <td>{{ b.date|date:"d/m/Y" }}</td>
+                <td>{{ b.eglise.nom }}</td>
+                <td><small class="text-muted">{{ b.eglise.groupe }}</small></td>
+                <td><small class="text-muted">{{ b.eglise.region }}</small></td>
+                <td class="text-center">{{ b.total_adultes }}</td>
+                <td class="text-center">{{ b.total_jeunes }}</td>
+                <td class="text-center">{{ b.enfants }}</td>
+                <td class="text-center fw-bold">{{ b.total_participants }}</td>
+                <td class="text-center text-success fw-bold">{{ b.nouveaux_convertis }}</td>
+                <td><a href="{% url 'impact_detail' b.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye"></i></a></td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="10" class="text-center text-muted py-4">Aucun rapport Impact pour cette sélection.</td></tr>
+              {% endfor %}
+            </tbody>
+            {% if bilans_impact %}
+            <tfoot style="background:#7c3aed; color:white; font-weight:bold;">
+              <tr>
+                <td colspan="4">TOTAUX</td>
+                <td class="text-center">{{ totaux_impact.total_adultes }}</td>
+                <td class="text-center">{{ totaux_impact.total_jeunes }}</td>
+                <td class="text-center">{{ totaux_impact.total_enfants }}</td>
+                <td class="text-center">{{ totaux_impact.total_participants }}</td>
+                <td class="text-center">{{ totaux_impact.total_convertis }}</td>
+                <td></td>
+              </tr>
+            </tfoot>
+            {% endif %}
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,62 +1,222 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block gestion %} <br>
-    <h1>Details de : {{enfant}} </h1>
-    <hr>
-    <small><strong>{{enfant.publish}}</strong> | <strong>{{enfant.auteur}}</strong>  </small>
+{% block gestion %}
 
-    <br><br><br>
-    <div class="container">
-        
-        
-        {% if enfant.enfant_image %}
-          <p>
-            <img src="{{enfant.enfant_image.url}}" alt="">
-          </p>
-          {% else %}
-          <p>
-            <img src="{% static 'images/profile.png' %}" alt="">
-          </p>
-        {% endif %}
+<div class="container-fluid mt-4">
 
-        <div class="row">
-            <div class="col-12 col-md-6">
-                <p>Classe : <strong>{{enfant.classe}}</strong> </p>
-                <p>Sexe : <strong>{{enfant.sexe}}</strong> </p>
-                <p>Téléphone : <strong>{{enfant.telephone}}</strong> </p>
-                <p>District : <a href="{% url 'enfants_district' enfant.eglise.pk %}"><strong>{{enfant.eglise}}</strong></a>  </p>
-                <p>Groupe : <a href="{% url 'enfants_groupe' enfant.eglise.groupe %}"><strong>{{enfant.eglise.groupe}}</strong></a> </p>
-                <p>Region : <a href="{% url 'enfants_region' enfant.eglise.region %}"><strong>{{enfant.eglise.region}}</strong></a> </p>
-                <p>Groupage : <strong>{{enfant.groupe_sanguin}}</strong> </p>
-                <p>Rhesus : <strong>{{enfant.rhesus}}</strong> </p>
-                <p>Avec qui vit-il ? : <strong>{{enfant.avec_qui_vit_il}}</strong> </p>
-                
-                
-            </div>
-            <div class="col-12 col-md-6">
-                <p>Nombre de Frères : <strong>{{enfant.nombre_de_freres}}</strong> </p>
-                <p>Dans l'eglise : <strong>{{enfant.les_freres_sont_ils_dans_leglise}}</strong> </p>
-                <p>Nom des Frères : <strong>{{enfant.nom_des_freres}}</strong> </p>
-                <p>Nombre de Soeurs : <strong>{{enfant.nombre_de_soeurs}}</strong> </p>
-                <p>Dans l'eglise : <strong>{{enfant.les_soeurs_sont_elles_dans_leglise}}</strong> </p>
-                <p>Nom des soeurs : <strong>{{enfant.nom_des_soeurs}}</strong> </p>
-                <p>Nom des parents : <strong>{{enfant.nom_des_parents_ou_tuteurs}}</strong> </p>
-                <p>Dans l'eglise ? : <strong>{{enfant.les_parents_sont_ils_dans_leglise}}</strong> </p>
-                <p>Numéro du parent ou tuteur : <strong>{{enfant.contact}}</strong> </p>
-                
-            </div>
-        </div>
-        <p>Description : <strong>{{enfant.description_sur_l_enfant}}</strong> </p>
-        
-
-        <br><br><br>
-        <a href="{% url 'edit_enfant' enfant.pk %}" class="btn btn-success">Modifier</a>
-        <a href="{% url 'delete_enfant' enfant.pk %}" class="btn btn-danger">Supprimer</a>
+  <!-- En-tête -->
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h3 class="mb-0">
+      <i class="bi bi-person-fill text-warning"></i>
+      {{ enfant.nom }} {{ enfant.prenom }}
+    </h3>
+    <div class="d-flex gap-2">
+      <a href="{% url 'edit_enfant' enfant.pk %}" class="btn btn-success btn-sm">
+        <i class="bi bi-pencil-fill"></i> Modifier
+      </a>
+      <a href="{% url 'delete_enfant' enfant.pk %}" class="btn btn-danger btn-sm">
+        <i class="bi bi-trash-fill"></i> Supprimer
+      </a>
+      <a href="javascript:history.back()" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> Retour
+      </a>
     </div>
-    <br><br><br>
+  </div>
+
+  <div class="row g-4">
+
+    <!-- Colonne gauche : photo + localisation -->
+    <div class="col-12 col-md-4">
+
+      <!-- Photo -->
+      <div class="card shadow-sm mb-3 text-center">
+        <div class="card-body">
+          {% if enfant.enfant_image %}
+            <img src="{{ enfant.enfant_image.url }}" alt="Photo"
+                 class="img-fluid rounded-circle mb-2"
+                 style="width:150px;height:150px;object-fit:cover;">
+          {% else %}
+            <img src="{% static 'images/profile.png' %}" alt="Photo"
+                 class="img-fluid rounded-circle mb-2"
+                 style="width:150px;height:150px;object-fit:cover;">
+          {% endif %}
+          <h5 class="mb-0">{{ enfant.nom }} {{ enfant.prenom }}</h5>
+          <span class="badge bg-warning text-dark mt-1">{{ enfant.classe|default:"—" }}</span>
+        </div>
+      </div>
+
+      <!-- Localisation -->
+      <div class="card shadow-sm mb-3">
+        <div class="card-header bg-light fw-semibold">
+          <i class="bi bi-geo-alt-fill text-danger"></i> Localisation
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item d-flex justify-content-between">
+            <span class="text-muted">District</span>
+            <a href="{% url 'enfants_district' enfant.eglise.pk %}">
+              <strong>{{ enfant.eglise }}</strong>
+            </a>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span class="text-muted">Groupe</span>
+            <a href="{% url 'enfants_groupe' enfant.eglise.groupe %}">
+              <strong>{{ enfant.eglise.groupe }}</strong>
+            </a>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span class="text-muted">Région</span>
+            <a href="{% url 'enfants_region' enfant.eglise.region %}">
+              <strong>{{ enfant.eglise.region }}</strong>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Méta -->
+      <div class="card shadow-sm">
+        <div class="card-header bg-light fw-semibold">
+          <i class="bi bi-info-circle"></i> Méta
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item d-flex justify-content-between">
+            <span class="text-muted">Ajouté le</span>
+            <strong>{{ enfant.publish|date:"d/m/Y" }}</strong>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span class="text-muted">Auteur</span>
+            <strong>{{ enfant.auteur }}</strong>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Colonne droite : détails -->
+    <div class="col-12 col-md-8">
+
+      <!-- Identité -->
+      <div class="card shadow-sm mb-3">
+        <div class="card-header bg-light fw-semibold">
+          <i class="bi bi-person-vcard-fill text-warning"></i> Identité
+        </div>
+        <div class="card-body">
+          <div class="row g-2">
+            <div class="col-6">
+              <div class="text-muted small">Nom</div>
+              <strong>{{ enfant.nom }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Prénom</div>
+              <strong>{{ enfant.prenom }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Date de naissance</div>
+              <strong>{{ enfant.date_de_naissance|date:"d/m/Y"|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Lieu de naissance</div>
+              <strong>{{ enfant.lieu_de_naissance|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Sexe</div>
+              <strong>{{ enfant.sexe|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Classe</div>
+              <strong>{{ enfant.classe|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Groupe sanguin</div>
+              <strong>{{ enfant.groupe_sanguin|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Rhésus</div>
+              <strong>{{ enfant.rhesus|default:"—" }}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vie familiale -->
+      <div class="card shadow-sm mb-3">
+        <div class="card-header bg-light fw-semibold">
+          <i class="bi bi-house-fill text-warning"></i> Vie familiale
+        </div>
+        <div class="card-body">
+          <div class="row g-2">
+            <div class="col-6">
+              <div class="text-muted small">Avec qui vit-il ?</div>
+              <strong>{{ enfant.avec_qui_vit_il|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Nom des parentés</div>
+              <strong>{{ enfant.nom_des_parentes|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Nom des parents / tuteurs</div>
+              <strong>{{ enfant.nom_des_parents_ou_tuteurs|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Parents dans l'église ?</div>
+              <strong>{{ enfant.les_parents_sont_ils_dans_leglise|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Contact (parent / tuteur)</div>
+              <strong>{{ enfant.contact|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Nombre de frères</div>
+              <strong>{{ enfant.nombre_de_freres|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Frères dans l'église ?</div>
+              <strong>{{ enfant.les_freres_sont_ils_dans_leglise|default:"—" }}</strong>
+            </div>
+            <div class="col-12">
+              <div class="text-muted small">Nom des frères</div>
+              <strong>{{ enfant.nom_des_freres|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Nombre de sœurs</div>
+              <strong>{{ enfant.nombre_de_soeurs|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Sœurs dans l'église ?</div>
+              <strong>{{ enfant.les_soeurs_sont_elles_dans_leglise|default:"—" }}</strong>
+            </div>
+            <div class="col-12">
+              <div class="text-muted small">Nom des sœurs</div>
+              <strong>{{ enfant.nom_des_soeurs|default:"—" }}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Talents & Description -->
+      {% if enfant.talents_de_l_enfant or enfant.description_sur_l_enfant %}
+      <div class="card shadow-sm">
+        <div class="card-header bg-light fw-semibold">
+          <i class="bi bi-stars text-warning"></i> Talents &amp; Description
+        </div>
+        <div class="card-body">
+          {% if enfant.talents_de_l_enfant %}
+            <div class="mb-2">
+              <div class="text-muted small">Talents</div>
+              <p class="mb-0" style="white-space:pre-line;">{{ enfant.talents_de_l_enfant }}</p>
+            </div>
+          {% endif %}
+          {% if enfant.description_sur_l_enfant %}
+            <div>
+              <div class="text-muted small">Description</div>
+              <p class="mb-0" style="white-space:pre-line;">{{ enfant.description_sur_l_enfant }}</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+
 {% endblock %}
-
-
-
-
-

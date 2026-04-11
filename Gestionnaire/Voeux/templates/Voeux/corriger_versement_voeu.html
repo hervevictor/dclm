@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block gestion %}
+<div class="container mt-4">
+  <div class="col-lg-6 mx-auto">
+    <div class="card shadow-sm border-warning">
+      <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+        <h4 class="mb-0"><i class="bi bi-pencil-square"></i> Corriger un versement</h4>
+        <a href="{% url 'voeu_detail' versement.voeu.pk %}" class="btn btn-outline-dark btn-sm">
+          <i class="bi bi-arrow-left"></i> Retour
+        </a>
+      </div>
+      <div class="card-body">
+
+        <!-- Infos du versement -->
+        <div class="alert alert-info">
+          <div><strong>Membre :</strong> {{ versement.voeu.membre }}</div>
+          <div><strong>Église :</strong> {{ versement.voeu.eglise.nom }}</div>
+          <div><strong>Date du versement :</strong> {{ versement.date|date:"d/m/Y" }}</div>
+          <div><strong>Montant actuel :</strong>
+            <span class="fw-bold text-primary fs-5">{{ versement.montant|floatformat:0 }} FCFA</span>
+          </div>
+          {% if versement.notes %}
+          <div class="mt-1 small text-muted">Notes : {{ versement.notes }}</div>
+          {% endif %}
+          <div class="mt-1 small text-muted">
+            Saisi par :
+            {% if versement.auteur %}
+              {{ versement.auteur.get_full_name|default:versement.auteur.username }}
+            {% else %}—{% endif %}
+          </div>
+        </div>
+
+        <div class="alert alert-warning py-2">
+          <i class="bi bi-exclamation-triangle-fill"></i>
+          Cette correction sera tracée avec votre identité et une justification obligatoire.
+          L'historique sera visible par les administrateurs.
+        </div>
+
+        <form method="post">
+          {% csrf_token %}
+          {% for field in form %}
+          <div class="mb-3">
+            <label class="form-label fw-semibold">{{ field.label }}
+              {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+            </label>
+            {{ field }}
+            {% if field.help_text %}<div class="form-text text-muted">{{ field.help_text }}</div>{% endif %}
+            {% for error in field.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+          </div>
+          {% endfor %}
+
+          <div class="d-flex gap-2 justify-content-end mt-4">
+            <a href="{% url 'voeu_detail' versement.voeu.pk %}" class="btn btn-outline-secondary">Annuler</a>
+            <button type="submit" class="btn btn-warning text-dark fw-bold">
+              <i class="bi bi-check-circle"></i> Confirmer la correction
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

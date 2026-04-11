@@ -1,0 +1,358 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block gestion %}
+<style>
+.chart-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1.2rem 1.5rem 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+.chart-title {
+  font-size: .95rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 1rem;
+  border-left: 4px solid currentColor;
+  padding-left: .5rem;
+}
+.stat-pill {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: .6rem 1rem;
+  text-align: center;
+}
+</style>
+
+<div class="container-fluid mt-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h3 class="mb-0">
+      <i class="bi bi-bar-chart-fill text-primary"></i>
+      Statistiques — Participation GCK
+    </h3>
+    <a href="{% url 'gck_list' %}" class="btn btn-outline-secondary btn-sm">
+      <i class="bi bi-arrow-left"></i> GCK
+    </a>
+  </div>
+
+  <!-- ── Sélecteur en cascade + Année ────────────────────────────────────── -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <div class="row g-3 align-items-end">
+
+        <!-- Année -->
+        <div class="col-md-2">
+          <label class="form-label small fw-semibold mb-1">
+            <i class="bi bi-calendar3"></i> Année
+          </label>
+          <select id="sel-annee" class="form-select">
+            <option value="">Toutes</option>
+            {% for a in annees %}
+            <option value="{{ a }}" {% if selected_annee == a|stringformat:"s" %}selected{% endif %}>{{ a }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Région -->
+        <div class="col-md-4">
+          <label class="form-label small fw-semibold mb-1">
+            <i class="bi bi-geo-alt-fill text-danger"></i> Région
+          </label>
+          <select id="sel-region" class="form-select">
+            <option value="">— National (toutes les régions) —</option>
+          </select>
+          <div class="form-text">Sélectionner pour voir les groupes</div>
+        </div>
+
+        <!-- Groupe -->
+        <div class="col-md-4">
+          <label class="form-label small fw-semibold mb-1">
+            <i class="bi bi-diagram-3-fill text-primary"></i> Groupe
+          </label>
+          <select id="sel-groupe" class="form-select" disabled>
+            <option value="">— Toute la région —</option>
+          </select>
+          <div class="form-text">Sélectionner pour voir les districts</div>
+        </div>
+
+      </div>
+
+      <!-- Badge niveau -->
+      <div class="mt-3 d-flex align-items-center gap-2">
+        <span class="text-muted small">Vue actuelle :</span>
+        <span class="badge bg-dark" id="current-level-badge">National — Régions</span>
+        <span class="badge bg-secondary" id="parent-badge" style="display:none"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Cartes totaux ────────────────────────────────────────────────────── -->
+  <div class="row g-3 mb-4">
+    <div class="col-4">
+      <div class="stat-pill">
+        <div class="small text-muted">Total GCK Soir</div>
+        <div class="fw-bold fs-6 text-primary" id="tot-gck">—</div>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="stat-pill">
+        <div class="small text-muted">Total Conférence</div>
+        <div class="fw-bold fs-6 text-warning" id="tot-conf">—</div>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="stat-pill">
+        <div class="small text-muted">Total Impact</div>
+        <div class="fw-bold fs-6 text-info" id="tot-impact">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Loader ───────────────────────────────────────────────────────────── -->
+  <div id="loader" class="text-center py-5 d-none">
+    <div class="spinner-border text-primary"></div>
+    <div class="mt-2 text-muted small">Chargement des données…</div>
+  </div>
+
+  <!-- ── Histogrammes ─────────────────────────────────────────────────────── -->
+  <div id="charts-wrap">
+
+    <!-- Participation par programme -->
+    <div class="chart-card mb-4">
+      <div class="chart-title" style="color:#1d4ed8">
+        <i class="bi bi-people-fill"></i> Participation par programme
+      </div>
+      <div id="no-data-prog" class="text-center text-muted py-4 d-none">
+        <i class="bi bi-bar-chart fs-1 opacity-25"></i>
+        <div class="mt-1">Aucune donnée</div>
+      </div>
+      <canvas id="chartProgramme" style="max-height:340px;"></canvas>
+    </div>
+
+    <!-- Détail GCK Soir (adultes / jeunes / enfants) -->
+    <div class="chart-card mb-4">
+      <div class="chart-title" style="color:#059669">
+        <i class="bi bi-bar-chart-steps"></i> GCK Soir — Répartition par catégorie
+      </div>
+      <div id="no-data-cat" class="text-center text-muted py-4 d-none">
+        <i class="bi bi-bar-chart fs-1 opacity-25"></i>
+        <div class="mt-1">Aucune donnée</div>
+      </div>
+      <canvas id="chartCategorie" style="max-height:300px;"></canvas>
+    </div>
+
+    <!-- Tableau récapitulatif -->
+    <div class="chart-card">
+      <div class="chart-title" style="color:#374151">
+        <i class="bi bi-table"></i> Tableau récapitulatif
+      </div>
+      <div class="table-responsive">
+        <table class="table table-sm table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Unité</th>
+              <th class="text-end">GCK Soir</th>
+              <th class="text-end">Conférence</th>
+              <th class="text-end">Impact</th>
+              <th class="text-end fw-bold">Grand Total</th>
+            </tr>
+          </thead>
+          <tbody id="recapBody"></tbody>
+          <tfoot class="table-dark fw-bold" id="recapFoot"></tfoot>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+const API_URL = "{% url 'stats_gck_api' %}";
+const REGIONS = {{ regions_json|safe }};
+const GROUPES = {{ groupes_json|safe }};
+
+let chartP = null, chartCat = null;
+
+const selAnnee  = document.getElementById('sel-annee');
+const selRegion = document.getElementById('sel-region');
+const selGroupe = document.getElementById('sel-groupe');
+
+// Peupler régions
+REGIONS.forEach(r => selRegion.add(new Option(r, r)));
+
+selRegion.addEventListener('change', () => {
+  const region = selRegion.value;
+  selGroupe.innerHTML = '<option value="">— Toute la région —</option>';
+  selGroupe.disabled = !region;
+  if (region && GROUPES[region]) {
+    GROUPES[region].forEach(g => selGroupe.add(new Option(g, g)));
+  }
+  refresh();
+});
+
+selGroupe.addEventListener('change', () => refresh());
+selAnnee.addEventListener('change',  () => refresh());
+
+// ── Niveau courant ─────────────────────────────────────────────────────────────
+
+function getCurrentLevel() {
+  if (selGroupe.value)  return { level: 'district', parent: selGroupe.value };
+  if (selRegion.value)  return { level: 'groupe',   parent: selRegion.value };
+  return                       { level: 'region',   parent: '' };
+}
+
+const LEVEL_LABELS = {
+  region:   'National — Régions',
+  groupe:   'Groupes de la région',
+  district: 'Districts du groupe',
+};
+
+// ── Fetch + Render ─────────────────────────────────────────────────────────────
+
+async function refresh() {
+  const { level, parent } = getCurrentLevel();
+  const annee = selAnnee.value;
+
+  document.getElementById('current-level-badge').textContent = LEVEL_LABELS[level];
+  const pb = document.getElementById('parent-badge');
+  if (parent) { pb.textContent = parent; pb.style.display = ''; }
+  else { pb.style.display = 'none'; }
+
+  document.getElementById('loader').classList.remove('d-none');
+  document.getElementById('charts-wrap').style.opacity = '.3';
+
+  try {
+    const params = new URLSearchParams({ level, parent, annee });
+    const resp = await fetch(API_URL + '?' + params.toString());
+    const data = await resp.json();
+    renderCharts(data);
+  } finally {
+    document.getElementById('loader').classList.add('d-none');
+    document.getElementById('charts-wrap').style.opacity = '1';
+  }
+}
+
+// ── Render ─────────────────────────────────────────────────────────────────────
+
+function renderCharts(data) {
+  const labels = data.labels || [];
+  const empty  = labels.length === 0;
+  const sum    = arr => (arr||[]).reduce((a,b)=>a+b,0);
+  const fmt    = v => v.toLocaleString('fr-FR');
+
+  // Totaux
+  document.getElementById('tot-gck').textContent    = empty ? '—' : fmt(sum(data.gck_total));
+  document.getElementById('tot-conf').textContent   = empty ? '—' : fmt(sum(data.conf_total));
+  document.getElementById('tot-impact').textContent = empty ? '—' : fmt(sum(data.impact_total));
+
+  ['prog','cat'].forEach(id => {
+    document.getElementById(`no-data-${id}`).classList.toggle('d-none', !empty);
+    const c = document.getElementById(`chart${id === 'prog' ? 'Programme' : 'Categorie'}`);
+    c.style.display = empty ? 'none' : '';
+  });
+
+  renderTable(data);
+  if (empty) return;
+
+  const gridColor = 'rgba(0,0,0,0.06)';
+  const tooltipPers = ctx => ` ${ctx.dataset.label} : ${ctx.parsed.y.toLocaleString('fr-FR')} pers.`;
+  const baseScales = {
+    x: {
+      grid: { color: gridColor },
+      ticks: { maxRotation: labels.length > 8 ? 45 : 0, font: { size: labels.length > 12 ? 9 : 11 } }
+    },
+    y: { beginAtZero: true, grid: { color: gridColor }, ticks: { callback: v => fmt(v) } }
+  };
+
+  // ─ Chart Programme (barres groupées : GCK / Conférence / Impact) ───────────
+  if (chartP) chartP.destroy();
+  chartP = new Chart(document.getElementById('chartProgramme'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'GCK Soir',            data: data.gck_total,
+          backgroundColor: 'rgba(30,100,210,0.82)', borderColor: 'rgba(20,70,160,1)',
+          borderWidth: 1, borderRadius: 4, borderSkipped: false },
+        { label: 'Conférence Ministres', data: data.conf_total,
+          backgroundColor: 'rgba(245,158,11,0.82)', borderColor: 'rgba(180,120,5,1)',
+          borderWidth: 1, borderRadius: 4, borderSkipped: false },
+        { label: 'Académie Impact',      data: data.impact_total,
+          backgroundColor: 'rgba(6,182,212,0.82)',  borderColor: 'rgba(8,145,178,1)',
+          borderWidth: 1, borderRadius: 4, borderSkipped: false },
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { position: 'top', labels: { usePointStyle: true } },
+                 tooltip: { callbacks: { label: tooltipPers } } },
+      scales: baseScales
+    }
+  });
+
+  // ─ Chart Catégorie GCK Soir (empilé : adultes / jeunes / enfants) ──────────
+  if (chartCat) chartCat.destroy();
+  chartCat = new Chart(document.getElementById('chartCategorie'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Adultes', data: data.gck_adultes,
+          backgroundColor: 'rgba(16,185,129,0.85)',  borderRadius: 4, borderSkipped: false },
+        { label: 'Jeunes',  data: data.gck_jeunes,
+          backgroundColor: 'rgba(59,130,246,0.85)',  borderRadius: 4, borderSkipped: false },
+        { label: 'Enfants', data: data.gck_enfants,
+          backgroundColor: 'rgba(249,115,22,0.85)',  borderRadius: 4, borderSkipped: false },
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { position: 'top', labels: { usePointStyle: true } },
+                 tooltip: { callbacks: { label: tooltipPers } } },
+      scales: {
+        ...baseScales,
+        x: { ...baseScales.x, stacked: true },
+        y: { ...baseScales.y, stacked: true }
+      }
+    }
+  });
+}
+
+// ── Tableau ────────────────────────────────────────────────────────────────────
+
+function renderTable(data) {
+  const body = document.getElementById('recapBody');
+  const foot = document.getElementById('recapFoot');
+  const fmt  = v => v.toLocaleString('fr-FR');
+  body.innerHTML = ''; foot.innerHTML = '';
+  const labels = data.labels || [];
+  if (!labels.length) {
+    body.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-3">Aucune donnée.</td></tr>';
+    return;
+  }
+  let tG = 0, tC = 0, tI = 0, tT = 0;
+  labels.forEach((lbl, i) => {
+    tG += data.gck_total[i]; tC += data.conf_total[i];
+    tI += data.impact_total[i]; tT += data.grand_totals[i];
+    body.innerHTML += `<tr>
+      <td>${lbl}</td>
+      <td class="text-end">${fmt(data.gck_total[i])}</td>
+      <td class="text-end">${fmt(data.conf_total[i])}</td>
+      <td class="text-end">${fmt(data.impact_total[i])}</td>
+      <td class="text-end fw-bold text-primary">${fmt(data.grand_totals[i])}</td>
+    </tr>`;
+  });
+  foot.innerHTML = `<tr><td>TOTAL</td><td class="text-end">${fmt(tG)}</td>
+    <td class="text-end">${fmt(tC)}</td><td class="text-end">${fmt(tI)}</td>
+    <td class="text-end text-warning">${fmt(tT)}</td></tr>`;
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => refresh());
+</script>
+{% endblock %}

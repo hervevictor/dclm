@@ -91,7 +91,7 @@
     <label class="input-group-text"><i class="bi bi-download"></i> Exporter</label>
     <select name="file-format" class="form-select border-primary" style="max-width: 160px;">
       <option value="PDF">PDF</option>
-      <option value="XLS">Excel (XLS)</option>
+      <option value="XLS">Excel (XLSX)</option>
       <option value="CSV">CSV</option>
       <option value="JSON">JSON</option>
     </select>
@@ -115,13 +115,12 @@
     </tr>
   </thead>
   <tbody>
-
+      <!-- Affichage des bilans --> 
     {% for bilan in bilans %}
     {% labels_for bilan.eglise.region as lbl %}
     <tr>
       <td>
         <a href="{% url 'seance_details' bilan.pk %}">{{ bilan.eglise }}</a>
-        <br><small class="text-muted">{{ lbl.intermediaire }} : {{ bilan.eglise.groupe }}</small>
       </td>
       <td><a href="{% url 'seance_filter' bilan.seance %}">{{ bilan.seance.type }}</a></td>
       <td>{{ bilan.date }}</td>

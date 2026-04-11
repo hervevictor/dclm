@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block gestion %}
 <div class="pagetitle">
-  <h1>GCK — Rapport National</h1>
+  <h1>GCK — Rapport National TOGO</h1>
   <nav><ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="{% url 'gck_list' %}">GCK</a></li>
     <li class="breadcrumb-item active">National</li>
@@ -12,38 +12,71 @@
 
 <div class="card shadow-sm mb-3">
   <div class="card-body">
-    <form method="get" class="row g-2">
-      <div class="col-md-4">
-        <label class="form-label small">Du</label>
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h6 class="mb-0"><i class="bi bi-funnel"></i> Filtres</h6>
+      <a href="{% url 'gck_recapitulatif' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-table"></i> Récapitulatif par date
+      </a>
+    </div>
+    <form method="get" class="row g-2 align-items-end">
+      <div class="col-md-2">
+        <label class="form-label small mb-1">Du</label>
         <input type="date" name="start_date" class="form-control form-control-sm" value="{{ start_date }}">
       </div>
-      <div class="col-md-4">
-        <label class="form-label small">Au</label>
+      <div class="col-md-2">
+        <label class="form-label small mb-1">Au</label>
         <input type="date" name="end_date" class="form-control form-control-sm" value="{{ end_date }}">
       </div>
-      <div class="col-md-4 d-flex align-items-end gap-1">
-        <button type="submit" class="btn btn-primary btn-sm w-100">Filtrer</button>
+      <div class="col-md-2">
+        <label class="form-label small mb-1">Mois</label>
+        <select name="mois" class="form-select form-select-sm">
+          {% for val, label in mois_fr %}<option value="{{ val }}" {% if mois == val %}selected{% endif %}>{{ label }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="col-md-1">
+        <label class="form-label small mb-1">Jour</label>
+        <input type="number" name="jour" class="form-control form-control-sm" min="1" max="31" value="{{ jour }}" placeholder="1–31">
+      </div>
+      <div class="col-md-2 d-flex gap-1">
+        <button type="submit" class="btn btn-primary btn-sm w-100"><i class="bi bi-funnel"></i> Filtrer</button>
         <a href="{% url 'gck_national' %}" class="btn btn-outline-secondary btn-sm">&#x21BA;</a>
       </div>
     </form>
   </div>
 </div>
 
+<!-- Export -->
+<form method="post" class="mb-3 d-flex align-items-center gap-2">
+  {% csrf_token %}
+  <input type="hidden" name="start_date" value="{{ start_date }}">
+  <input type="hidden" name="end_date" value="{{ end_date }}">
+  <input type="hidden" name="mois" value="{{ mois }}">
+  <input type="hidden" name="jour" value="{{ jour }}">
+  <div class="input-group input-group-sm w-auto">
+    <label class="input-group-text"><i class="bi bi-download"></i> Exporter</label>
+    <select name="file-format" class="form-select" style="max-width:130px;">
+      <option value="PDF">PDF</option>
+      <option value="XLS">Excel (XLSX)</option>
+    </select>
+    <button type="submit" class="btn btn-outline-dark">Télécharger</button>
+  </div>
+</form>
+
 <div class="card shadow-sm">
   <div class="card-header bg-dark text-white">
-    <h6 class="mb-0">Compilation par Région</h6>
+    <h6 class="mb-0"><i class="bi bi-globe"></i> Compilation par Région — TOGO</h6>
   </div>
-  <div class="card-body">
+  <div class="card-body p-0">
     <div class="table-responsive">
-      <table class="table table-hover align-middle">
-        <thead class="table-light">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-dark">
           <tr>
             <th>Région</th>
-            <th class="text-center">Bilans</th>
-            <th class="text-center">Hommes</th>
-            <th class="text-center">Femmes</th>
+            <th class="text-center">Rapports</th>
+            <th class="text-center" style="background:#1a3d6b">Adultes</th>
+            <th class="text-center" style="background:#4a235a">Jeunes</th>
             <th class="text-center">Enfants</th>
-            <th class="text-center">Total</th>
+            <th class="text-center fw-bold">Total</th>
             <th class="text-center text-success">Convertis</th>
             <th></th>
           </tr>
@@ -53,8 +86,8 @@
           <tr>
             <td><strong>{{ r.region.name }}</strong></td>
             <td class="text-center">{{ r.count }}</td>
-            <td class="text-center">{{ r.total_hommes }}</td>
-            <td class="text-center">{{ r.total_femmes }}</td>
+            <td class="text-center fw-semibold">{{ r.total_adultes }}</td>
+            <td class="text-center fw-semibold">{{ r.total_jeunes }}</td>
             <td class="text-center">{{ r.total_enfants }}</td>
             <td class="text-center fw-bold">{{ r.total_participants }}</td>
             <td class="text-center text-success fw-bold">{{ r.total_convertis }}</td>
@@ -65,7 +98,7 @@
             </td>
           </tr>
           {% empty %}
-          <tr><td colspan="8" class="text-center text-muted py-4">Aucun bilan GCK enregistré.</td></tr>
+          <tr><td colspan="8" class="text-center text-muted py-4">Aucun bilan enregistré.</td></tr>
           {% endfor %}
         </tbody>
         {% if regions_data %}
@@ -73,8 +106,8 @@
           <tr>
             <td>TOTAL NATIONAL</td>
             <td class="text-center">{{ bilan_count }}</td>
-            <td class="text-center">{{ total_hommes }}</td>
-            <td class="text-center">{{ total_femmes }}</td>
+            <td class="text-center">{{ total_adultes }}</td>
+            <td class="text-center">{{ total_jeunes }}</td>
             <td class="text-center">{{ total_enfants }}</td>
             <td class="text-center">{{ total_participants }}</td>
             <td class="text-center text-success">{{ total_convertis }}</td>

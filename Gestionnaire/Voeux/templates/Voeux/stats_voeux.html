@@ -1,0 +1,381 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block gestion %}
+<style>
+.chart-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1.2rem 1.5rem 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+.chart-title {
+  font-size: .95rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 1rem;
+  border-left: 4px solid currentColor;
+  padding-left: .5rem;
+}
+.stat-pill {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: .6rem 1rem;
+  text-align: center;
+}
+</style>
+
+<div class="container-fluid mt-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h3 class="mb-0">
+      <i class="bi bi-bar-chart-fill text-danger"></i>
+      Statistiques — Voeux &amp; Contributions
+    </h3>
+    <div class="d-flex gap-2">
+      <a href="{% url 'voeu_list' %}"         class="btn btn-outline-secondary btn-sm"><i class="bi bi-heart"></i> Voeux</a>
+      <a href="{% url 'contribution_list' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-wallet2"></i> Contributions</a>
+    </div>
+  </div>
+
+  <!-- ── Sélecteur en cascade ─────────────────────────────────────────────── -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <div class="row g-3 align-items-end">
+
+        <!-- Région -->
+        <div class="col-md-4">
+          <label class="form-label small fw-semibold mb-1">
+            <i class="bi bi-geo-alt-fill text-danger"></i> Région
+          </label>
+          <select id="sel-region" class="form-select">
+            <option value="">— National (toutes les régions) —</option>
+          </select>
+          <div class="form-text">Sélectionner pour voir les groupes</div>
+        </div>
+
+        <!-- Groupe (actif seulement si région sélectionnée) -->
+        <div class="col-md-4">
+          <label class="form-label small fw-semibold mb-1">
+            <i class="bi bi-diagram-3-fill text-primary"></i> Groupe
+          </label>
+          <select id="sel-groupe" class="form-select" disabled>
+            <option value="">— Toute la région —</option>
+          </select>
+          <div class="form-text">Sélectionner pour voir les districts</div>
+        </div>
+
+        <!-- District (superadmin + groupe sélectionné) -->
+        {% if is_superadmin %}
+        <div class="col-md-4">
+          <label class="form-label small fw-semibold mb-1">
+            <i class="bi bi-building text-success"></i> District
+          </label>
+          <select id="sel-district" class="form-select" disabled>
+            <option value="">— Tout le groupe —</option>
+          </select>
+          <div class="form-text">Sélectionner pour voir les membres</div>
+        </div>
+        {% endif %}
+
+      </div>
+
+      <!-- Breadcrumb niveau actuel -->
+      <div class="mt-3 d-flex align-items-center gap-2">
+        <span class="text-muted small">Vue actuelle :</span>
+        <span class="badge bg-dark" id="current-level-badge">National — Régions</span>
+        <span class="badge bg-secondary" id="parent-badge" style="display:none"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Cartes totaux ────────────────────────────────────────────────────── -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="stat-pill">
+        <div class="small text-muted">Voeux — Promis</div>
+        <div class="fw-bold fs-6 text-primary" id="tot-promis">—</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-pill">
+        <div class="small text-muted">Voeux — Payé</div>
+        <div class="fw-bold fs-6 text-success" id="tot-paye-v">—</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-pill">
+        <div class="small text-muted">Contributions — Objectif</div>
+        <div class="fw-bold fs-6 text-warning" id="tot-obj">—</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-pill">
+        <div class="small text-muted">Contributions — Versé</div>
+        <div class="fw-bold fs-6 text-info" id="tot-verse">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Loader ───────────────────────────────────────────────────────────── -->
+  <div id="loader" class="text-center py-5 d-none">
+    <div class="spinner-border text-danger"></div>
+    <div class="mt-2 text-muted small">Chargement des données…</div>
+  </div>
+
+  <!-- ── Histogrammes ─────────────────────────────────────────────────────── -->
+  <div id="charts-wrap">
+    <!-- Voeux -->
+    <div class="chart-card mb-4">
+      <div class="chart-title" style="color:#dc3545">
+        <i class="bi bi-heart-fill"></i> Voeux — Montant promis vs Total payé
+      </div>
+      <div id="no-data-voeux" class="text-center text-muted py-4 d-none">
+        <i class="bi bi-bar-chart fs-1 opacity-25"></i>
+        <div class="mt-1">Aucune donnée</div>
+      </div>
+      <canvas id="chartVoeux" style="max-height:320px;"></canvas>
+    </div>
+
+    <!-- Contributions -->
+    <div class="chart-card mb-4">
+      <div class="chart-title" style="color:#198754">
+        <i class="bi bi-wallet2"></i> Contributions — Objectif vs Total versé
+      </div>
+      <div id="no-data-contrib" class="text-center text-muted py-4 d-none">
+        <i class="bi bi-bar-chart fs-1 opacity-25"></i>
+        <div class="mt-1">Aucune donnée</div>
+      </div>
+      <canvas id="chartContrib" style="max-height:320px;"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const API_URL    = "{% url 'stats_voeux_api' %}";
+const MEMBRE_URL = "{% url 'stats_membre' 0 %}".replace('/0/', '/');
+const IS_SUPER   = {% if is_superadmin %}true{% else %}false{% endif %};
+const REGIONS    = {{ regions_json|safe }};
+const GROUPES    = {{ groupes_json|safe }};  // {region: [groupes]}
+
+let chartV = null, chartC = null;
+
+// ── Peupler les dropdowns ──────────────────────────────────────────────────────
+
+const selRegion   = document.getElementById('sel-region');
+const selGroupe   = document.getElementById('sel-groupe');
+const selDistrict = document.getElementById('sel-district');  // peut être null
+
+REGIONS.forEach(r => {
+  selRegion.add(new Option(r, r));
+});
+
+selRegion.addEventListener('change', () => {
+  const region = selRegion.value;
+
+  // Réinitialiser groupe
+  selGroupe.innerHTML = '<option value="">— Toute la région —</option>';
+  selGroupe.disabled = !region;
+  if (selDistrict) { selDistrict.innerHTML = '<option value="">— Tout le groupe —</option>'; selDistrict.disabled = true; }
+
+  if (region && GROUPES[region]) {
+    GROUPES[region].forEach(g => selGroupe.add(new Option(g, g)));
+  }
+  refresh();
+});
+
+selGroupe.addEventListener('change', () => {
+  const groupe = selGroupe.value;
+  if (selDistrict) {
+    selDistrict.innerHTML = '<option value="">— Tout le groupe —</option>';
+    selDistrict.disabled = true;
+  }
+  if (groupe && selDistrict) {
+    // Charger les districts via API
+    fetchLabels('district', groupe).then(labels => {
+      labels.forEach(d => selDistrict.add(new Option(d, d)));
+      selDistrict.disabled = false;
+    });
+  }
+  refresh();
+});
+
+if (selDistrict) {
+  selDistrict.addEventListener('change', () => refresh());
+}
+
+async function fetchLabels(level, parent) {
+  const p = new URLSearchParams({ level, parent });
+  const resp = await fetch(API_URL + '?' + p.toString());
+  const data = await resp.json();
+  return data.labels || [];
+}
+
+// ── Déterminer le niveau actuel ────────────────────────────────────────────────
+
+function getCurrentLevel() {
+  if (selDistrict && selDistrict.value) return { level: 'membre',   parent: selDistrict.value };
+  if (selGroupe.value)                  return { level: 'district',  parent: selGroupe.value };
+  if (selRegion.value)                  return { level: 'groupe',    parent: selRegion.value };
+  return                                       { level: 'region',    parent: '' };
+}
+
+const LEVEL_LABELS = {
+  region: 'National — Régions',
+  groupe: 'Groupes de la région',
+  district: 'Districts du groupe',
+  membre: 'Membres du district',
+};
+
+// ── Fetch + Render ─────────────────────────────────────────────────────────────
+
+async function refresh() {
+  const { level, parent } = getCurrentLevel();
+
+  // Badge
+  document.getElementById('current-level-badge').textContent = LEVEL_LABELS[level];
+  const pb = document.getElementById('parent-badge');
+  if (parent) { pb.textContent = parent; pb.style.display = ''; }
+  else { pb.style.display = 'none'; }
+
+  document.getElementById('loader').classList.remove('d-none');
+  document.getElementById('charts-wrap').style.opacity = '.3';
+
+  try {
+    const p = new URLSearchParams({ level, parent });
+    const resp = await fetch(API_URL + '?' + p.toString());
+    const data = await resp.json();
+    renderCharts(data, level);
+  } finally {
+    document.getElementById('loader').classList.add('d-none');
+    document.getElementById('charts-wrap').style.opacity = '1';
+  }
+}
+
+// ── Render Chart.js ────────────────────────────────────────────────────────────
+
+function renderCharts(data, level) {
+  const labels = data.labels || [];
+  const empty  = labels.length === 0;
+
+  // Totaux
+  const sum = arr => (arr || []).reduce((a,b) => a+b, 0);
+  const FCFA = v => v.toLocaleString('fr-FR') + ' FCFA';
+  document.getElementById('tot-promis').textContent  = empty ? '—' : FCFA(sum(data.promis_voeux));
+  document.getElementById('tot-paye-v').textContent  = empty ? '—' : FCFA(sum(data.paye_voeux));
+  document.getElementById('tot-obj').textContent     = empty ? '—' : FCFA(sum(data.objectif_contrib));
+  document.getElementById('tot-verse').textContent   = empty ? '—' : FCFA(sum(data.paye_contrib));
+
+  document.getElementById('no-data-voeux').classList.toggle('d-none', !empty);
+  document.getElementById('no-data-contrib').classList.toggle('d-none', !empty);
+  document.getElementById('chartVoeux').style.display  = empty ? 'none' : '';
+  document.getElementById('chartContrib').style.display = empty ? 'none' : '';
+  if (empty) return;
+
+  // Options communes
+  const gridColor = 'rgba(0,0,0,0.06)';
+  const tooltipFCFA = ctx => ` ${ctx.dataset.label} : ${ctx.parsed.y.toLocaleString('fr-FR')} FCFA`;
+  const baseOpts = {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: { position: 'top', labels: { usePointStyle: true, font: { size: 12 } } },
+      tooltip: { callbacks: { label: tooltipFCFA } }
+    },
+    scales: {
+      x: {
+        grid: { color: gridColor },
+        ticks: {
+          maxRotation: labels.length > 8 ? 45 : 0,
+          font: { size: labels.length > 12 ? 9 : 11 }
+        }
+      },
+      y: {
+        beginAtZero: true,
+        grid: { color: gridColor },
+        ticks: { callback: v => v.toLocaleString('fr-FR') }
+      }
+    }
+  };
+
+  // Ajouter un onClick vers stats_membre si niveau 'membre'
+  const onMemberClick = (evt, elems, chart) => {
+    if (!elems.length) return;
+    const pk = (data.adulte_pks || [])[elems[0].index];
+    if (pk) window.location = MEMBRE_URL + pk + '/statistiques/';
+  };
+
+  // ─ Chart Voeux ─────────────────────────────────────────────────────────────
+  if (chartV) chartV.destroy();
+  chartV = new Chart(document.getElementById('chartVoeux'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Montant promis',
+          data: data.promis_voeux,
+          backgroundColor: 'rgba(30, 100, 210, 0.80)',
+          borderColor:     'rgba(20,  70, 160, 1)',
+          borderWidth: 1,
+          borderRadius: 4,
+          borderSkipped: false,
+        },
+        {
+          label: 'Total payé',
+          data: data.paye_voeux,
+          backgroundColor: 'rgba(16, 185, 129, 0.80)',
+          borderColor:     'rgba(5,  150, 105, 1)',
+          borderWidth: 1,
+          borderRadius: 4,
+          borderSkipped: false,
+        },
+      ]
+    },
+    options: {
+      ...baseOpts,
+      ...(level === 'membre' ? { onClick: onMemberClick, onHover: (e,el) => { e.native.target.style.cursor = el.length ? 'pointer' : 'default'; } } : {})
+    }
+  });
+
+  // ─ Chart Contributions ─────────────────────────────────────────────────────
+  if (chartC) chartC.destroy();
+  chartC = new Chart(document.getElementById('chartContrib'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Objectif',
+          data: data.objectif_contrib,
+          backgroundColor: 'rgba(245, 158, 11, 0.80)',
+          borderColor:     'rgba(217, 119, 6, 1)',
+          borderWidth: 1,
+          borderRadius: 4,
+          borderSkipped: false,
+        },
+        {
+          label: 'Total versé',
+          data: data.paye_contrib,
+          backgroundColor: 'rgba(6, 182, 212, 0.80)',
+          borderColor:     'rgba(8,  145, 178, 1)',
+          borderWidth: 1,
+          borderRadius: 4,
+          borderSkipped: false,
+        },
+      ]
+    },
+    options: {
+      ...baseOpts,
+      ...(level === 'membre' ? { onClick: onMemberClick, onHover: (e,el) => { e.native.target.style.cursor = el.length ? 'pointer' : 'default'; } } : {})
+    }
+  });
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => refresh());
+</script>
+{% endblock %}

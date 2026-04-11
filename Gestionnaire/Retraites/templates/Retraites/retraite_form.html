@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block gestion %}
+<div class="container mt-4">
+  <div class="col-lg-7 mx-auto">
+    <div class="card shadow-sm">
+      <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+        <h4 class="mb-0"><i class="bi bi-sunrise-fill"></i> {{ action }} une retraite</h4>
+        <a href="{% url 'retraite_list' %}" class="btn btn-outline-dark btn-sm">
+          <i class="bi bi-arrow-left"></i> Retour
+        </a>
+      </div>
+      <div class="card-body">
+        <p class="text-muted small">
+          <i class="bi bi-info-circle"></i>
+          Renseignez les informations générales de la retraite.
+          Les présences se saisissent ensuite <strong>jour par jour</strong> depuis la fiche de la retraite.
+        </p>
+        <form method="post">
+          {% csrf_token %}
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">{{ form.type_retraite.label }} *</label>
+              {{ form.type_retraite }}
+              {% for e in form.type_retraite.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">{{ form.region.label }} *</label>
+              {{ form.region }}
+              {% for e in form.region.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+            </div>
+            <div class="col-md-2">
+              <label class="form-label fw-semibold">{{ form.annee.label }} *</label>
+              {{ form.annee }}
+              {% for e in form.annee.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+            </div>
+            <div class="col-md-5">
+              <label class="form-label fw-semibold">{{ form.date_debut.label }} *</label>
+              {{ form.date_debut }}
+              {% for e in form.date_debut.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+            </div>
+            <div class="col-md-5">
+              <label class="form-label fw-semibold">{{ form.date_fin.label }}</label>
+              {{ form.date_fin }}
+              <div class="form-text">Laisser vide si inconnue</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">{{ form.lieu.label }}</label>
+              {{ form.lieu }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">{{ form.theme.label }}</label>
+              {{ form.theme }}
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">{{ form.nombre_eglises.label }}</label>
+              {{ form.nombre_eglises }}
+              <div class="form-text">{{ form.nombre_eglises.help_text }}</div>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold">{{ form.notes.label }}</label>
+              {{ form.notes }}
+            </div>
+          </div>
+
+          <div class="d-flex gap-2 justify-content-end mt-4">
+            <a href="{% url 'retraite_list' %}" class="btn btn-outline-secondary">Annuler</a>
+            <button type="submit" class="btn btn-warning text-dark fw-bold">
+              <i class="bi bi-check-circle"></i> {{ action }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block gestion %}
+<div class="pagetitle"><h1>Supprimer — Académie d'Impact</h1></div>
+<div class="card shadow-sm col-lg-6 mx-auto">
+  <div class="card-header bg-danger text-white">
+    <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Confirmer la suppression</h5>
+  </div>
+  <div class="card-body">
+    <p>Voulez-vous vraiment supprimer ce rapport ?</p>
+    <p class="fw-bold">{{ object }}</p>
+    <form method="POST">
+      {% csrf_token %}
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-danger px-4"><i class="bi bi-trash"></i> Confirmer</button>
+        <a href="{% url 'impact_list' %}" class="btn btn-outline-secondary px-4">Annuler</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

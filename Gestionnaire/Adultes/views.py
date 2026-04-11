@@ -106,8 +106,8 @@ def FilteAdultesDistrict(request, dist):
             response.write(pdf)
             return response
         elif file_format == 'XLS (Excel)':
-            response = HttpResponse(dataset.xls, content_type='application/vnd.ms-excel')
-            response['Content-Disposition'] = 'attachment; filename="exported_data.xls"'
+            response = HttpResponse(dataset.export('xlsx'), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            response['Content-Disposition'] = 'attachment; filename="exported_data.xlsx"'
             return response 
     
     context = {

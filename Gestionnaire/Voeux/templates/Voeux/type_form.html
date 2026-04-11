@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block gestion %}
+<div class="container mt-4">
+  <div class="card shadow-sm col-lg-6 mx-auto">
+    <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+      <h4 class="mb-0"><i class="bi bi-tags-fill"></i> {{ action }} un type de contribution</h4>
+      <a href="{% url 'type_list' %}" class="btn btn-light btn-sm"><i class="bi bi-arrow-left"></i> Retour</a>
+    </div>
+    <div class="card-body">
+      <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="mb-3">
+          <label class="form-label fw-semibold">{{ field.label }}</label>
+          {{ field }}
+          {% if field.help_text %}<div class="form-text text-muted">{{ field.help_text }}</div>{% endif %}
+          {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+        </div>
+        {% endfor %}
+        <div class="d-flex gap-2 justify-content-end mt-3">
+          <a href="{% url 'type_list' %}" class="btn btn-outline-secondary">Annuler</a>
+          <button type="submit" class="btn btn-secondary"><i class="bi bi-check-circle"></i> Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

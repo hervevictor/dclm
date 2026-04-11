@@ -55,6 +55,8 @@ INSTALLED_APPS = [
     'Seances.apps.SeancesConfig',
     'Finances.apps.FinancesConfig',
     'GCK.apps.GckConfig',
+    'Voeux.apps.VoeuxConfig',
+    'Retraites.apps.RetraitesConfig',
     'simple_history',
 ]
 

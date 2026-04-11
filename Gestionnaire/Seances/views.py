@@ -63,8 +63,8 @@ def seances(request):
             response['Content-Disposition'] = 'attachment; filename="seances_export.json"'
             return response
         elif file_format == 'XLS':
-            response = HttpResponse(dataset.xls, content_type='application/vnd.ms-excel')
-            response['Content-Disposition'] = 'attachment; filename="seances_export.xls"'
+            response = HttpResponse(dataset.export('xlsx'), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            response['Content-Disposition'] = 'attachment; filename="seances_export.xlsx"'
             return response
         elif file_format == 'PDF':
             response = HttpResponse(content_type='application/pdf')
@@ -249,8 +249,8 @@ def group_view(request):
             response['Content-Disposition'] = 'attachment; filename="groupes.csv"'
             return response        
         elif file_format == 'XLS':
-            response = HttpResponse(dataset.xls, content_type='application/vnd.ms-excel')
-            response['Content-Disposition'] = 'attachment; filename="groupes.xls"'
+            response = HttpResponse(dataset.export('xlsx'), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            response['Content-Disposition'] = 'attachment; filename="groupes.xlsx"'
             return response
         elif file_format == 'PDF':
             response = HttpResponse(content_type='application/pdf')

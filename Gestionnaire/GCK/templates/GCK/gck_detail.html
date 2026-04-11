@@ -11,7 +11,7 @@
 </div>
 
 <div class="row justify-content-center">
-  <div class="col-lg-8">
+  <div class="col-lg-9">
     <div class="card shadow-sm">
       <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
         <span><i class="bi bi-journal-text"></i> {{ bilan }}</span>
@@ -26,50 +26,78 @@
             <p><strong>Région :</strong> <a href="{% url 'gck_region' bilan.eglise.region %}">{{ bilan.eglise.region }}</a></p>
           </div>
           <div class="col-md-6">
-            <p><strong>Date :</strong> {{ bilan.date|date:"d/m/Y" }}</p>
+            <p><strong>Date :</strong> {{ bilan.date|date:"l d F Y" }}</p>
             <p><strong>Enregistré le :</strong> {{ bilan.created|date:"d/m/Y H:i" }}</p>
           </div>
         </div>
 
         <hr>
         <h6 class="text-muted mb-3">Participation</h6>
-        <div class="row text-center">
-          <div class="col-3">
-            <div class="card border-primary">
-              <div class="card-body py-3">
-                <div class="small text-muted">Hommes</div>
-                <h3 class="text-primary mb-0">{{ bilan.hommes }}</h3>
-              </div>
-            </div>
+
+        <!-- Adultes -->
+        <div class="card border-primary mb-3">
+          <div class="card-header bg-primary text-white py-1 small">
+            <strong>ADULTES — Total : {{ bilan.total_adultes }}</strong>
           </div>
-          <div class="col-3">
-            <div class="card border-info">
-              <div class="card-body py-3">
-                <div class="small text-muted">Femmes</div>
-                <h3 class="text-info mb-0">{{ bilan.femmes }}</h3>
+          <div class="card-body py-2">
+            <div class="row text-center g-0">
+              <div class="col-6 border-end">
+                <div class="text-muted small">Hommes</div>
+                <h4 class="text-primary mb-0">{{ bilan.adultes_hommes }}</h4>
               </div>
-            </div>
-          </div>
-          <div class="col-3">
-            <div class="card border-warning">
-              <div class="card-body py-3">
-                <div class="small text-muted">Enfants</div>
-                <h3 class="text-warning mb-0">{{ bilan.enfants }}</h3>
-              </div>
-            </div>
-          </div>
-          <div class="col-3">
-            <div class="card border-success">
-              <div class="card-body py-3">
-                <div class="small text-muted">Convertis</div>
-                <h3 class="text-success mb-0">{{ bilan.nouveaux_convertis }}</h3>
+              <div class="col-6">
+                <div class="text-muted small">Femmes</div>
+                <h4 class="text-info mb-0">{{ bilan.adultes_femmes }}</h4>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="alert alert-secondary mt-3 text-center">
-          <strong>Total participants :</strong> {{ bilan.total_participants }}
+        <!-- Jeunes -->
+        <div class="card border-warning mb-3">
+          <div class="card-header bg-warning text-dark py-1 small">
+            <strong>JEUNES — Total : {{ bilan.total_jeunes }}</strong>
+          </div>
+          <div class="card-body py-2">
+            <div class="row text-center g-0">
+              <div class="col-6 border-end">
+                <div class="text-muted small">Hommes</div>
+                <h4 class="text-warning mb-0">{{ bilan.jeunes_hommes }}</h4>
+              </div>
+              <div class="col-6">
+                <div class="text-muted small">Femmes</div>
+                <h4 style="color:#c0392b" class="mb-0">{{ bilan.jeunes_femmes }}</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Enfants + Convertis -->
+        <div class="row text-center mb-3">
+          <div class="col-4">
+            <div class="card border-secondary">
+              <div class="card-body py-3">
+                <div class="text-muted small">Enfants</div>
+                <h4 class="mb-0">{{ bilan.enfants }}</h4>
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="card bg-dark text-white">
+              <div class="card-body py-3">
+                <div class="small opacity-75">Total général</div>
+                <h4 class="mb-0 fw-bold">{{ bilan.total_participants }}</h4>
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="card border-success">
+              <div class="card-body py-3">
+                <div class="text-muted small">Nouveaux convertis</div>
+                <h4 class="text-success mb-0 fw-bold">{{ bilan.nouveaux_convertis }}</h4>
+              </div>
+            </div>
+          </div>
         </div>
 
         {% if bilan.suggestions %}

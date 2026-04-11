@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block gestion %}
+<div class="container mt-4">
+  <div class="col-lg-10 mx-auto">
+
+    <!-- En-tête -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-danger bg-opacity-10 d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h4 class="mb-0 text-danger">
+          <i class="bi bi-person-fill"></i>
+          Suivi financier — {{ adulte.nom }} {{ adulte.prenom }}
+        </h4>
+        <a href="{{ adulte.get_absolute_url }}" class="btn btn-outline-secondary btn-sm">
+          <i class="bi bi-arrow-left"></i> Fiche membre
+        </a>
+      </div>
+      <div class="card-body py-2">
+        <span class="text-muted small">
+          <i class="bi bi-building"></i> {{ adulte.eglise.nom }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Cartes résumé -->
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-3">
+        <div class="card border-0 bg-primary bg-opacity-10 text-center py-3">
+          <div class="small text-muted">Voeux — Promis</div>
+          <div class="fw-bold fs-5 text-primary">{{ total_promis|floatformat:0 }} FCFA</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card border-0 bg-success bg-opacity-10 text-center py-3">
+          <div class="small text-muted">Voeux — Payé</div>
+          <div class="fw-bold fs-5 text-success">{{ total_paye_voeux|floatformat:0 }} FCFA</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card border-0 bg-warning bg-opacity-10 text-center py-3">
+          <div class="small text-muted">Contributions — Objectif</div>
+          <div class="fw-bold fs-5 text-warning">{{ total_obj|floatformat:0 }} FCFA</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card border-0 bg-info bg-opacity-10 text-center py-3">
+          <div class="small text-muted">Contributions — Versé</div>
+          <div class="fw-bold fs-5 text-info">{{ total_verse|floatformat:0 }} FCFA</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart Voeux -->
+    {% if has_voeux %}
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-danger bg-opacity-10 text-danger fw-semibold">
+        <i class="bi bi-heart-fill"></i> Voeux — Promis vs Payé vs Restant
+      </div>
+      <div class="card-body">
+        <canvas id="chartVoeux" style="max-height:340px;"></canvas>
+      </div>
+    </div>
+    {% else %}
+    <div class="alert alert-light border mb-4">
+      <i class="bi bi-info-circle"></i> Ce membre n'a aucun voeu enregistré.
+    </div>
+    {% endif %}
+
+    <!-- Chart Contributions -->
+    {% if has_contribs %}
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-success bg-opacity-10 text-success fw-semibold">
+        <i class="bi bi-wallet2"></i> Contributions — Objectif vs Versé vs Restant
+      </div>
+      <div class="card-body">
+        <canvas id="chartContrib" style="max-height:340px;"></canvas>
+      </div>
+    </div>
+    {% else %}
+    <div class="alert alert-light border mb-4">
+      <i class="bi bi-info-circle"></i> Ce membre n'a aucune contribution enregistrée.
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+
+<script>
+const VOEUX_DATA   = {{ voeux_data|safe }};
+const CONTRIB_DATA = {{ contrib_data|safe }};
+const FCFA = v => v.toLocaleString('fr-FR') + ' FCFA';
+
+const baseOpts = {
+  responsive: true,
+  maintainAspectRatio: true,
+  plugins: {
+    legend: { position: 'top' },
+    tooltip: {
+      callbacks: {
+        label: ctx => ` ${ctx.dataset.label} : ${FCFA(ctx.parsed.y)}`
+      }
+    }
+  },
+  scales: {
+    x: { ticks: { font: { size: 11 } } },
+    y: { beginAtZero: true, ticks: { callback: v => v.toLocaleString('fr-FR') } }
+  }
+};
+
+{% if has_voeux %}
+new Chart(document.getElementById('chartVoeux'), {
+  type: 'bar',
+  data: {
+    labels: VOEUX_DATA.labels,
+    datasets: [
+      {
+        label: 'Montant promis',
+        data: VOEUX_DATA.promis,
+        backgroundColor: 'rgba(54, 162, 235, 0.75)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1, borderRadius: 4,
+      },
+      {
+        label: 'Total payé',
+        data: VOEUX_DATA.paye,
+        backgroundColor: 'rgba(40, 167, 69, 0.75)',
+        borderColor: 'rgba(40, 167, 69, 1)',
+        borderWidth: 1, borderRadius: 4,
+      },
+      {
+        label: 'Restant',
+        data: VOEUX_DATA.restant,
+        backgroundColor: 'rgba(220, 53, 69, 0.5)',
+        borderColor: 'rgba(220, 53, 69, 1)',
+        borderWidth: 1, borderRadius: 4,
+      },
+    ]
+  },
+  options: baseOpts,
+});
+{% endif %}
+
+{% if has_contribs %}
+new Chart(document.getElementById('chartContrib'), {
+  type: 'bar',
+  data: {
+    labels: CONTRIB_DATA.labels,
+    datasets: [
+      {
+        label: 'Objectif',
+        data: CONTRIB_DATA.objectif,
+        backgroundColor: 'rgba(255, 193, 7, 0.75)',
+        borderColor: 'rgba(255, 193, 7, 1)',
+        borderWidth: 1, borderRadius: 4,
+      },
+      {
+        label: 'Total versé',
+        data: CONTRIB_DATA.verse,
+        backgroundColor: 'rgba(23, 162, 184, 0.75)',
+        borderColor: 'rgba(23, 162, 184, 1)',
+        borderWidth: 1, borderRadius: 4,
+      },
+      {
+        label: 'Restant',
+        data: CONTRIB_DATA.restant,
+        backgroundColor: 'rgba(220, 53, 69, 0.5)',
+        borderColor: 'rgba(220, 53, 69, 1)',
+        borderWidth: 1, borderRadius: 4,
+      },
+    ]
+  },
+  options: baseOpts,
+});
+{% endif %}
+</script>
+{% endblock %}

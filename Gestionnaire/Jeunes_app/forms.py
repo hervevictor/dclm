@@ -33,7 +33,7 @@ class JeuneForm(forms.ModelForm):
             'eglise' : forms.Select(attrs={'class': 'form-control select-search'}),
             'telephone': forms.NumberInput(attrs={'class': 'form-control'}),
              
-            'date_de_naissance' : forms.DateInput(attrs={'class': 'form-control'}),
+            'date_de_naissance' : forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}, format='%Y-%m-%d'),
             'lieu_de_naissance' : forms.TextInput(attrs={'class': 'form-control'}),
             'sexe' : forms.Select(choices=sexs_choice, attrs={'class': 'form-control'}),
             'groupe_sanguin' : forms.TextInput(attrs={'class': 'form-control'}),

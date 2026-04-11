@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block gestion %}
+<div class="container mt-4">
+  <div class="col-lg-7 mx-auto">
+    <div class="card shadow-sm">
+      <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">
+          <i class="bi bi-calendar3"></i>
+          {{ action }} — Rapport journalier
+        </h4>
+        <a href="{% url 'retraite_detail' retraite.pk %}" class="btn btn-outline-dark btn-sm">
+          <i class="bi bi-arrow-left"></i> Retour
+        </a>
+      </div>
+      <div class="card-body">
+
+        <!-- Rappel de la retraite -->
+        <div class="alert alert-light border mb-4">
+          <strong>{{ retraite.get_type_retraite_display }} {{ retraite.annee }}</strong>
+          — {{ retraite.region.name }}<br>
+          <span class="text-muted small">
+            <i class="bi bi-calendar-range"></i>
+            {{ retraite.date_debut|date:"d/m/Y" }}
+            {% if retraite.date_fin %} → {{ retraite.date_fin|date:"d/m/Y" }}{% endif %}
+            ({{ retraite.nb_jours }} jour{{ retraite.nb_jours|pluralize }})
+          </span>
+        </div>
+
+        <form method="post">
+          {% csrf_token %}
+
+          <!-- Date du jour -->
+          <div class="mb-4">
+            <label class="form-label fw-semibold fs-6">{{ form.date.label }} *</label>
+            {{ form.date }}
+            {% for e in form.date.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+          </div>
+
+          <hr class="my-3">
+          <h5 class="text-secondary mb-3"><i class="bi bi-people"></i> Présences ce jour</h5>
+
+          <div class="row g-3">
+            <div class="col-6 col-md-3">
+              <label class="form-label fw-semibold">{{ form.adultes_h.label }}</label>
+              {{ form.adultes_h }}
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label fw-semibold">{{ form.adultes_f.label }}</label>
+              {{ form.adultes_f }}
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label fw-semibold">{{ form.jeunes_h.label }}</label>
+              {{ form.jeunes_h }}
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label fw-semibold">{{ form.jeunes_f.label }}</label>
+              {{ form.jeunes_f }}
+            </div>
+            <div class="col-6 col-md-4">
+              <label class="form-label fw-semibold">{{ form.enfants.label }}</label>
+              {{ form.enfants }}
+            </div>
+            <div class="col-6 col-md-4">
+              <label class="form-label fw-semibold">{{ form.nouveaux_convertis.label }}</label>
+              {{ form.nouveaux_convertis }}
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <label class="form-label fw-semibold">{{ form.notes_jour.label }}</label>
+            {{ form.notes_jour }}
+          </div>
+
+          <div class="d-flex gap-2 justify-content-end mt-4">
+            <a href="{% url 'retraite_detail' retraite.pk %}" class="btn btn-outline-secondary">Annuler</a>
+            <button type="submit" class="btn btn-warning text-dark fw-bold">
+              <i class="bi bi-check-circle"></i> {{ action }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

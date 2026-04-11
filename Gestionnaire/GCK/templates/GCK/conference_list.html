@@ -1,0 +1,241 @@
+{% extends 'base.html' %}
+{% load region_labels %}
+{% block gestion %}
+<div class="pagetitle">
+  <h1><i class="bi bi-sunrise text-warning"></i> Conférence des Ministres (GCK — Matin)</h1>
+</div>
+
+<!-- Cartes statistiques -->
+<div class="row g-2 mb-4">
+  <div class="col-md-4 col-12">
+    <div class="card border-warning shadow-sm h-100">
+      <div class="card-header bg-warning text-dark text-center py-1">
+        <small class="fw-bold">ADULTES &nbsp;—&nbsp; <span class="fs-6">{{ total_adultes }}</span></small>
+      </div>
+      <div class="card-body py-2">
+        <div class="row text-center g-0">
+          <div class="col-6 border-end">
+            <div class="text-muted" style="font-size:.72rem">Hommes</div>
+            <strong class="text-warning fs-5">{{ total_adultes_h }}</strong>
+          </div>
+          <div class="col-6">
+            <div class="text-muted" style="font-size:.72rem">Femmes</div>
+            <strong class="text-danger fs-5">{{ total_adultes_f }}</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 col-12">
+    <div class="card border-secondary shadow-sm h-100">
+      <div class="card-header bg-secondary text-white text-center py-1">
+        <small class="fw-bold">JEUNES &nbsp;—&nbsp; <span class="fs-6">{{ total_jeunes }}</span></small>
+      </div>
+      <div class="card-body py-2">
+        <div class="row text-center g-0">
+          <div class="col-6 border-end">
+            <div class="text-muted" style="font-size:.72rem">Hommes</div>
+            <strong class="text-secondary fs-5">{{ total_jeunes_h }}</strong>
+          </div>
+          <div class="col-6">
+            <div class="text-muted" style="font-size:.72rem">Femmes</div>
+            <strong class="text-secondary fs-5">{{ total_jeunes_f }}</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 col-12">
+    <div class="row g-2">
+      <div class="col-6">
+        <div class="card border-secondary text-center shadow-sm">
+          <div class="card-body py-2">
+            <div class="text-muted small">Enfants</div>
+            <h5 class="mb-0">{{ total_enfants }}</h5>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="card border-dark text-center shadow-sm">
+          <div class="card-body py-2">
+            <div class="text-muted small">Total</div>
+            <h5 class="mb-0 fw-bold">{{ total_participants }}</h5>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="card border-success text-center shadow-sm">
+          <div class="card-body py-2">
+            <div class="text-muted small">Convertis</div>
+            <h5 class="mb-0 text-success fw-bold">{{ total_convertis }}</h5>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="card bg-dark text-white text-center shadow-sm">
+          <div class="card-body py-2">
+            <div class="small opacity-75">Bilans</div>
+            <h5 class="mb-0">{{ bilan_count }}</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Filtres -->
+<div class="card shadow-sm mb-3">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h6 class="mb-0 fw-semibold"><i class="bi bi-funnel"></i> Filtres</h6>
+      <a href="{% url 'add_conference' %}" class="btn btn-warning btn-sm text-dark">
+        <i class="bi bi-plus-circle"></i> Ajouter un rapport
+      </a>
+    </div>
+    <form method="get" class="row g-2 align-items-end">
+      <div class="col-md-2">
+        <label class="form-label small mb-1">Région</label>
+        <select name="region" class="form-select form-select-sm select-search">
+          <option value="">— Toutes —</option>
+          {% for r in all_regions %}<option value="{{ r.name }}" {% if selected_region == r.name %}selected{% endif %}>{{ r.name }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label small mb-1">Groupe</label>
+        <select name="groupe" class="form-select form-select-sm select-search">
+          <option value="">— Tous —</option>
+          {% for g in all_groupes %}<option value="{{ g.name }}" {% if selected_groupe == g.name %}selected{% endif %}>{{ g.name }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label small mb-1">Église</label>
+        <select name="district" class="form-select form-select-sm select-search">
+          <option value="">— Toutes —</option>
+          {% for e in all_eglises %}<option value="{{ e.nom }}" {% if selected_district == e.nom %}selected{% endif %}>{{ e.nom }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="col-md-1">
+        <label class="form-label small mb-1">Du</label>
+        <input type="date" name="start_date" class="form-control form-control-sm" value="{{ start_date }}">
+      </div>
+      <div class="col-md-1">
+        <label class="form-label small mb-1">Au</label>
+        <input type="date" name="end_date" class="form-control form-control-sm" value="{{ end_date }}">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label small mb-1">Mois</label>
+        <select name="mois" class="form-select form-select-sm">
+          {% for val, lbl in mois_fr %}<option value="{{ val }}" {% if mois == val %}selected{% endif %}>{{ lbl }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="col-md-1">
+        <label class="form-label small mb-1">Jour</label>
+        <input type="number" name="jour" class="form-control form-control-sm" min="1" max="31" value="{{ jour }}" placeholder="1–31">
+      </div>
+      <div class="col-md-1 d-flex gap-1">
+        <button type="submit" class="btn btn-warning btn-sm w-100"><i class="bi bi-search"></i></button>
+        <a href="{% url 'conference_list' %}" class="btn btn-outline-secondary btn-sm" title="Réinitialiser">&#x21BA;</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Export -->
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+  <div>
+    {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' or user.profile.niveau_acces == 'COMPTABLE' %}
+    <a href="{% url 'conference_national' %}" class="btn btn-outline-warning btn-sm">
+      <i class="bi bi-globe"></i> Rapport National
+    </a>
+    {% endif %}
+  </div>
+  <form method="post" class="d-flex align-items-center gap-2">
+    {% csrf_token %}
+    <input type="hidden" name="region" value="{{ selected_region }}">
+    <input type="hidden" name="groupe" value="{{ selected_groupe }}">
+    <input type="hidden" name="district" value="{{ selected_district }}">
+    <input type="hidden" name="start_date" value="{{ start_date }}">
+    <input type="hidden" name="end_date" value="{{ end_date }}">
+    <input type="hidden" name="mois" value="{{ mois }}">
+    <input type="hidden" name="jour" value="{{ jour }}">
+    <div class="input-group input-group-sm">
+      <label class="input-group-text"><i class="bi bi-download"></i> Exporter</label>
+      <select name="file-format" class="form-select border-warning" style="max-width:130px;">
+        <option value="PDF">PDF</option>
+        <option value="XLS">Excel (XLSX)</option>
+      </select>
+      <button type="submit" class="btn btn-outline-warning">Télécharger</button>
+    </div>
+  </form>
+</div>
+
+<!-- Tableau -->
+<div class="card shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead style="background:#78350f;color:#fff">
+          <tr>
+            <th>Date</th>
+            <th>Église</th>
+            <th>Groupe</th>
+            <th>Région</th>
+            <th class="text-center">Adultes</th>
+            <th class="text-center">Jeunes</th>
+            <th class="text-center">Enfants</th>
+            <th class="text-center fw-bold">Total</th>
+            <th class="text-center text-success">Convertis</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for bilan in bilans %}
+          {% labels_for bilan.eglise.region as lbl %}
+          <tr>
+            <td>{{ bilan.date|date:"d/m/Y" }}</td>
+            <td>
+              <a href="{% url 'conference_district' bilan.eglise.pk %}" class="fw-semibold">{{ bilan.eglise.nom }}</a>
+            </td>
+            <td>
+              <small class="text-muted d-block" style="font-size:.72rem">{{ lbl.intermediaire }}</small>
+              <a href="{% url 'conference_groupe' bilan.eglise.groupe %}">{{ bilan.eglise.groupe }}</a>
+            </td>
+            <td><a href="{% url 'conference_region' bilan.eglise.region %}">{{ bilan.eglise.region }}</a></td>
+            <td class="text-center fw-semibold">{{ bilan.total_adultes }}</td>
+            <td class="text-center fw-semibold">{{ bilan.total_jeunes }}</td>
+            <td class="text-center">{{ bilan.enfants }}</td>
+            <td class="text-center fw-bold">{{ bilan.total_participants }}</td>
+            <td class="text-center text-success fw-bold">{{ bilan.nouveaux_convertis }}</td>
+            <td>
+              <a href="{% url 'conference_detail' bilan.pk %}" class="btn btn-sm btn-outline-warning" title="Voir détail">
+                <i class="bi bi-eye"></i>
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="10" class="text-center text-muted py-5">
+              <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+              Aucun rapport de conférence trouvé.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        {% if bilans %}
+        <tfoot style="background:#78350f;color:#fff;font-weight:bold">
+          <tr>
+            <td colspan="4">TOTAUX ({{ bilan_count }} rapports)</td>
+            <td class="text-center">{{ total_adultes }}</td>
+            <td class="text-center">{{ total_jeunes }}</td>
+            <td class="text-center">{{ total_enfants }}</td>
+            <td class="text-center">{{ total_participants }}</td>
+            <td class="text-center">{{ total_convertis }}</td>
+            <td></td>
+          </tr>
+        </tfoot>
+        {% endif %}
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

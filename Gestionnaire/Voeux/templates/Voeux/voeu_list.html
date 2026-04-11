@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block gestion %}
+<div class="container-fluid mt-4">
+  <div class="row align-items-center mb-3">
+    <div class="col">
+      <h2><i class="bi bi-heart-fill text-danger"></i> Voeux</h2>
+    </div>
+    <div class="col-auto d-flex gap-2">
+      <!-- Exports (conserve les filtres actifs via GET params dans action) -->
+      <form method="post" action="?{{ request.GET.urlencode }}" class="d-inline">
+        {% csrf_token %}
+        <input type="hidden" name="file-format" value="XLS">
+        <button type="submit" class="btn btn-outline-success btn-sm">
+          <i class="bi bi-file-earmark-excel"></i> Excel
+        </button>
+      </form>
+      <form method="post" action="?{{ request.GET.urlencode }}" class="d-inline">
+        {% csrf_token %}
+        <input type="hidden" name="file-format" value="PDF">
+        <button type="submit" class="btn btn-outline-danger btn-sm">
+          <i class="bi bi-file-earmark-pdf"></i> PDF
+        </button>
+      </form>
+      <a href="{% url 'add_voeu' %}" class="btn btn-success btn-sm">
+        <i class="bi bi-plus-circle"></i> Nouveau Voeu
+      </a>
+    </div>
+  </div>
+
+  <!-- Filtres -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <form method="get" class="row g-2">
+        <div class="col-md-3">
+          <label class="form-label small">Région</label>
+          <select name="region" class="form-select form-select-sm select-search">
+            <option value="">Toutes</option>
+            {% for r in all_regions %}
+            <option value="{{ r.name }}" {% if selected_region == r.name %}selected{% endif %}>{{ r.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small">Groupe</label>
+          <select name="groupe" class="form-select form-select-sm select-search">
+            <option value="">Tous</option>
+            {% for g in all_groupes %}
+            <option value="{{ g.name }}" {% if selected_groupe == g.name %}selected{% endif %}>{{ g.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small">Église (District)</label>
+          <select name="eglise" class="form-select form-select-sm select-search">
+            <option value="">Toutes</option>
+            {% for e in all_eglises %}
+            <option value="{{ e.pk }}" {% if selected_eglise == e.pk|stringformat:"s" %}selected{% endif %}>{{ e.nom }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3 d-flex align-items-end gap-2">
+          <button type="submit" class="btn btn-primary btn-sm flex-grow-1">Filtrer</button>
+          <a href="{% url 'voeu_list' %}" class="btn btn-outline-secondary btn-sm">Réinitialiser</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Totaux -->
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="card border-primary border-2 shadow-sm">
+        <div class="card-body text-center">
+          <h6 class="card-title text-primary">Total Promis</h6>
+          <h4 class="mb-0">{{ total_promis|floatformat:0 }} FCFA</h4>
+          <small class="text-muted">{{ voeu_count }} voeu{{ voeu_count|pluralize:"x" }}</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-success border-2 shadow-sm">
+        <div class="card-body text-center">
+          <h6 class="card-title text-success">Total Payé</h6>
+          <h4 class="mb-0">{{ total_paye|floatformat:0 }} FCFA</h4>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-warning border-2 shadow-sm">
+        <div class="card-body text-center">
+          <h6 class="card-title text-warning">Total Restant</h6>
+          <h4 class="mb-0">{{ total_restant|floatformat:0 }} FCFA</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tableau -->
+  <div class="card shadow-sm">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Membre</th>
+              <th>Église</th>
+              <th>Date</th>
+              <th class="text-end">Promis</th>
+              <th class="text-end">Payé</th>
+              <th class="text-end">Restant</th>
+              <th class="text-center">%</th>
+              <th class="text-center">Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for voeu in voeux %}
+            <tr>
+              <td><strong>{{ voeu.membre }}</strong></td>
+              <td>
+                <a href="{% url 'voeu_district' voeu.eglise.pk %}" class="text-decoration-none">
+                  {{ voeu.eglise.nom }}
+                </a>
+              </td>
+              <td>{{ voeu.date_voeu|date:"d/m/Y" }}</td>
+              <td class="text-end">{{ voeu.montant_promis|floatformat:0 }}</td>
+              <td class="text-end text-success">{{ voeu.total_paye|floatformat:0 }}</td>
+              <td class="text-end text-warning">{{ voeu.montant_restant|floatformat:0 }}</td>
+              <td class="text-center">
+                <div class="progress" style="height:8px; min-width:60px;">
+                  <div class="progress-bar {% if voeu.est_solde %}bg-success{% else %}bg-primary{% endif %}"
+                    style="width:{{ voeu.pourcentage }}%"></div>
+                </div>
+                <small>{{ voeu.pourcentage }}%</small>
+              </td>
+              <td class="text-center">
+                {% if voeu.est_solde %}
+                <span class="badge bg-success">Soldé</span>
+                {% else %}
+                <span class="badge bg-warning text-dark">En cours</span>
+                {% endif %}
+              </td>
+              <td>
+                <a href="{% url 'voeu_detail' voeu.pk %}" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a>
+                <a href="{% url 'edit_voeu' voeu.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="9" class="text-center py-5 text-muted">Aucun voeu trouvé.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

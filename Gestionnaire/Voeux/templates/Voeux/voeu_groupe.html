@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block gestion %}
+<div class="container-fluid mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2><i class="bi bi-diagram-3-fill text-info"></i> Voeux — Groupe {{ groupe.name }}</h2>
+    <a href="{% url 'voeu_list' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Retour</a>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-3"><div class="card border-secondary shadow-sm text-center"><div class="card-body"><h6 class="text-muted">Total voeux</h6><h4>{{ voeu_count }}</h4></div></div></div>
+    <div class="col-md-3"><div class="card border-primary shadow-sm text-center"><div class="card-body"><h6 class="text-primary">Promis</h6><h4>{{ total_promis|floatformat:0 }} FCFA</h4></div></div></div>
+    <div class="col-md-3"><div class="card border-success shadow-sm text-center"><div class="card-body"><h6 class="text-success">Payé</h6><h4>{{ total_paye|floatformat:0 }} FCFA</h4></div></div></div>
+    <div class="col-md-3"><div class="card border-warning shadow-sm text-center"><div class="card-body"><h6 class="text-warning">Restant</h6><h4>{{ total_restant|floatformat:0 }} FCFA</h4></div></div></div>
+  </div>
+
+  {% for item in eglises_data %}
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-light d-flex justify-content-between">
+      <strong><a href="{% url 'voeu_district' item.eglise.pk %}">{{ item.eglise.nom }}</a></strong>
+      <span class="small text-muted">{{ item.count }} voeu{{ item.count|pluralize:"x" }} —
+        Promis : {{ item.total_promis|floatformat:0 }} |
+        Payé : <span class="text-success">{{ item.total_paye|floatformat:0 }}</span> |
+        Restant : <span class="text-warning">{{ item.total_restant|floatformat:0 }}</span>
+      </span>
+    </div>
+    <div class="card-body p-0">
+      <table class="table table-sm table-hover mb-0">
+        <thead class="table-light"><tr><th>Membre</th><th>Date</th><th class="text-end">Promis</th><th class="text-end">Payé</th><th class="text-end">Restant</th><th>Statut</th><th></th></tr></thead>
+        <tbody>
+          {% for voeu in item.voeux %}
+          <tr>
+            <td>{{ voeu.membre }}</td>
+            <td>{{ voeu.date_voeu|date:"d/m/Y" }}</td>
+            <td class="text-end">{{ voeu.montant_promis|floatformat:0 }}</td>
+            <td class="text-end text-success">{{ voeu.total_paye|floatformat:0 }}</td>
+            <td class="text-end text-warning">{{ voeu.montant_restant|floatformat:0 }}</td>
+            <td>{% if voeu.est_solde %}<span class="badge bg-success">Soldé</span>{% else %}<span class="badge bg-warning text-dark">En cours</span>{% endif %}</td>
+            <td><a href="{% url 'voeu_detail' voeu.pk %}" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% empty %}
+  <div class="alert alert-info">Aucun voeu pour ce groupe.</div>
+  {% endfor %}
+</div>
+{% endblock %}

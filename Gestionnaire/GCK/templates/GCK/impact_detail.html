@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load region_labels %}
+{% block gestion %}
+{% labels_for bilan.eglise.region as lbl %}
+<div class="pagetitle">
+  <h1>Académie d'Impact — {{ bilan.eglise.nom }}</h1>
+  <nav><ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'gck_list' %}">GCK</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'impact_list' %}">Impact</a></li>
+    <li class="breadcrumb-item active">Détail</li>
+  </ol></nav>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-lg-9">
+    <div class="card shadow-sm">
+      <div class="card-header text-white d-flex justify-content-between align-items-center" style="background:#7c3aed">
+        <span><i class="bi bi-lightning-charge-fill"></i> {{ bilan }}</span>
+        <small>Par {{ bilan.auteur }}</small>
+      </div>
+      <div class="card-body pt-4">
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <p><strong>Église :</strong> <a href="{% url 'eglise_details' bilan.eglise.pk %}">{{ bilan.eglise.nom }}</a></p>
+            <p><strong>{{ lbl.intermediaire }} :</strong> <a href="{% url 'impact_groupe' bilan.eglise.groupe %}">{{ bilan.eglise.groupe }}</a></p>
+            <p><strong>Région :</strong> <a href="{% url 'impact_region' bilan.eglise.region %}">{{ bilan.eglise.region }}</a></p>
+          </div>
+          <div class="col-md-6">
+            <p><strong>Date :</strong> {{ bilan.date|date:"l d F Y" }}</p>
+            <p><strong>Enregistré le :</strong> {{ bilan.created|date:"d/m/Y H:i" }}</p>
+          </div>
+        </div>
+
+        <hr>
+        <h6 class="text-muted mb-3">Participation</h6>
+
+        <div class="card mb-3" style="border-color:#7c3aed">
+          <div class="card-header text-white py-1 small" style="background:#7c3aed">
+            <strong>ADULTES — Total : {{ bilan.total_adultes }}</strong>
+          </div>
+          <div class="card-body py-2">
+            <div class="row text-center g-0">
+              <div class="col-6 border-end">
+                <div class="text-muted small">Hommes</div>
+                <h4 class="mb-0" style="color:#7c3aed">{{ bilan.adultes_hommes }}</h4>
+              </div>
+              <div class="col-6">
+                <div class="text-muted small">Femmes</div>
+                <h4 class="mb-0" style="color:#9333ea">{{ bilan.adultes_femmes }}</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card border-info mb-3">
+          <div class="card-header bg-info text-white py-1 small">
+            <strong>JEUNES / JEUNES PROFESSIONNELS — Total : {{ bilan.total_jeunes }}</strong>
+          </div>
+          <div class="card-body py-2">
+            <div class="row text-center g-0">
+              <div class="col-6 border-end">
+                <div class="text-muted small">Hommes</div>
+                <h4 class="text-info mb-0">{{ bilan.jeunes_hommes }}</h4>
+              </div>
+              <div class="col-6">
+                <div class="text-muted small">Femmes</div>
+                <h4 class="text-info mb-0">{{ bilan.jeunes_femmes }}</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row text-center mb-3">
+          <div class="col-4">
+            <div class="card border-secondary">
+              <div class="card-body py-3">
+                <div class="text-muted small">Enfants</div>
+                <h4 class="mb-0">{{ bilan.enfants }}</h4>
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="card bg-dark text-white">
+              <div class="card-body py-3">
+                <div class="small opacity-75">Total général</div>
+                <h4 class="mb-0 fw-bold">{{ bilan.total_participants }}</h4>
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="card border-success">
+              <div class="card-body py-3">
+                <div class="text-muted small">Convertis</div>
+                <h4 class="text-success mb-0 fw-bold">{{ bilan.nouveaux_convertis }}</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {% if bilan.suggestions %}
+        <hr><h6 class="text-muted">Suggestions</h6><p>{{ bilan.suggestions|linebreaks }}</p>
+        {% endif %}
+        {% if bilan.difficultes %}
+        <hr><h6 class="text-muted">Difficultés</h6><p>{{ bilan.difficultes|linebreaks }}</p>
+        {% endif %}
+
+        <hr>
+        <div class="d-flex gap-2 mt-3">
+          {% if peut_modifier %}
+          <a href="{% url 'edit_impact' bilan.pk %}" class="btn btn-success">
+            <i class="bi bi-pencil"></i> Modifier
+          </a>
+          {% endif %}
+          {% if peut_supprimer %}
+          <a href="{% url 'delete_impact' bilan.pk %}" class="btn btn-danger">
+            <i class="bi bi-trash"></i> Supprimer
+          </a>
+          {% endif %}
+          <a href="{% url 'impact_list' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Retour
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

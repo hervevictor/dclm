@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block gestion %}
+<div class="container mt-4">
+  <div class="col-lg-6 mx-auto">
+    <div class="card shadow-sm border-warning">
+      <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+        <h4 class="mb-0"><i class="bi bi-pencil-square"></i> Modifier le montant objectif</h4>
+        <a href="{% url 'contribution_detail' contrib.pk %}" class="btn btn-outline-dark btn-sm">
+          <i class="bi bi-arrow-left"></i> Retour
+        </a>
+      </div>
+      <div class="card-body">
+
+        <!-- Infos actuelles -->
+        <div class="alert alert-info">
+          <div><strong>Membre :</strong> {{ contrib.membre }}</div>
+          <div><strong>Type :</strong> {{ contrib.type_contribution }}</div>
+          <div><strong>Église :</strong> {{ contrib.eglise.nom }}</div>
+          <div><strong>Montant objectif actuel :</strong>
+            {% if contrib.montant_objectif %}
+            <span class="fw-bold text-primary fs-5">{{ contrib.montant_objectif|floatformat:0 }} FCFA</span>
+            {% else %}
+            <span class="text-muted">Non défini</span>
+            {% endif %}
+          </div>
+          <div class="mt-1 small text-muted">
+            Saisi par :
+            {% if contrib.auteur %}
+              {{ contrib.auteur.get_full_name|default:contrib.auteur.username }}
+            {% else %}—{% endif %}
+            le {{ contrib.created|date:"d/m/Y" }}
+          </div>
+        </div>
+
+        <div class="alert alert-warning py-2">
+          <i class="bi bi-exclamation-triangle-fill"></i>
+          Cette modification sera tracée avec votre identité et une justification obligatoire.
+          L'historique sera visible par les administrateurs.
+        </div>
+
+        <form method="post">
+          {% csrf_token %}
+          {% for field in form %}
+          <div class="mb-3">
+            <label class="form-label fw-semibold">{{ field.label }}
+              {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+            </label>
+            {{ field }}
+            {% if field.help_text %}<div class="form-text text-muted">{{ field.help_text }}</div>{% endif %}
+            {% for error in field.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+          </div>
+          {% endfor %}
+
+          <div class="d-flex gap-2 justify-content-end mt-4">
+            <a href="{% url 'contribution_detail' contrib.pk %}" class="btn btn-outline-secondary">Annuler</a>
+            <button type="submit" class="btn btn-warning text-dark fw-bold">
+              <i class="bi bi-check-circle"></i> Confirmer la modification
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

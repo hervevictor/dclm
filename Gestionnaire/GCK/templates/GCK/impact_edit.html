@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block gestion %}
+<div class="pagetitle">
+  <h1>Modifier — Académie d'Impact</h1>
+  <nav><ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'impact_list' %}">Impact</a></li>
+    <li class="breadcrumb-item active">Modifier</li>
+  </ol></nav>
+</div>
+
+<div class="card shadow-sm col-lg-9 mx-auto">
+  <div class="card-header text-white py-3" style="background:#7c3aed">
+    <h5 class="mb-0"><i class="bi bi-pencil-square"></i> Modifier le rapport</h5>
+  </div>
+  <div class="card-body pt-4">
+
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <form method="POST">
+      {% csrf_token %}
+      <div class="row mb-3">
+        <div class="col-md-8"><label class="form-label fw-semibold">Église</label>{{ form.eglise }}</div>
+        <div class="col-md-4"><label class="form-label fw-semibold">Date</label>{{ form.date }}</div>
+      </div>
+
+      <div class="card mb-3" style="border-color:#7c3aed">
+        <div class="card-header text-white py-2" style="background:#7c3aed"><strong>Adultes</strong></div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4 mb-2"><label class="form-label">Hommes</label>{{ form.adultes_hommes }}</div>
+            <div class="col-md-4 mb-2"><label class="form-label">Femmes</label>{{ form.adultes_femmes }}</div>
+            <div class="col-md-4 mb-2">
+              <label class="form-label text-muted">Total</label>
+              <div class="form-control bg-light fw-bold text-center" id="total_adultes_display">0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card border-info mb-3">
+        <div class="card-header bg-info text-white py-2"><strong>Jeunes / Jeunes Professionnels</strong></div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4 mb-2"><label class="form-label">Hommes</label>{{ form.jeunes_hommes }}</div>
+            <div class="col-md-4 mb-2"><label class="form-label">Femmes</label>{{ form.jeunes_femmes }}</div>
+            <div class="col-md-4 mb-2">
+              <label class="form-label text-muted">Total</label>
+              <div class="form-control bg-light fw-bold text-center" id="total_jeunes_display">0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-md-4"><label class="form-label fw-semibold">Enfants</label>{{ form.enfants }}</div>
+        <div class="col-md-4"><label class="form-label fw-semibold text-success">Convertis</label>{{ form.nouveaux_convertis }}</div>
+        <div class="col-md-4">
+          <label class="form-label text-muted">Total général</label>
+          <div class="form-control bg-light fw-bold text-center" id="total_general_display">0</div>
+        </div>
+      </div>
+
+      <hr>
+      <div class="mb-3"><label class="form-label">Suggestions</label>{{ form.suggestions }}</div>
+      <div class="mb-3"><label class="form-label">Difficultés</label>{{ form.difficultes }}</div>
+      {{ form.auteur }}
+
+      <div class="d-flex gap-2 mt-4">
+        <button type="submit" class="btn px-4 text-white" style="background:#7c3aed">
+          <i class="bi bi-save"></i> Enregistrer
+        </button>
+        <a href="{% url 'impact_detail' object.pk %}" class="btn btn-outline-secondary px-4">Annuler</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.getElementById('current_user').value = '{{ user.id }}';
+  function val(id) { return parseInt(document.getElementById(id).value) || 0; }
+  function updateTotaux() {
+    const ah = val('id_adultes_hommes'), af = val('id_adultes_femmes');
+    const jh = val('id_jeunes_hommes'), jf = val('id_jeunes_femmes');
+    const e = val('id_enfants');
+    document.getElementById('total_adultes_display').textContent = ah + af;
+    document.getElementById('total_jeunes_display').textContent = jh + jf;
+    document.getElementById('total_general_display').textContent = ah + af + jh + jf + e;
+  }
+  ['id_adultes_hommes','id_adultes_femmes','id_jeunes_hommes','id_jeunes_femmes','id_enfants']
+    .forEach(id => document.getElementById(id)?.addEventListener('input', updateTotaux));
+  updateTotaux();
+</script>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block gestion %}
+<div class="container mt-4">
+  <div class="card shadow-sm col-lg-6 mx-auto border-danger">
+    <div class="card-header bg-danger text-white">
+      <h4 class="mb-0"><i class="bi bi-trash"></i> Supprimer le type</h4>
+    </div>
+    <div class="card-body">
+      <p>Êtes-vous sûr de vouloir supprimer ce type de contribution ?</p>
+      <ul class="list-unstyled">
+        <li><strong>Nom :</strong> {{ type_obj.nom }}</li>
+        <li><strong>Description :</strong> {{ type_obj.description|default:"—" }}</li>
+      </ul>
+      <div class="alert alert-danger"><i class="bi bi-exclamation-triangle-fill"></i> Cette action est irréversible. Les contributions liées à ce type seront bloquées.</div>
+      <form method="post" class="d-flex gap-2 justify-content-end mt-3">
+        {% csrf_token %}
+        <a href="{% url 'type_list' %}" class="btn btn-outline-secondary">Annuler</a>
+        <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Confirmer</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

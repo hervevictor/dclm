@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block gestion %}
+<div class="container mt-4">
+  <div class="col-lg-6 mx-auto">
+    <div class="card shadow-sm border-danger">
+      <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="bi bi-trash"></i> Supprimer un rapport de retraite</h5>
+        <a href="{% url 'retraite_detail' retraite.pk %}" class="btn btn-outline-light btn-sm">
+          <i class="bi bi-arrow-left"></i> Annuler
+        </a>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-warning">
+          <i class="bi bi-exclamation-triangle-fill"></i>
+          <strong>Cette action est irréversible.</strong>
+          Le rapport sera définitivement supprimé.
+        </div>
+
+        <dl class="row mb-4">
+          <dt class="col-sm-4">Type</dt>
+          <dd class="col-sm-8">
+            <span class="badge {% if retraite.type_retraite == 'DECEMBRE' %}bg-primary{% else %}bg-success{% endif %}">
+              {{ retraite.get_type_retraite_display }}
+            </span>
+          </dd>
+          <dt class="col-sm-4">Région</dt>
+          <dd class="col-sm-8">{{ retraite.region.name }}</dd>
+          <dt class="col-sm-4">Année</dt>
+          <dd class="col-sm-8">{{ retraite.annee }}</dd>
+          <dt class="col-sm-4">Dates</dt>
+          <dd class="col-sm-8">
+            {{ retraite.date_debut|date:"d F Y" }}
+            {% if retraite.date_fin %} → {{ retraite.date_fin|date:"d F Y" }}{% endif %}
+          </dd>
+          <dt class="col-sm-4">Total participants</dt>
+          <dd class="col-sm-8 fw-bold text-success">{{ retraite.total_participants }}</dd>
+        </dl>
+
+        <form method="post" class="d-flex gap-2 justify-content-end">
+          {% csrf_token %}
+          <a href="{% url 'retraite_detail' retraite.pk %}" class="btn btn-outline-secondary">
+            <i class="bi bi-x-circle"></i> Annuler
+          </a>
+          <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash"></i> Confirmer la suppression
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

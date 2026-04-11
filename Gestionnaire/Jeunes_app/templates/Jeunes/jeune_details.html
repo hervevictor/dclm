@@ -1,47 +1,253 @@
 {% extends 'base.html' %}
-{% block gestion %} <br>
-    <h1>Details de : {{jeune}} </h1>
-    <hr>
-    <small><strong>{{jeune.publish}}</strong> | <strong>{{jeune.auteur}}</strong>  </small>
-    <br> <br> <br>
-    <div class="container">
-        <div class="row">
-            <div class="col-12 col-md-6">
-                <p>District : <a href="{% url 'jeune_district' jeune.eglise.pk %}"><strong>{{jeune.eglise}}</strong></a>  </p>
-                <p>Groupe : <a href="{% url 'jeune_groupe' jeune.eglise.groupe %}"><strong>{{jeune.eglise.groupe}}</strong></a> </p>
-                <p>Region : <a href="{% url 'jeune_region' jeune.eglise.region %}"><strong>{{jeune.eglise.region}}</strong></a> </p>
-                <p>Téléphone : <strong>{{jeune.telephone}}</strong> </p>
-                <p>Date de naissance : <strong>{{jeune.date_de_naissance}}</strong> </p>
-                <p>Lieu de naissance : <strong>{{jeune.lieu_de_naissance}}</strong> </p>
-                <p>Sexe : <strong>{{jeune.sexe}}</strong> </p>
-                <p>Groupage : <strong>{{jeune.groupe_sanguin}}</strong> </p>
-                <p>Rhesus : <strong>{{jeune.rhesus}}</strong> </p>
-                <p>Rôle dans l'eglise : <strong>{{jeune.role_dans_leglise}}</strong> </p>
-                <p>Classe ou niveau d'etude : <strong>{{jeune.classe_ou_niveau_d_etude}}</strong> </p>
-                <p>Faculté ou domaine d'emploie : <strong>{{jeune.Faculte_ou_domaine_d_emploie}}</strong> </p>
-                
-            </div>
-            <div class="col-12 col-md-6">
-                <p>Avec qui vit-il ? : <strong>{{jeune.avec_qui_vit_il}}</strong> </p>
-                <p>Nombre de Frères : <strong>{{jeune.nombre_de_freres}}</strong> </p>
-                <p>Dans l'eglise : <strong>{{jeune.les_freres_sont_ils_dans_leglise}}</strong> </p>
-                <p>Nom des Frères : <strong>{{jeune.nom_des_freres}}</strong> </p>
-                <p>Nombre de Soeurs : <strong>{{jeune.nombre_de_soeurs}}</strong> </p>
-                <p>Dans l'eglise : <strong>{{jeune.les_soeurs_sont_elles_dans_leglise}}</strong> </p>
-                <p>Nom des soeurs : <strong>{{jeune.nom_des_soeurs}}</strong> </p>
-                <p>Nom des parents : <strong>{{jeune.nom_des_parents}}</strong> </p>
-                <p>Dans l'eglise ? : <strong>{{jeune.les_parents_sont_ils_dans_leglise}}</strong> </p>
-                <p>Année de Conversion : <strong>{{jeune.annee_de_conversion}}</strong> </p>
-                <p>Baptiser : <strong>{{jeune.baptiser}}</strong> </p>
-                <p>Année de baptème : <strong>{{jeune.annee_de_bapteme}}</strong> </p>
-                <p>Numéro du parent ou tuteur : <strong>{{jeune.numero_de_telephone_des_parents_ou_tuteurs}}</strong> </p>
-                
-            </div>
-        </div>
-        <p>Description : <strong>{{jeune.description}}</strong> </p>
-        
-        <br><br><br>
-        <a href="{% url 'edit_jeune' jeune.pk %}" class="btn btn-success">Modifier</a>
-        <a href="{% url 'delete_jeune' jeune.pk %}" class="btn btn-danger">Supprimer</a>
+{% load static %}
+{% block gestion %}
+
+<div class="container-fluid mt-4">
+
+  <!-- En-tête -->
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h3 class="mb-0">
+      <i class="bi bi-person-fill text-info"></i>
+      {{ jeune.nom }} {{ jeune.prenom }}
+    </h3>
+    <div class="d-flex gap-2">
+      <a href="{% url 'edit_jeune' jeune.pk %}" class="btn btn-success btn-sm">
+        <i class="bi bi-pencil-fill"></i> Modifier
+      </a>
+      <a href="{% url 'delete_jeune' jeune.pk %}" class="btn btn-danger btn-sm">
+        <i class="bi bi-trash-fill"></i> Supprimer
+      </a>
+      <a href="javascript:history.back()" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> Retour
+      </a>
     </div>
+  </div>
+
+  <div class="row g-4">
+
+    <!-- Colonne gauche : photo + localisation -->
+    <div class="col-12 col-md-4">
+
+      <!-- Photo -->
+      <div class="card shadow-sm mb-3 text-center">
+        <div class="card-body">
+          {% if jeune.jeune_image %}
+            <img src="{{ jeune.jeune_image.url }}" alt="Photo"
+                 class="img-fluid rounded-circle mb-2"
+                 style="width:150px;height:150px;object-fit:cover;">
+          {% else %}
+            <img src="{% static 'images/profile.png' %}" alt="Photo"
+                 class="img-fluid rounded-circle mb-2"
+                 style="width:150px;height:150px;object-fit:cover;">
+          {% endif %}
+          <h5 class="mb-0">{{ jeune.nom }} {{ jeune.prenom }}</h5>
+          <span class="badge bg-info mt-1">{{ jeune.role_dans_leglise }}</span>
+        </div>
+      </div>
+
+      <!-- Localisation -->
+      <div class="card shadow-sm mb-3">
+        <div class="card-header bg-light fw-semibold">
+          <i class="bi bi-geo-alt-fill text-danger"></i> Localisation
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item d-flex justify-content-between">
+            <span class="text-muted">District</span>
+            <a href="{% url 'jeune_district' jeune.eglise.pk %}">
+              <strong>{{ jeune.eglise }}</strong>
+            </a>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span class="text-muted">Groupe</span>
+            <a href="{% url 'jeune_groupe' jeune.eglise.groupe %}">
+              <strong>{{ jeune.eglise.groupe }}</strong>
+            </a>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span class="text-muted">Région</span>
+            <a href="{% url 'jeune_region' jeune.eglise.region %}">
+              <strong>{{ jeune.eglise.region }}</strong>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Méta -->
+      <div class="card shadow-sm">
+        <div class="card-header bg-light fw-semibold">
+          <i class="bi bi-info-circle"></i> Méta
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item d-flex justify-content-between">
+            <span class="text-muted">Ajouté le</span>
+            <strong>{{ jeune.publish|date:"d/m/Y" }}</strong>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span class="text-muted">Auteur</span>
+            <strong>{{ jeune.auteur }}</strong>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Colonne droite : détails -->
+    <div class="col-12 col-md-8">
+
+      <!-- Identité -->
+      <div class="card shadow-sm mb-3">
+        <div class="card-header bg-light fw-semibold">
+          <i class="bi bi-person-vcard-fill text-info"></i> Identité
+        </div>
+        <div class="card-body">
+          <div class="row g-2">
+            <div class="col-6">
+              <div class="text-muted small">Nom</div>
+              <strong>{{ jeune.nom }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Prénom</div>
+              <strong>{{ jeune.prenom }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Date de naissance</div>
+              <strong>{{ jeune.date_de_naissance|date:"d/m/Y"|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Lieu de naissance</div>
+              <strong>{{ jeune.lieu_de_naissance|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Sexe</div>
+              <strong>{{ jeune.sexe|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Téléphone</div>
+              <strong>{{ jeune.telephone|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Groupe sanguin</div>
+              <strong>{{ jeune.groupe_sanguin|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Rhésus</div>
+              <strong>{{ jeune.rhesus|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Classe / Niveau d'étude</div>
+              <strong>{{ jeune.classe_ou_niveau_d_etude|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Faculté / Domaine d'emploi</div>
+              <strong>{{ jeune.Faculte_ou_domaine_d_emploie|default:"—" }}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vie spirituelle -->
+      <div class="card shadow-sm mb-3">
+        <div class="card-header bg-light fw-semibold">
+          <i class="bi bi-heart-fill text-danger"></i> Vie spirituelle
+        </div>
+        <div class="card-body">
+          <div class="row g-2">
+            <div class="col-6">
+              <div class="text-muted small">Rôle dans l'église</div>
+              <strong>{{ jeune.role_dans_leglise|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Année de conversion</div>
+              <strong>{{ jeune.annee_de_conversion|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Baptisé</div>
+              <strong>{{ jeune.baptiser|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Année de baptême</div>
+              <strong>{{ jeune.annee_de_bapteme|default:"—" }}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vie familiale -->
+      <div class="card shadow-sm mb-3">
+        <div class="card-header bg-light fw-semibold">
+          <i class="bi bi-house-fill text-warning"></i> Vie familiale
+        </div>
+        <div class="card-body">
+          <div class="row g-2">
+            <div class="col-6">
+              <div class="text-muted small">Avec qui vit-il ?</div>
+              <strong>{{ jeune.avec_qui_vit_il|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Nom des parents</div>
+              <strong>{{ jeune.nom_des_parents|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Parents dans l'église ?</div>
+              <strong>{{ jeune.les_parents_sont_ils_dans_leglise|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Tél. parent / tuteur</div>
+              <strong>{{ jeune.numero_de_telephone_des_parents_ou_tuteurs|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Nombre de frères</div>
+              <strong>{{ jeune.nombre_de_freres|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Frères dans l'église ?</div>
+              <strong>{{ jeune.les_freres_sont_ils_dans_leglise|default:"—" }}</strong>
+            </div>
+            <div class="col-12">
+              <div class="text-muted small">Nom des frères</div>
+              <strong>{{ jeune.nom_des_freres|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Nombre de sœurs</div>
+              <strong>{{ jeune.nombre_de_soeurs|default:"—" }}</strong>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Sœurs dans l'église ?</div>
+              <strong>{{ jeune.les_soeurs_sont_elles_dans_leglise|default:"—" }}</strong>
+            </div>
+            <div class="col-12">
+              <div class="text-muted small">Nom des sœurs</div>
+              <strong>{{ jeune.nom_des_soeurs|default:"—" }}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Talents & Description -->
+      {% if jeune.talents_du_jeune or jeune.description %}
+      <div class="card shadow-sm">
+        <div class="card-header bg-light fw-semibold">
+          <i class="bi bi-stars text-warning"></i> Talents &amp; Description
+        </div>
+        <div class="card-body">
+          {% if jeune.talents_du_jeune %}
+            <div class="mb-2">
+              <div class="text-muted small">Talents</div>
+              <p class="mb-0" style="white-space:pre-line;">{{ jeune.talents_du_jeune }}</p>
+            </div>
+          {% endif %}
+          {% if jeune.description %}
+            <div>
+              <div class="text-muted small">Description</div>
+              <p class="mb-0" style="white-space:pre-line;">{{ jeune.description }}</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+
 {% endblock %}

@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load region_labels %}
+{% block gestion %}
+<div class="pagetitle">
+  <h1><i class="bi bi-sunrise text-warning"></i> Conférence — Région {{ region.name }}</h1>
+  <nav><ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'conference_list' %}">Conférence</a></li>
+    <li class="breadcrumb-item active">{{ region.name }}</li>
+  </ol></nav>
+</div>
+
+{% include 'GCK/_filtres_date_gck.html' with reset_url='conference_region' reset_arg=region.name submit_color='btn-warning' %}
+
+<form method="post" class="mb-3 d-flex align-items-center gap-2">
+  {% csrf_token %}
+  <input type="hidden" name="start_date" value="{{ start_date }}">
+  <input type="hidden" name="end_date" value="{{ end_date }}">
+  <input type="hidden" name="mois" value="{{ mois }}">
+  <input type="hidden" name="jour" value="{{ jour }}">
+  <div class="input-group input-group-sm w-auto">
+    <label class="input-group-text"><i class="bi bi-download"></i> Exporter</label>
+    <select name="file-format" class="form-select" style="max-width:130px;">
+      <option value="PDF">PDF</option>
+      <option value="XLS">Excel (XLSX)</option>
+    </select>
+    <button type="submit" class="btn btn-outline-warning">Télécharger</button>
+  </div>
+</form>
+
+<div class="card shadow-sm">
+  <div class="card-header text-white" style="background:#78350f">
+    <h6 class="mb-0">{{ bilan_count }} rapport{{ bilan_count|pluralize }} — Total : {{ total_participants }}</h6>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-dark">
+          <tr>
+            <th>Date</th>
+            <th>Église</th>
+            <th>{{ lbl.intermediaire }}</th>
+            <th class="text-center">Adultes</th>
+            <th class="text-center">Jeunes</th>
+            <th class="text-center">Enfants</th>
+            <th class="text-center fw-bold">Total</th>
+            <th class="text-center text-success">Convertis</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for bilan in bilans %}
+          <tr>
+            <td>{{ bilan.date|date:"d/m/Y" }}</td>
+            <td><a href="{% url 'conference_district' bilan.eglise.pk %}">{{ bilan.eglise.nom }}</a></td>
+            <td><a href="{% url 'conference_groupe' bilan.eglise.groupe %}">{{ bilan.eglise.groupe }}</a></td>
+            <td class="text-center">{{ bilan.total_adultes }}</td>
+            <td class="text-center">{{ bilan.total_jeunes }}</td>
+            <td class="text-center">{{ bilan.enfants }}</td>
+            <td class="text-center fw-bold">{{ bilan.total_participants }}</td>
+            <td class="text-center text-success fw-bold">{{ bilan.nouveaux_convertis }}</td>
+            <td><a href="{% url 'conference_detail' bilan.pk %}" class="btn btn-sm btn-outline-warning"><i class="bi bi-eye"></i></a></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="9" class="text-center text-muted py-4">Aucun rapport.</td></tr>
+          {% endfor %}
+        </tbody>
+        {% if bilans %}
+        <tfoot class="table-dark fw-bold">
+          <tr>
+            <td colspan="3">TOTAUX</td>
+            <td class="text-center">{{ total_adultes }}</td>
+            <td class="text-center">{{ total_jeunes }}</td>
+            <td class="text-center">{{ total_enfants }}</td>
+            <td class="text-center">{{ total_participants }}</td>
+            <td class="text-center text-success">{{ total_convertis }}</td>
+            <td></td>
+          </tr>
+        </tfoot>
+        {% endif %}
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

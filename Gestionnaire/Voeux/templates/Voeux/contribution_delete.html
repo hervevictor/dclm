@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block gestion %}
+<div class="container mt-4">
+  <div class="card shadow-sm col-lg-6 mx-auto border-danger">
+    <div class="card-header bg-danger text-white">
+      <h4 class="mb-0"><i class="bi bi-trash"></i> Supprimer la Contribution</h4>
+    </div>
+    <div class="card-body">
+      <p class="fs-5">Êtes-vous sûr de vouloir supprimer cette contribution ?</p>
+      <ul class="list-unstyled">
+        <li><strong>Membre :</strong> {{ contrib.membre }}</li>
+        <li><strong>Type :</strong> {{ contrib.type_contribution }}</li>
+        <li><strong>Église :</strong> {{ contrib.eglise.nom }}</li>
+      </ul>
+      <div class="alert alert-warning"><i class="bi bi-exclamation-triangle-fill"></i> Tous les versements liés seront également supprimés.</div>
+      <form method="post" class="d-flex gap-2 justify-content-end mt-3">
+        {% csrf_token %}
+        <a href="{% url 'contribution_detail' contrib.pk %}" class="btn btn-outline-secondary">Annuler</a>
+        <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Confirmer la suppression</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
