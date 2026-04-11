@@ -1,6 +1,7 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ LANGUAGE_CODE }}">
 
 <head>
   <meta charset="utf-8">
@@ -39,13 +40,15 @@
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <!-- =======================================================
-  * Template Name: NiceAdmin
-  * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
-  * Updated: Mar 17 2024 with Bootstrap v5.3.3
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
+  <style>
+    .lang-switcher .dropdown-item.active {
+      background-color: #e9f0ff;
+      color: #0d6efd;
+      font-weight: 600;
+    }
+    .lang-flag { font-size: 1.1rem; margin-right: .35rem; }
+  </style>
+
 </head>
 
 <body>
@@ -64,7 +67,7 @@
     <div class="search-bar">
       <form class="search-form d-flex align-items-center" method="POST" action="{% url 'search_eglise' %}">
         {% csrf_token %}
-        <input type="text" name="searched" placeholder="Entrer le nom de l'eglise" title="Enter search keyword">
+        <input type="text" name="searched" placeholder="{% trans "Entrer le nom de l'eglise" %}" title="Search">
         <button type="submit" title="Search"><i class="bi bi-search"></i></button>
       </form>
     </div><!-- End Search Bar -->
@@ -73,12 +76,45 @@
       <ul class="d-flex align-items-center">
 
         <li class="nav-item d-block d-lg-none">
-          <a class="nav-link nav-icon search-bar-toggle " href="#">
+          <a class="nav-link nav-icon search-bar-toggle" href="#">
             <i class="bi bi-search"></i>
           </a>
-        </li><!-- End Search Icon-->
+        </li>
 
-
+        <!-- ======= Sélecteur de langue ======= -->
+        <li class="nav-item dropdown lang-switcher pe-2">
+          <a class="nav-link nav-icon dropdown-toggle d-flex align-items-center gap-1" href="#" data-bs-toggle="dropdown" title="{% trans "Langue" %}">
+            <i class="bi bi-translate fs-5"></i>
+            <span class="d-none d-md-block small fw-semibold">
+              {% get_current_language as CURRENT_LANG %}
+              {{ CURRENT_LANG|upper }}
+            </span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm" style="min-width:160px;">
+            <li><h6 class="dropdown-header"><i class="bi bi-translate"></i> {% trans "Langue" %}</h6></li>
+            {% get_available_languages as LANGUAGES_LIST %}
+            {% get_language_info_list for LANGUAGES_LIST as langs %}
+            {% for lang in langs %}
+            <li>
+              <form method="post" action="{% url 'set_language' %}" class="d-inline">
+                {% csrf_token %}
+                <input type="hidden" name="language" value="{{ lang.code }}">
+                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <button type="submit"
+                  class="dropdown-item {% if lang.code == CURRENT_LANG %}active{% endif %}">
+                  {% if lang.code == 'fr' %}<span class="lang-flag">🇫🇷</span>{% endif %}
+                  {% if lang.code == 'en' %}<span class="lang-flag">🇬🇧</span>{% endif %}
+                  {% if lang.code == 'pt' %}<span class="lang-flag">🇧🇷</span>{% endif %}
+                  {% if lang.code == 'de' %}<span class="lang-flag">🇩🇪</span>{% endif %}
+                  {% if lang.code == 'es' %}<span class="lang-flag">🇪🇸</span>{% endif %}
+                  {{ lang.name_local }}
+                </button>
+              </form>
+            </li>
+            {% endfor %}
+          </ul>
+        </li>
+        <!-- End Language Switcher -->
 
         <li class="nav-item dropdown pe-3">
 
@@ -88,11 +124,10 @@
               {% if user.is_authenticated %}
               {{user.username}}
               {% else %}
-              Connexion
+              {% trans "Connexion" %}
               {% endif %}
-
             </span>
-          </a><!-- End Profile Iamge Icon -->
+          </a>
 
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             {% if user.is_authenticated %}
@@ -108,7 +143,7 @@
             <li>
               <a class="dropdown-item d-flex align-items-center" href="{% url 'edit_profile' %}">
                 <i class="bi bi-person"></i>
-                <span>Modifier mon Compte</span>
+                <span>{% trans "Modifier mon Compte" %}</span>
               </a>
             </li>
             <li>
@@ -118,7 +153,7 @@
             <li>
               <a class="dropdown-item d-flex align-items-center" href="{% url 'logout' %}">
                 <i class="bi bi-box-arrow-right"></i>
-                <span>Deconnexion</span>
+                <span>{% trans "Deconnexion" %}</span>
               </a>
             </li>
 
@@ -126,7 +161,7 @@
             <li>
               <a class="dropdown-item d-flex align-items-center" href="{% url 'login' %}">
                 <i class="bi bi-person"></i>
-                <span>Se Connecter</span>
+                <span>{% trans "Se Connecter" %}</span>
               </a>
             </li>
             <li>
@@ -136,7 +171,7 @@
             <li>
               <a class="dropdown-item d-flex align-items-center" href="{% url 'register' %}">
                 <i class="bi bi-gear"></i>
-                <span>S'enregistrer</span>
+                <span>{% trans "S'enregistrer" %}</span>
               </a>
             </li>
             <li>
@@ -164,23 +199,23 @@
       <li class="nav-item">
         <a class="nav-link " href="{% url 'dashboard' %}">
           <i class="bi bi-grid"></i>
-          <span>Dashboard</span>
+          <span>{% trans "Dashboard" %}</span>
         </a>
-      </li><!-- End Dashboard Nav -->
+      </li>
       {% endif %}
       {% endif %}
 
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-menu-button-wide"></i><span>EGLISES</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-menu-button-wide"></i><span>{% trans "EGLISES" %}</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           {% if user.is_authenticated %}
           {% if user.is_superuser or user.profile.niveau_acces in 'ADMIN,REGION,GROUPE' %}
           <li>
             <a href="{% url 'add_eglise' %}">
-              <i class="bi bi-circle"></i><span>Ajouter</span>
+              <i class="bi bi-circle"></i><span>{% trans "Ajouter" %}</span>
             </a>
           </li>
           {% endif %}
@@ -188,22 +223,22 @@
 
           <li>
             <a href="{% url 'eglises' %}">
-              <i class="bi bi-circle"></i><span>Liste</span>
+              <i class="bi bi-circle"></i><span>{% trans "Liste" %}</span>
             </a>
           </li>
         </ul>
-      </li><!-- End Components Nav -->
+      </li>
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text"></i><span>Groupes</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-journal-text"></i><span>{% trans "Groupes" %}</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           {% if user.is_authenticated %}
           {% if user.is_superuser or user.profile.niveau_acces in 'ADMIN,REGION' %}
           <li>
             <a href="{% url 'add_groupe' %}">
-              <i class="bi bi-circle"></i><span>Ajouter</span>
+              <i class="bi bi-circle"></i><span>{% trans "Ajouter" %}</span>
             </a>
           </li>
           {% endif %}
@@ -211,126 +246,125 @@
 
           <li>
             <a href="{% url 'groupe_liste' %}">
-              <i class="bi bi-circle"></i><span>Liste</span>
+              <i class="bi bi-circle"></i><span>{% trans "Liste" %}</span>
             </a>
           </li>
         </ul>
-      </li><!-- End Forms Nav -->
+      </li>
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-layout-text-window-reverse"></i><span>Personnels</span><i
+          <i class="bi bi-layout-text-window-reverse"></i><span>{% trans "Personnels" %}</span><i
             class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           {% if user.is_authenticated %}
           <li>
             <a href="{% url 'add_enfant' %}">
-              <i class="bi bi-circle"></i><span>Ajouter Enfants</span>
+              <i class="bi bi-circle"></i><span>{% trans "Ajouter Enfants" %}</span>
             </a>
           </li>
           <li>
             <a href="{% url 'add_jeune' %}">
-              <i class="bi bi-circle"></i><span>Ajouter Jeunes</span>
+              <i class="bi bi-circle"></i><span>{% trans "Ajouter Jeunes" %}</span>
             </a>
           </li>
           <li>
             <a href="{% url 'add_adulte' %}">
-              <i class="bi bi-circle"></i><span>Ajouter Adultes</span>
+              <i class="bi bi-circle"></i><span>{% trans "Ajouter Adultes" %}</span>
             </a>
           </li>
           <br>
           {% endif %}
           <li>
             <a href="{% url 'enfants' %}">
-              <i class="bi bi-circle"></i><span>Liste Enfants</span>
+              <i class="bi bi-circle"></i><span>{% trans "Liste Enfants" %}</span>
             </a>
           </li>
           <li>
             <a href="{% url 'jeunes' %}">
-              <i class="bi bi-circle"></i><span>Liste Jeunes</span>
+              <i class="bi bi-circle"></i><span>{% trans "Liste Jeunes" %}</span>
             </a>
           </li>
           <li>
             <a href="{% url 'adultes' %}">
-              <i class="bi bi-circle"></i><span>Liste Adultes</span>
+              <i class="bi bi-circle"></i><span>{% trans "Liste Adultes" %}</span>
             </a>
           </li>
         </ul>
-      </li><!-- End Tables Nav -->
+      </li>
 
       <!-- Bilan des activités -->
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-bar-chart"></i><span>Bilans</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-bar-chart"></i><span>{% trans "Bilans" %}</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           {% if user.is_authenticated %}
           <li>
             <a href="{% url 'add_cellules' %}">
-              <i class="bi bi-circle"></i><span>Ajouter Cellule</span>
+              <i class="bi bi-circle"></i><span>{% trans "Ajouter Cellule" %}</span>
             </a>
           </li>
           <li>
             <a href="{% url 'add_evenements' %}">
-              <i class="bi bi-circle"></i><span>Ajouter Evenement</span>
+              <i class="bi bi-circle"></i><span>{% trans "Ajouter Evenement" %}</span>
             </a>
           </li>
           <li>
             <a href="{% url 'add_bilan' %}">
-              <i class="bi bi-circle"></i><span>Ajouter Seance</span>
+              <i class="bi bi-circle"></i><span>{% trans "Ajouter Seance" %}</span>
             </a>
           </li>
           <hr>
           {% endif %}
 
-
           <li>
             <a href="{% url 'cellules_list' %}">
-              <i class="bi bi-circle"></i><span>Liste Cellules</span>
+              <i class="bi bi-circle"></i><span>{% trans "Liste Cellules" %}</span>
             </a>
           </li>
           <li>
             <a href="{% url 'evenements_list' %}">
-              <i class="bi bi-circle"></i><span>Liste Evenements</span>
+              <i class="bi bi-circle"></i><span>{% trans "Liste Evenements" %}</span>
             </a>
           </li>
           <li>
             <a href="{% url 'seances' %}">
-              <i class="bi bi-circle"></i><span>Liste Centralisée</span>
+              <i class="bi bi-circle"></i><span>{% trans "Liste Centralisée" %}</span>
             </a>
           </li>
           {% if user.profile.niveau_acces == 'ADMIN' or user.profile.niveau_acces == 'REGION' or user.profile.niveau_acces == 'GROUPE' or user.profile.niveau_acces == 'COMPTABLE' %}
           <li>
             <a href="{% url 'region_totals' %}">
-              <i class="bi bi-circle"></i><span>Totaux par Région</span>
+              <i class="bi bi-circle"></i><span>{% trans "Totaux par Région" %}</span>
             </a>
           </li>
           <li>
             <a href="{% url 'group_totals' %}">
-              <i class="bi bi-circle"></i><span>Totaux par Groupe</span>
+              <i class="bi bi-circle"></i><span>{% trans "Totaux par Groupe" %}</span>
             </a>
           </li>
           {% endif %}
         </ul>
       </li>
 
-      <!-- Finances (superadmin, ADMIN, COMPTABLE uniquement) -->
+      <!-- Finances -->
       {% if user.is_authenticated %}
       {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' or user.profile.niveau_acces == 'COMPTABLE' %}
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#finances-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-cash-stack"></i><span>Finances</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-cash-stack"></i><span>{% trans "Finances" %}</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="finances-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
             <a href="{% url 'transaction_list' %}">
-              <i class="bi bi-circle"></i><span>Liste Transactions</span>
+              <i class="bi bi-circle"></i><span>{% trans "Liste Transactions" %}</span>
             </a>
           </li>
           <li>
             <a href="{% url 'transaction_create' %}">
-              <i class="bi bi-circle"></i><span>Nouvelle Transaction</span>
+              <i class="bi bi-circle"></i><span>{% trans "Nouvelle Transaction" %}</span>
             </a>
           </li>
         </ul>
@@ -341,25 +375,25 @@
 
       <!-- Lumiere à la cite  -->
       <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-menu-button-wide"></i><span>Lumière à la Cité</span><i class="bi bi-chevron-down ms-auto"></i>
+        <a class="nav-link collapsed" data-bs-target="#lumiere-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-menu-button-wide"></i><span>{% trans "Lumière à la Cité" %}</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
-        <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <ul id="lumiere-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           {% if user.is_authenticated %}
           {% if user.is_superuser or user.profile.niveau_acces in 'ADMIN,REGION' %}
           <li>
             <a href="{% url 'add_lumieres' %}">
-              <i class="bi bi-circle"></i><span>Ajouter Lumiere à la cité</span>
+              <i class="bi bi-circle"></i><span>{% trans "Ajouter Lumiere à la cité" %}</span>
             </a>
           </li>
           <li>
             <a href="{% url 'add_participants' %}">
-              <i class="bi bi-circle"></i><span>Ajouter Participants</span>
+              <i class="bi bi-circle"></i><span>{% trans "Ajouter Participants" %}</span>
             </a>
           </li>
           <li>
             <a href="{% url 'add_etablissement' %}">
-              <i class="bi bi-circle"></i><span>Ajouter Etablissement</span>
+              <i class="bi bi-circle"></i><span>{% trans "Ajouter Etablissement" %}</span>
             </a>
           </li>
           <hr>
@@ -368,78 +402,73 @@
 
           <li>
             <a href="{% url 'lumieres_list' %}">
-              <i class="bi bi-circle"></i><span>Liste Lumiere à la cité</span>
+              <i class="bi bi-circle"></i><span>{% trans "Liste Lumiere à la cité" %}</span>
             </a>
           </li>
           <li>
             <a href="{% url 'participants_list' %}">
-              <i class="bi bi-circle"></i><span>Liste Participants</span>
+              <i class="bi bi-circle"></i><span>{% trans "Liste Participants" %}</span>
             </a>
           </li>
           <li>
             <a href="{% url 'etablissements_list' %}">
-              <i class="bi bi-circle"></i><span>Liste Etablissements</span>
+              <i class="bi bi-circle"></i><span>{% trans "Liste Etablissements" %}</span>
             </a>
           </li>
         </ul>
-      </li><!-- End Lumiere à la cite -->
-
-
+      </li>
 
       <!-- Les Particularités -->
-
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-gem"></i><span>Particularités</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-gem"></i><span>{% trans "Particularités" %}</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
             <a href="{% url 'add_projects' %}">
-              <i class="bi bi-circle"></i><span>Ajouter Projet</span>
+              <i class="bi bi-circle"></i><span>{% trans "Ajouter Projet" %}</span>
             </a>
           </li>
           <li>
             <a href="{% url 'add_difficultes' %}">
-              <i class="bi bi-circle"></i><span>Ajouter Difficulté</span>
+              <i class="bi bi-circle"></i><span>{% trans "Ajouter Difficulté" %}</span>
             </a>
           </li>
           <br>
           {% if user.is_authenticated %}
           <li>
             <a href="{% url 'projects_list' %}">
-              <i class="bi bi-circle"></i><span>Liste Projet</span>
+              <i class="bi bi-circle"></i><span>{% trans "Liste Projet" %}</span>
             </a>
           </li>
           <li>
             <a href="{% url 'difficultes_list' %}">
-              <i class="bi bi-circle"></i><span>Liste Difficulté</span>
+              <i class="bi bi-circle"></i><span>{% trans "Liste Difficulté" %}</span>
             </a>
           </li>
           {% endif %}
-
         </ul>
-      </li><!-- End Icons Nav -->
+      </li>
       <hr>
       <br>
-      <li class="nav-heading">Annonce</li>
+      <li class="nav-heading">{% trans "Annonce" %}</li>
       {% if user.is_authenticated %}
       {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' %}
       <li class="nav-item">
         <a class="nav-link collapsed" href="{% url 'add_annonces' %}">
           <i class="bi bi-question-circle"></i>
-          <span>Ajouter</span>
+          <span>{% trans "Ajouter" %}</span>
         </a>
-      </li><!-- End F.A.Q Page Nav -->
+      </li>
       {% endif %}
       {% endif %}
-
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="{% url 'annonces_list' %}">
           <i class="bi bi-person"></i>
-          <span>Liste</span>
+          <span>{% trans "Liste" %}</span>
         </a>
-      </li><!-- End Profile Page Nav -->
+      </li>
 
       <!-- ======= GCK ======= -->
       {% if user.is_authenticated %}
@@ -448,70 +477,66 @@
           <i class="bi bi-globe2"></i><span>GCK</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="gck-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-          <!-- Vue mensuelle combinée -->
           <li>
             <a href="{% url 'gck_mensuel' %}">
-              <i class="bi bi-calendar3"></i><span>Vue mensuelle GCK</span>
+              <i class="bi bi-calendar3"></i><span>{% trans "Vue mensuelle GCK" %}</span>
             </a>
           </li>
           <li><hr class="my-1 opacity-25"></li>
-          <!-- Séances du Soir -->
           <li>
             <a href="{% url 'gck_list' %}">
-              <i class="bi bi-moon-stars-fill"></i><span>Séances du Soir</span>
+              <i class="bi bi-moon-stars-fill"></i><span>{% trans "Séances du Soir" %}</span>
             </a>
           </li>
           <li>
             <a href="{% url 'add_gck' %}">
-              <i class="bi bi-circle"></i><span style="font-size:.85em;padding-left:.5rem">Ajouter un bilan</span>
+              <i class="bi bi-circle"></i><span style="font-size:.85em;padding-left:.5rem">{% trans "Ajouter un bilan" %}</span>
             </a>
           </li>
           <li>
             <a href="{% url 'gck_convertis' %}">
-              <i class="bi bi-circle text-success"></i><span style="font-size:.85em;padding-left:.5rem">Convertis</span>
+              <i class="bi bi-circle text-success"></i><span style="font-size:.85em;padding-left:.5rem">{% trans "Convertis" %}</span>
             </a>
           </li>
           <li><hr class="my-1 opacity-25"></li>
-          <!-- Conférence des Ministres -->
           <li>
             <a href="{% url 'conference_list' %}" style="color:#d97706">
-              <i class="bi bi-sunrise-fill"></i><span>Conférence des Ministres</span>
+              <i class="bi bi-sunrise-fill"></i><span>{% trans "Conférence des Ministres" %}</span>
             </a>
           </li>
           <li>
             <a href="{% url 'add_conference' %}">
-              <i class="bi bi-circle"></i><span style="font-size:.85em;padding-left:.5rem">Ajouter un rapport</span>
+              <i class="bi bi-circle"></i><span style="font-size:.85em;padding-left:.5rem">{% trans "Ajouter un rapport" %}</span>
             </a>
           </li>
           <li><hr class="my-1 opacity-25"></li>
-          <!-- Académie d'Impact -->
           <li>
             <a href="{% url 'impact_list' %}" style="color:#7c3aed">
-              <i class="bi bi-lightning-charge-fill"></i><span>Académie d'Impact</span>
+              <i class="bi bi-lightning-charge-fill"></i><span>{% trans "Académie d'Impact" %}</span>
             </a>
           </li>
           <li>
             <a href="{% url 'add_impact' %}">
-              <i class="bi bi-circle"></i><span style="font-size:.85em;padding-left:.5rem">Ajouter un rapport</span>
+              <i class="bi bi-circle"></i><span style="font-size:.85em;padding-left:.5rem">{% trans "Ajouter un rapport" %}</span>
             </a>
           </li>
           {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' or user.profile.niveau_acces == 'COMPTABLE' %}
           <li><hr class="my-1 opacity-25"></li>
           <li>
             <a href="{% url 'gck_national' %}">
-              <i class="bi bi-globe"></i><span>Rapport National (Soir)</span>
+              <i class="bi bi-globe"></i><span>{% trans "Rapport National (Soir)" %}</span>
             </a>
           </li>
           <li>
             <a href="{% url 'gck_recapitulatif' %}">
-              <i class="bi bi-table"></i><span>Récapitulatif TOGO</span>
+              <i class="bi bi-table"></i><span>{% trans "Récapitulatif TOGO" %}</span>
             </a>
           </li>
           {% endif %}
           <li><hr class="my-1 opacity-25"></li>
           <li>
             <a href="{% url 'stats_gck' %}" style="color:#2563eb">
-              <i class="bi bi-bar-chart-fill"></i><span>Statistiques Participation</span>
+              <i class="bi bi-bar-chart-fill"></i><span>{% trans "Statistiques Participation" %}</span>
             </a>
           </li>
         </ul>
@@ -523,67 +548,63 @@
       {% if user.is_authenticated %}
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#voeux-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-heart-fill" style="color:#e74c3c"></i><span>Voeux &amp; Contributions</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-heart-fill" style="color:#e74c3c"></i><span>{% trans "Voeux & Contributions" %}</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="voeux-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-          <!-- Voeux -->
           <li>
             <a href="{% url 'voeu_list' %}">
-              <i class="bi bi-heart"></i><span>Liste des Voeux</span>
+              <i class="bi bi-heart"></i><span>{% trans "Liste des Voeux" %}</span>
             </a>
           </li>
           <li>
             <a href="{% url 'add_voeu' %}">
-              <i class="bi bi-circle"></i><span style="font-size:.85em;padding-left:.5rem">Nouveau Voeu</span>
+              <i class="bi bi-circle"></i><span style="font-size:.85em;padding-left:.5rem">{% trans "Nouveau Voeu" %}</span>
             </a>
           </li>
           {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' or user.profile.niveau_acces == 'COMPTABLE' or user.profile.niveau_acces == 'REGION' %}
           <li>
             <a href="{% url 'voeu_national' %}">
-              <i class="bi bi-globe"></i><span style="font-size:.85em;padding-left:.5rem">Vue Nationale</span>
+              <i class="bi bi-globe"></i><span style="font-size:.85em;padding-left:.5rem">{% trans "Vue Nationale" %}</span>
             </a>
           </li>
           {% endif %}
           <li><hr class="my-1 opacity-25"></li>
-          <!-- Contributions -->
           <li>
             <a href="{% url 'contribution_list' %}">
-              <i class="bi bi-wallet2"></i><span>Liste des Contributions</span>
+              <i class="bi bi-wallet2"></i><span>{% trans "Liste des Contributions" %}</span>
             </a>
           </li>
           <li>
             <a href="{% url 'add_contribution' %}">
-              <i class="bi bi-circle"></i><span style="font-size:.85em;padding-left:.5rem">Nouvelle Contribution</span>
+              <i class="bi bi-circle"></i><span style="font-size:.85em;padding-left:.5rem">{% trans "Nouvelle Contribution" %}</span>
             </a>
           </li>
           {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' or user.profile.niveau_acces == 'COMPTABLE' or user.profile.niveau_acces == 'REGION' %}
           <li>
             <a href="{% url 'contribution_national' %}">
-              <i class="bi bi-globe"></i><span style="font-size:.85em;padding-left:.5rem">Vue Nationale</span>
+              <i class="bi bi-globe"></i><span style="font-size:.85em;padding-left:.5rem">{% trans "Vue Nationale" %}</span>
             </a>
           </li>
           {% endif %}
           <li><hr class="my-1 opacity-25"></li>
-          <!-- Types (admin seulement) -->
           {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' or user.profile.niveau_acces == 'COMPTABLE' %}
           <li>
             <a href="{% url 'type_list' %}">
-              <i class="bi bi-tags"></i><span style="font-size:.85em;padding-left:.5rem">Types de Contribution</span>
+              <i class="bi bi-tags"></i><span style="font-size:.85em;padding-left:.5rem">{% trans "Types de Contribution" %}</span>
             </a>
           </li>
           {% endif %}
-          <!-- Historique global (admin/superadmin) -->
           {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' %}
           <li>
             <a href="{% url 'historique_global' %}">
-              <i class="bi bi-clock-history"></i><span style="font-size:.85em;padding-left:.5rem">Historique modifications</span>
+              <i class="bi bi-clock-history"></i><span style="font-size:.85em;padding-left:.5rem">{% trans "Historique modifications" %}</span>
             </a>
           </li>
           {% endif %}
           <li><hr class="my-1 opacity-25"></li>
           <li>
             <a href="{% url 'stats_voeux' %}" style="color:#dc3545">
-              <i class="bi bi-bar-chart-fill"></i><span style="font-size:.85em;padding-left:.5rem">Statistiques</span>
+              <i class="bi bi-bar-chart-fill"></i><span style="font-size:.85em;padding-left:.5rem">{% trans "Statistiques" %}</span>
             </a>
           </li>
         </ul>
@@ -595,25 +616,25 @@
       {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' or user.profile.niveau_acces == 'COMPTABLE' or user.profile.niveau_acces == 'REGION' %}
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#retraites-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-sunrise-fill text-warning"></i><span>Retraites</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-sunrise-fill text-warning"></i><span>{% trans "Retraites" %}</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="retraites-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
           <li>
             <a href="{% url 'retraite_list' %}">
-              <i class="bi bi-list-ul"></i><span>Liste des rapports</span>
+              <i class="bi bi-list-ul"></i><span>{% trans "Liste des rapports" %}</span>
             </a>
           </li>
           {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' or user.profile.niveau_acces == 'COMPTABLE' or user.profile.niveau_acces == 'REGION' %}
           <li>
             <a href="{% url 'add_retraite' %}">
-              <i class="bi bi-circle"></i><span style="font-size:.85em;padding-left:.5rem">Nouveau rapport</span>
+              <i class="bi bi-circle"></i><span style="font-size:.85em;padding-left:.5rem">{% trans "Nouveau rapport" %}</span>
             </a>
           </li>
           {% endif %}
           {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' or user.profile.niveau_acces == 'COMPTABLE' %}
           <li>
             <a href="{% url 'retraite_national' %}">
-              <i class="bi bi-globe"></i><span style="font-size:.85em;padding-left:.5rem">Vue Nationale</span>
+              <i class="bi bi-globe"></i><span style="font-size:.85em;padding-left:.5rem">{% trans "Vue Nationale" %}</span>
             </a>
           </li>
           {% endif %}
@@ -623,52 +644,43 @@
       {% endif %}
       <hr>
 
-      <!-- ******** Gestion des utilisateurs (superadmin uniquement) ******** -->
+      <!-- Administration -->
       {% if user.is_authenticated and user.is_superuser %}
       <hr>
-      <li class="nav-heading">Administration</li>
+      <li class="nav-heading">{% trans "Administration" %}</li>
       <li class="nav-item">
         <a class="nav-link collapsed" href="{% url 'user_list' %}">
           <i class="bi bi-people"></i>
-          <span>Gestion des comptes</span>
+          <span>{% trans "Gestion des comptes" %}</span>
         </a>
       </li>
       {% endif %}
 
-      <!-- ******** message ******** -->
-      <li class="nav-heading">Messages</li>
+      <!-- Messages -->
+      <li class="nav-heading">{% trans "Messages" %}</li>
       {% if user.is_authenticated %}
       {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' %}
       <li class="nav-item">
         <a class="nav-link collapsed" href="{% url 'add_message' %}">
           <i class="bi bi-question-circle"></i>
-          <span>Ajouter</span>
+          <span>{% trans "Ajouter" %}</span>
         </a>
-      </li><!-- End F.A.Q Page Nav -->
-
-
-
+      </li>
       {% endif %}
-
       {% endif %}
-
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="{% url 'messages' %}">
           <i class="bi bi-person"></i>
-          <span>Liste</span>
+          <span>{% trans "Liste" %}</span>
         </a>
-      </li><!-- End Profile Page Nav -->
-
-
+      </li>
 
     </ul>
 
   </aside><!-- End Sidebar-->
 
   <main id="main" class="main">
-
-    <!-- End Page Title -->
 
     <section class="section dashboard">
       {% block gestion %}
@@ -681,13 +693,9 @@
   <!-- ======= Footer ======= -->
   <footer id="footer" class="footer">
     <div class="copyright">
-      &copy; Copyright <strong><span>Succes-victor.com</span></strong>. Tous droits réservés
+      &copy; Copyright <strong><span>Succes-victor.com</span></strong>. {% trans "Tous droits réservés" %}
     </div>
     <div class="credits">
-      <!-- All the links in the footer should remain intact. -->
-      <!-- You can delete the links only if you purchased the pro version. -->
-      <!-- Licensing information: https://bootstrapmade.com/license/ -->
-      <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
       Designed by <a href="https://www.facebook.com/profile.php?id=100066935350612">BootstrapMade</a>
     </div>
   </footer><!-- End Footer -->
@@ -719,12 +727,10 @@
           placeholder: 'Rechercher...',
         });
       });
-      // Signal que TomSelect est prêt
       document.dispatchEvent(new Event('tomselect:ready'));
     });
   </script>
 
-  <!-- Bloc JS pages (exécuté après init TomSelect) -->
   {% block extra_js %}{% endblock %}
 
 </body>

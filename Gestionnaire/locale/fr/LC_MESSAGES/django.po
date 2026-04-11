@@ -1,0 +1,216 @@
+# French (source language)
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+
+msgid "Entrer le nom de l'eglise"
+msgstr "Entrer le nom de l'eglise"
+
+msgid "Modifier mon Compte"
+msgstr "Modifier mon Compte"
+
+msgid "Deconnexion"
+msgstr "Déconnexion"
+
+msgid "Se Connecter"
+msgstr "Se Connecter"
+
+msgid "S'enregistrer"
+msgstr "S'enregistrer"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "EGLISES"
+msgstr "EGLISES"
+
+msgid "Ajouter"
+msgstr "Ajouter"
+
+msgid "Liste"
+msgstr "Liste"
+
+msgid "Groupes"
+msgstr "Groupes"
+
+msgid "Personnels"
+msgstr "Personnels"
+
+msgid "Bilans"
+msgstr "Bilans"
+
+msgid "Ajouter Enfants"
+msgstr "Ajouter Enfants"
+
+msgid "Ajouter Jeunes"
+msgstr "Ajouter Jeunes"
+
+msgid "Ajouter Adultes"
+msgstr "Ajouter Adultes"
+
+msgid "Liste Enfants"
+msgstr "Liste Enfants"
+
+msgid "Liste Jeunes"
+msgstr "Liste Jeunes"
+
+msgid "Liste Adultes"
+msgstr "Liste Adultes"
+
+msgid "Ajouter Cellule"
+msgstr "Ajouter Cellule"
+
+msgid "Ajouter Evenement"
+msgstr "Ajouter Evenement"
+
+msgid "Ajouter Seance"
+msgstr "Ajouter Séance"
+
+msgid "Liste Cellules"
+msgstr "Liste Cellules"
+
+msgid "Liste Evenements"
+msgstr "Liste Evénements"
+
+msgid "Liste Centralisée"
+msgstr "Liste Centralisée"
+
+msgid "Totaux par Région"
+msgstr "Totaux par Région"
+
+msgid "Totaux par Groupe"
+msgstr "Totaux par Groupe"
+
+msgid "Finances"
+msgstr "Finances"
+
+msgid "Liste Transactions"
+msgstr "Liste Transactions"
+
+msgid "Nouvelle Transaction"
+msgstr "Nouvelle Transaction"
+
+msgid "Lumière à la Cité"
+msgstr "Lumière à la Cité"
+
+msgid "Ajouter Lumiere à la cité"
+msgstr "Ajouter Lumière à la Cité"
+
+msgid "Ajouter Participants"
+msgstr "Ajouter Participants"
+
+msgid "Ajouter Etablissement"
+msgstr "Ajouter Etablissement"
+
+msgid "Liste Lumiere à la cité"
+msgstr "Liste Lumière à la Cité"
+
+msgid "Liste Participants"
+msgstr "Liste Participants"
+
+msgid "Liste Etablissements"
+msgstr "Liste Etablissements"
+
+msgid "Particularités"
+msgstr "Particularités"
+
+msgid "Ajouter Projet"
+msgstr "Ajouter Projet"
+
+msgid "Ajouter Difficulté"
+msgstr "Ajouter Difficulté"
+
+msgid "Liste Projet"
+msgstr "Liste Projets"
+
+msgid "Liste Difficulté"
+msgstr "Liste Difficultés"
+
+msgid "Annonce"
+msgstr "Annonce"
+
+msgid "Vue mensuelle GCK"
+msgstr "Vue mensuelle GCK"
+
+msgid "Séances du Soir"
+msgstr "Séances du Soir"
+
+msgid "Ajouter un bilan"
+msgstr "Ajouter un bilan"
+
+msgid "Convertis"
+msgstr "Convertis"
+
+msgid "Conférence des Ministres"
+msgstr "Conférence des Ministres"
+
+msgid "Ajouter un rapport"
+msgstr "Ajouter un rapport"
+
+msgid "Académie d'Impact"
+msgstr "Académie d'Impact"
+
+msgid "Rapport National (Soir)"
+msgstr "Rapport National (Soir)"
+
+msgid "Récapitulatif TOGO"
+msgstr "Récapitulatif TOGO"
+
+msgid "Statistiques Participation"
+msgstr "Statistiques Participation"
+
+msgid "Voeux & Contributions"
+msgstr "Voeux & Contributions"
+
+msgid "Liste des Voeux"
+msgstr "Liste des Voeux"
+
+msgid "Nouveau Voeu"
+msgstr "Nouveau Voeu"
+
+msgid "Vue Nationale"
+msgstr "Vue Nationale"
+
+msgid "Liste des Contributions"
+msgstr "Liste des Contributions"
+
+msgid "Nouvelle Contribution"
+msgstr "Nouvelle Contribution"
+
+msgid "Types de Contribution"
+msgstr "Types de Contribution"
+
+msgid "Historique modifications"
+msgstr "Historique modifications"
+
+msgid "Statistiques"
+msgstr "Statistiques"
+
+msgid "Retraites"
+msgstr "Retraites"
+
+msgid "Liste des rapports"
+msgstr "Liste des rapports"
+
+msgid "Nouveau rapport"
+msgstr "Nouveau rapport"
+
+msgid "Administration"
+msgstr "Administration"
+
+msgid "Gestion des comptes"
+msgstr "Gestion des comptes"
+
+msgid "Messages"
+msgstr "Messages"
+
+msgid "Connexion"
+msgstr "Connexion"
+
+msgid "Tous droits réservés"
+msgstr "Tous droits réservés"
+
+msgid "Langue"
+msgstr "Langue"

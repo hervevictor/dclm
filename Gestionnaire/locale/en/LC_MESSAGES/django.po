@@ -1,0 +1,216 @@
+# English
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+
+msgid "Entrer le nom de l'eglise"
+msgstr "Search for a church"
+
+msgid "Modifier mon Compte"
+msgstr "Edit my Account"
+
+msgid "Deconnexion"
+msgstr "Sign out"
+
+msgid "Se Connecter"
+msgstr "Sign in"
+
+msgid "S'enregistrer"
+msgstr "Register"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "EGLISES"
+msgstr "CHURCHES"
+
+msgid "Ajouter"
+msgstr "Add"
+
+msgid "Liste"
+msgstr "List"
+
+msgid "Groupes"
+msgstr "Groups"
+
+msgid "Personnels"
+msgstr "Members"
+
+msgid "Bilans"
+msgstr "Reports"
+
+msgid "Ajouter Enfants"
+msgstr "Add Children"
+
+msgid "Ajouter Jeunes"
+msgstr "Add Youth"
+
+msgid "Ajouter Adultes"
+msgstr "Add Adults"
+
+msgid "Liste Enfants"
+msgstr "Children List"
+
+msgid "Liste Jeunes"
+msgstr "Youth List"
+
+msgid "Liste Adultes"
+msgstr "Adults List"
+
+msgid "Ajouter Cellule"
+msgstr "Add Cell"
+
+msgid "Ajouter Evenement"
+msgstr "Add Event"
+
+msgid "Ajouter Seance"
+msgstr "Add Session"
+
+msgid "Liste Cellules"
+msgstr "Cells List"
+
+msgid "Liste Evenements"
+msgstr "Events List"
+
+msgid "Liste Centralisée"
+msgstr "Centralized List"
+
+msgid "Totaux par Région"
+msgstr "Totals by Region"
+
+msgid "Totaux par Groupe"
+msgstr "Totals by Group"
+
+msgid "Finances"
+msgstr "Finances"
+
+msgid "Liste Transactions"
+msgstr "Transactions List"
+
+msgid "Nouvelle Transaction"
+msgstr "New Transaction"
+
+msgid "Lumière à la Cité"
+msgstr "Light to the City"
+
+msgid "Ajouter Lumiere à la cité"
+msgstr "Add Light to the City"
+
+msgid "Ajouter Participants"
+msgstr "Add Participants"
+
+msgid "Ajouter Etablissement"
+msgstr "Add Establishment"
+
+msgid "Liste Lumiere à la cité"
+msgstr "Light to the City List"
+
+msgid "Liste Participants"
+msgstr "Participants List"
+
+msgid "Liste Etablissements"
+msgstr "Establishments List"
+
+msgid "Particularités"
+msgstr "Particularities"
+
+msgid "Ajouter Projet"
+msgstr "Add Project"
+
+msgid "Ajouter Difficulté"
+msgstr "Add Difficulty"
+
+msgid "Liste Projet"
+msgstr "Projects List"
+
+msgid "Liste Difficulté"
+msgstr "Difficulties List"
+
+msgid "Annonce"
+msgstr "Announcement"
+
+msgid "Vue mensuelle GCK"
+msgstr "Monthly GCK View"
+
+msgid "Séances du Soir"
+msgstr "Evening Sessions"
+
+msgid "Ajouter un bilan"
+msgstr "Add a report"
+
+msgid "Convertis"
+msgstr "Converts"
+
+msgid "Conférence des Ministres"
+msgstr "Ministers Conference"
+
+msgid "Ajouter un rapport"
+msgstr "Add a report"
+
+msgid "Académie d'Impact"
+msgstr "Impact Academy"
+
+msgid "Rapport National (Soir)"
+msgstr "National Report (Evening)"
+
+msgid "Récapitulatif TOGO"
+msgstr "TOGO Summary"
+
+msgid "Statistiques Participation"
+msgstr "Participation Statistics"
+
+msgid "Voeux & Contributions"
+msgstr "Vows & Contributions"
+
+msgid "Liste des Voeux"
+msgstr "Vows List"
+
+msgid "Nouveau Voeu"
+msgstr "New Vow"
+
+msgid "Vue Nationale"
+msgstr "National View"
+
+msgid "Liste des Contributions"
+msgstr "Contributions List"
+
+msgid "Nouvelle Contribution"
+msgstr "New Contribution"
+
+msgid "Types de Contribution"
+msgstr "Contribution Types"
+
+msgid "Historique modifications"
+msgstr "Edit History"
+
+msgid "Statistiques"
+msgstr "Statistics"
+
+msgid "Retraites"
+msgstr "Retreats"
+
+msgid "Liste des rapports"
+msgstr "Reports List"
+
+msgid "Nouveau rapport"
+msgstr "New Report"
+
+msgid "Administration"
+msgstr "Administration"
+
+msgid "Gestion des comptes"
+msgstr "Account Management"
+
+msgid "Messages"
+msgstr "Messages"
+
+msgid "Connexion"
+msgstr "Login"
+
+msgid "Tous droits réservés"
+msgstr "All rights reserved"
+
+msgid "Langue"
+msgstr "Language"

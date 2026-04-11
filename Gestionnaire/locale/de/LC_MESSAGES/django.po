@@ -1,0 +1,216 @@
+# German
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+
+msgid "Entrer le nom de l'eglise"
+msgstr "Kirche suchen"
+
+msgid "Modifier mon Compte"
+msgstr "Konto bearbeiten"
+
+msgid "Deconnexion"
+msgstr "Abmelden"
+
+msgid "Se Connecter"
+msgstr "Anmelden"
+
+msgid "S'enregistrer"
+msgstr "Registrieren"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "EGLISES"
+msgstr "KIRCHEN"
+
+msgid "Ajouter"
+msgstr "Hinzufügen"
+
+msgid "Liste"
+msgstr "Liste"
+
+msgid "Groupes"
+msgstr "Gruppen"
+
+msgid "Personnels"
+msgstr "Mitglieder"
+
+msgid "Bilans"
+msgstr "Berichte"
+
+msgid "Ajouter Enfants"
+msgstr "Kinder hinzufügen"
+
+msgid "Ajouter Jeunes"
+msgstr "Jugendliche hinzufügen"
+
+msgid "Ajouter Adultes"
+msgstr "Erwachsene hinzufügen"
+
+msgid "Liste Enfants"
+msgstr "Kinderliste"
+
+msgid "Liste Jeunes"
+msgstr "Jugendliste"
+
+msgid "Liste Adultes"
+msgstr "Erwachsenenliste"
+
+msgid "Ajouter Cellule"
+msgstr "Zelle hinzufügen"
+
+msgid "Ajouter Evenement"
+msgstr "Ereignis hinzufügen"
+
+msgid "Ajouter Seance"
+msgstr "Sitzung hinzufügen"
+
+msgid "Liste Cellules"
+msgstr "Zellenliste"
+
+msgid "Liste Evenements"
+msgstr "Ereignisliste"
+
+msgid "Liste Centralisée"
+msgstr "Zentralliste"
+
+msgid "Totaux par Région"
+msgstr "Summen nach Region"
+
+msgid "Totaux par Groupe"
+msgstr "Summen nach Gruppe"
+
+msgid "Finances"
+msgstr "Finanzen"
+
+msgid "Liste Transactions"
+msgstr "Transaktionsliste"
+
+msgid "Nouvelle Transaction"
+msgstr "Neue Transaktion"
+
+msgid "Lumière à la Cité"
+msgstr "Licht für die Stadt"
+
+msgid "Ajouter Lumiere à la cité"
+msgstr "Licht für die Stadt hinzufügen"
+
+msgid "Ajouter Participants"
+msgstr "Teilnehmer hinzufügen"
+
+msgid "Ajouter Etablissement"
+msgstr "Einrichtung hinzufügen"
+
+msgid "Liste Lumiere à la cité"
+msgstr "Licht für die Stadt Liste"
+
+msgid "Liste Participants"
+msgstr "Teilnehmerliste"
+
+msgid "Liste Etablissements"
+msgstr "Einrichtungsliste"
+
+msgid "Particularités"
+msgstr "Besonderheiten"
+
+msgid "Ajouter Projet"
+msgstr "Projekt hinzufügen"
+
+msgid "Ajouter Difficulté"
+msgstr "Schwierigkeit hinzufügen"
+
+msgid "Liste Projet"
+msgstr "Projektliste"
+
+msgid "Liste Difficulté"
+msgstr "Schwierigkeitsliste"
+
+msgid "Annonce"
+msgstr "Ankündigung"
+
+msgid "Vue mensuelle GCK"
+msgstr "Monatliche GCK-Ansicht"
+
+msgid "Séances du Soir"
+msgstr "Abendsitzungen"
+
+msgid "Ajouter un bilan"
+msgstr "Bericht hinzufügen"
+
+msgid "Convertis"
+msgstr "Bekehrte"
+
+msgid "Conférence des Ministres"
+msgstr "Ministerkonferenz"
+
+msgid "Ajouter un rapport"
+msgstr "Bericht hinzufügen"
+
+msgid "Académie d'Impact"
+msgstr "Impact-Akademie"
+
+msgid "Rapport National (Soir)"
+msgstr "Nationaler Bericht (Abend)"
+
+msgid "Récapitulatif TOGO"
+msgstr "TOGO-Zusammenfassung"
+
+msgid "Statistiques Participation"
+msgstr "Teilnahmestatistiken"
+
+msgid "Voeux & Contributions"
+msgstr "Gelübde & Beiträge"
+
+msgid "Liste des Voeux"
+msgstr "Gelübdeliste"
+
+msgid "Nouveau Voeu"
+msgstr "Neues Gelübde"
+
+msgid "Vue Nationale"
+msgstr "Nationale Ansicht"
+
+msgid "Liste des Contributions"
+msgstr "Beitragsliste"
+
+msgid "Nouvelle Contribution"
+msgstr "Neuer Beitrag"
+
+msgid "Types de Contribution"
+msgstr "Beitragsarten"
+
+msgid "Historique modifications"
+msgstr "Änderungshistorie"
+
+msgid "Statistiques"
+msgstr "Statistiken"
+
+msgid "Retraites"
+msgstr "Auszeiten"
+
+msgid "Liste des rapports"
+msgstr "Berichtsliste"
+
+msgid "Nouveau rapport"
+msgstr "Neuer Bericht"
+
+msgid "Administration"
+msgstr "Administration"
+
+msgid "Gestion des comptes"
+msgstr "Kontoverwaltung"
+
+msgid "Messages"
+msgstr "Nachrichten"
+
+msgid "Connexion"
+msgstr "Anmelden"
+
+msgid "Tous droits réservés"
+msgstr "Alle Rechte vorbehalten"
+
+msgid "Langue"
+msgstr "Sprache"
