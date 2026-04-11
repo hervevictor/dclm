@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import CreateView, UpdateView, DeleteView, ListView, DetailView
 from .models import Eglise, Groupe, Region
-from .forms import EgliseForm, GroupeForm
+from .forms import EgliseForm, GroupeForm, RegionForm
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 
@@ -266,10 +266,12 @@ def Groupes(request):
 
 @login_required(login_url='/membres/login/')
 def groupeDetails(request, id):
-    #groupe = Groupe.objects.filter(pk=id)
     groupe = get_object_or_404(Groupe, pk=id)
+    eglises = Eglise.objects.filter(groupe=groupe.name).order_by('nom')
     context = {
-        'groupe' : groupe,
+        'groupe': groupe,
+        'eglises': eglises,
+        'nb_eglises': eglises.count(),
     }
     return render(request, 'Groupes/groupe_details.html', context)
 
@@ -312,5 +314,86 @@ def FiltreGroupeRegion(request, regs):
         'regs':regs
     }
     return render(request, 'Groupes/groupe_region.html', context)
+
+
+# ─── Régions ───────────────────────────────────────────────────────────────────
+
+@login_required(login_url='/membres/login/')
+def add_region(request):
+    if not (request.user.is_superuser or (hasattr(request.user, 'profile') and request.user.profile.niveau_acces == 'ADMIN')):
+        from django.core.exceptions import PermissionDenied
+        raise PermissionDenied
+    form = RegionForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        region = form.save()
+        return redirect('region_details', pk=region.pk)
+    return render(request, 'Regions/region_form.html', {'form': form, 'titre': 'Ajouter une région'})
+
+
+@login_required(login_url='/membres/login/')
+def edit_region(request, pk):
+    region = get_object_or_404(Region, pk=pk)
+    peut_modifier = (
+        request.user.is_superuser or
+        (hasattr(request.user, 'profile') and
+         request.user.profile.niveau_acces in ('ADMIN', 'REGION'))
+    )
+    if not peut_modifier:
+        from django.core.exceptions import PermissionDenied
+        raise PermissionDenied
+    form = RegionForm(request.POST or None, instance=region)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        return redirect('region_details', pk=region.pk)
+    return render(request, 'Regions/region_form.html', {'form': form, 'region': region, 'titre': 'Modifier la région'})
+
+
+@login_required(login_url='/membres/login/')
+def delete_region(request, pk):
+    region = get_object_or_404(Region, pk=pk)
+    if not (request.user.is_superuser or (hasattr(request.user, 'profile') and request.user.profile.niveau_acces == 'ADMIN')):
+        from django.core.exceptions import PermissionDenied
+        raise PermissionDenied
+    if request.method == 'POST':
+        region.delete()
+        return redirect('region_list')
+    return render(request, 'Regions/region_delete.html', {'region': region})
+
+
+@login_required(login_url='/membres/login/')
+def region_list(request):
+    regions = Region.objects.all().order_by('name')
+    context = {
+        'regions': regions,
+        'regions_count': regions.count(),
+    }
+    return render(request, 'Regions/region_liste.html', context)
+
+
+@login_required(login_url='/membres/login/')
+def region_details(request, pk):
+    region = get_object_or_404(Region, pk=pk)
+    groupes = Groupe.objects.filter(region=region.name).order_by('name')
+    eglises = Eglise.objects.filter(region=region.name).order_by('nom')
+    adultes = Adulte.objects.filter(eglise__region=region.name).count()
+    jeunes = Jeune.objects.filter(eglise__region=region.name).count()
+    enfants = Enfant.objects.filter(eglise__region=region.name).count()
+    peut_modifier = (
+        request.user.is_superuser or
+        (hasattr(request.user, 'profile') and
+         request.user.profile.niveau_acces in ('ADMIN', 'REGION'))
+    )
+    context = {
+        'region': region,
+        'groupes': groupes,
+        'eglises': eglises,
+        'nb_groupes': groupes.count(),
+        'nb_eglises': eglises.count(),
+        'nb_adultes': adultes,
+        'nb_jeunes': jeunes,
+        'nb_enfants': enfants,
+        'peut_modifier': peut_modifier,
+    }
+    return render(request, 'Regions/region_details.html', context)
 
 

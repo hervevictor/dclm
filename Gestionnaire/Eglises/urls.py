@@ -25,6 +25,12 @@ urlpatterns = [
     path('groupe/<str:pk>/edit', EditGroupe, name='edit_groupe'),
     path('groupe/<int:pk>/delete', DeleteGroupe, name='delete_groupe'),
     path('groupes/region/<str:regs>', FiltreGroupeRegion, name='groupe_region'),
+
+    path('regions/', region_list, name='region_list'),
+    path('regions/ajouter/', add_region, name='add_region'),
+    path('regions/<int:pk>/', region_details, name='region_details'),
+    path('regions/<int:pk>/modifier/', edit_region, name='edit_region'),
+    path('regions/<int:pk>/supprimer/', delete_region, name='delete_region'),
 ]
 
 

@@ -7,6 +7,17 @@ choice = Region.objects.all().values_list('name','name')
     
 
 
+class RegionForm(forms.ModelForm):
+    class Meta:
+        model = Region
+        fields = ('name', 'nom_du_pasteur_regional', 'nombre_de_membres')
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'nom_du_pasteur_regional': forms.TextInput(attrs={'class': 'form-control'}),
+            'nombre_de_membres': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
 class GroupeForm(forms.ModelForm):
     class Meta:
         model = Groupe 

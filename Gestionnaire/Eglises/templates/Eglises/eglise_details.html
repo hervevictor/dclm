@@ -1,53 +1,212 @@
 {% extends 'base.html' %}
 {% load region_labels %}
-{% block gestion %} <br>
-    {% labels_for eglise.region as lbl %}
-    <h1>Details de : {{eglise}} </h1>
-    <br>
-    <hr>
-    <p><small> <strong>{{eglise.publish}}</strong> | <strong>{{eglise.auteur}}</strong></small></p>
-<br>
-    <div class="container">
-        <p>{{ lbl.intermediaire }} : <strong><a href="{% url 'eglises_groupe' eglise.groupe %}">{{eglise.groupe}}</a> </strong> </p>
-        <p>Region : <strong><a href="{% url 'eglises_region' eglise.region %}">{{eglise.region}}</a></strong> </p>
-        <p>Ville : <strong>{{eglise.ville}}</strong> </p>
+{% block gestion %}
+{% labels_for eglise.region as lbl %}
 
-        <p>Pasteur : <strong>{{eglise.nom_du_pasteur}}</strong> </p>
-        <p>Pasteur Adjoint : <strong>{{eglise.nom_du_pasteur_adjoin}}</strong> </p>
-        <p>Dirigeant des Jeunes : <strong>{{eglise.nom_du_dirigeant_des_jeunes}}</strong> </p>
-        <p>Dirigeant Adjoint des Jeunes : <strong>{{eglise.nom_du_dirigeant_adjoin_des_jeunes}}</strong> </p>
-        <p>Dirigeant des Enfants : <strong>{{eglise.nom_du_dirigeant_des_enfants}}</strong> </p>
-        <p>Dirigeant Adjoint des Enfants : <strong>{{eglise.nom_du_dirigeant_adjoin_des_enfants}}</strong> </p>
+<div class="container-fluid mt-4">
 
-        <p>Nbre de membres : <strong>{{eglise.nombre_de_membres}}</strong> </p>
-        <p>Téléphone : <strong>{{eglise.telephone}}</strong> </p>
-        <p>BP : <strong>{{eglise.bp}}</strong> </p>
-        <p>Email : <strong>{{eglise.email}}</strong> </p>
+  <!-- ── En-tête ───────────────────────────────────────────────────────────── -->
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-1 small">
+          <li class="breadcrumb-item"><a href="{% url 'eglises' %}">Églises</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'eglises_groupe' eglise.groupe %}">{{ eglise.groupe }}</a></li>
+          <li class="breadcrumb-item active">{{ eglise.nom }}</li>
+        </ol>
+      </nav>
+      <h3 class="mb-0 fw-bold">
+        <i class="bi bi-building text-success me-2"></i>{{ eglise.nom }}
+      </h3>
+      <div class="text-muted small mt-1">
+        <i class="bi bi-geo-alt-fill text-danger me-1"></i>
+        <a href="{% url 'eglises_region' eglise.region %}">{{ eglise.region }}</a>
+        &nbsp;›&nbsp;
+        <a href="{% url 'eglises_groupe' eglise.groupe %}">{{ eglise.groupe }}</a>
+        {% if eglise.ville %}&nbsp;›&nbsp;{{ eglise.ville }}{% endif %}
+      </div>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+      {% if peut_modifier %}
+      <a href="{% url 'edit_eglise' eglise.pk %}" class="btn btn-outline-success btn-sm">
+        <i class="bi bi-pencil-fill"></i> Modifier
+      </a>
+      {% endif %}
+      {% if peut_supprimer %}
+      <a href="{% url 'delete_eglise' eglise.pk %}" class="btn btn-outline-danger btn-sm">
+        <i class="bi bi-trash3-fill"></i> Supprimer
+      </a>
+      {% endif %}
+      <a href="{% url 'eglises' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> Retour
+      </a>
+    </div>
+  </div>
 
-        <p>Description : <strong>{{eglise.description}}</strong> </p>
+  <div class="row g-4">
 
-        <div class="row">
-            <div class="col-12 col-md-6">
-                {% if eglise.body_image %}
-                    <img src="{{eglise.body_image.url}}" class="card-img-top" alt="...">
-                {% endif %}
-            </div>
-            <div class="col-12 col-md-6">
-                {% if eglise.body_image1 %}
-                    <img src="{{eglise.body_image1.url}}" class="card-img-top" alt="...">
-                {% endif %}
-            </div>
+    <!-- ── Colonne gauche ────────────────────────────────────────────────────── -->
+    <div class="col-lg-4">
+
+      <!-- Photo principale -->
+      {% if eglise.header_image %}
+      <div class="mb-4">
+        <img src="{{ eglise.header_image.url }}" class="img-fluid rounded shadow-sm w-100" alt="{{ eglise.nom }}" style="max-height:220px; object-fit:cover;">
+      </div>
+      {% endif %}
+
+      <!-- Localisation -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header fw-semibold" style="background:#f0fff4; border-left:4px solid #198754;">
+          <i class="bi bi-geo-alt-fill text-success"></i> Localisation
         </div>
-        <br><br><br>
+        <div class="card-body">
+          <div class="mb-2">
+            <div class="small text-muted fw-semibold mb-1">Région</div>
+            <a href="{% url 'eglises_region' eglise.region %}" class="fw-bold text-decoration-none">{{ eglise.region }}</a>
+          </div>
+          <div class="mb-2">
+            <div class="small text-muted fw-semibold mb-1">{{ lbl.intermediaire }}</div>
+            <a href="{% url 'eglises_groupe' eglise.groupe %}" class="fw-bold text-decoration-none">{{ eglise.groupe }}</a>
+          </div>
+          {% if eglise.ville %}
+          <div>
+            <div class="small text-muted fw-semibold mb-1">Ville</div>
+            <div class="fw-bold">{{ eglise.ville }}</div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
 
-        {% if peut_modifier %}
-            <a href="{% url 'edit_eglise' eglise.pk %}" class="btn btn-success">Modifier</a>
-        {% endif %}
-        {% if peut_supprimer %}
-            <a href="{% url 'delete_eglise' eglise.pk %}" class="btn btn-danger">Supprimer</a>
-        {% endif %}
+      <!-- Contacts -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header fw-semibold" style="background:#fff8e1; border-left:4px solid #ffc107;">
+          <i class="bi bi-telephone-fill text-warning"></i> Contacts
+        </div>
+        <div class="card-body">
+          {% if eglise.telephone %}
+          <div class="mb-2">
+            <div class="small text-muted fw-semibold mb-1">Téléphone</div>
+            <div class="fw-bold">{{ eglise.telephone }}</div>
+          </div>
+          {% endif %}
+          {% if eglise.email %}
+          <div class="mb-2">
+            <div class="small text-muted fw-semibold mb-1">E-mail</div>
+            <div class="fw-bold">{{ eglise.email }}</div>
+          </div>
+          {% endif %}
+          {% if eglise.bp %}
+          <div>
+            <div class="small text-muted fw-semibold mb-1">BP</div>
+            <div class="fw-bold">{{ eglise.bp }}</div>
+          </div>
+          {% endif %}
+          {% if not eglise.telephone and not eglise.email and not eglise.bp %}
+          <div class="text-muted small fst-italic">Aucun contact renseigné.</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Méta -->
+      <div class="card shadow-sm border-0">
+        <div class="card-header fw-semibold" style="background:#f8fafc;">
+          <i class="bi bi-info-circle text-secondary"></i> Informations
+        </div>
+        <div class="card-body">
+          {% if eglise.nombre_de_membres %}
+          <div class="mb-2">
+            <div class="small text-muted fw-semibold mb-1">Nombre de membres</div>
+            <div class="fw-bold fs-5 text-primary">{{ eglise.nombre_de_membres }}</div>
+          </div>
+          {% endif %}
+          <div class="mb-2">
+            <div class="small text-muted fw-semibold mb-1">Enregistré le</div>
+            <div class="fw-bold">{{ eglise.publish|date:"d/m/Y" }}</div>
+          </div>
+          <div>
+            <div class="small text-muted fw-semibold mb-1">Saisi par</div>
+            <div class="fw-bold">{{ eglise.auteur }}</div>
+          </div>
+        </div>
+      </div>
 
     </div>
 
-    <br><br>
+    <!-- ── Colonne droite ─────────────────────────────────────────────────────── -->
+    <div class="col-lg-8">
+
+      <!-- Leadership -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header fw-semibold" style="background:#f0f4ff; border-left:4px solid #1d4ed8;">
+          <i class="bi bi-person-badge-fill text-primary"></i> Leadership
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <div class="small text-muted fw-semibold mb-1">Pasteur</div>
+              <div class="fw-bold">{{ eglise.nom_du_pasteur|default:"—" }}</div>
+            </div>
+            <div class="col-sm-6">
+              <div class="small text-muted fw-semibold mb-1">Pasteur Adjoint</div>
+              <div class="fw-bold">{{ eglise.nom_du_pasteur_adjoin|default:"—" }}</div>
+            </div>
+            <div class="col-sm-6">
+              <div class="small text-muted fw-semibold mb-1">Dirigeant des Jeunes</div>
+              <div class="fw-bold">{{ eglise.nom_du_dirigeant_des_jeunes|default:"—" }}</div>
+            </div>
+            <div class="col-sm-6">
+              <div class="small text-muted fw-semibold mb-1">Dirigeant Adjoint des Jeunes</div>
+              <div class="fw-bold">{{ eglise.nom_du_dirigeant_adjoin_des_jeunes|default:"—" }}</div>
+            </div>
+            <div class="col-sm-6">
+              <div class="small text-muted fw-semibold mb-1">Dirigeant des Enfants</div>
+              <div class="fw-bold">{{ eglise.nom_du_dirigeant_des_enfants|default:"—" }}</div>
+            </div>
+            <div class="col-sm-6">
+              <div class="small text-muted fw-semibold mb-1">Dirigeant Adjoint des Enfants</div>
+              <div class="fw-bold">{{ eglise.nom_du_dirigeant_adjoin_des_enfants|default:"—" }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      {% if eglise.description %}
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header fw-semibold" style="background:#f8fafc;">
+          <i class="bi bi-card-text text-secondary"></i> Description
+        </div>
+        <div class="card-body">
+          <p class="mb-0" style="white-space: pre-line;">{{ eglise.description }}</p>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Photos -->
+      {% if eglise.body_image or eglise.body_image1 %}
+      <div class="card shadow-sm border-0">
+        <div class="card-header fw-semibold" style="background:#f8fafc;">
+          <i class="bi bi-images text-secondary"></i> Photos
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            {% if eglise.body_image %}
+            <div class="col-sm-6">
+              <img src="{{ eglise.body_image.url }}" class="img-fluid rounded shadow-sm w-100" alt="Photo 1" style="max-height:200px; object-fit:cover;">
+            </div>
+            {% endif %}
+            {% if eglise.body_image1 %}
+            <div class="col-sm-6">
+              <img src="{{ eglise.body_image1.url }}" class="img-fluid rounded shadow-sm w-100" alt="Photo 2" style="max-height:200px; object-fit:cover;">
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
 {% endblock %}

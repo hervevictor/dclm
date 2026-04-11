@@ -1,26 +1,146 @@
 {% extends 'base.html' %}
 {% load region_labels %}
-{% block gestion %} <br>
-    {% labels_for groupe.region as lbl %}
-    <h1>Details du {{ lbl.intermediaire }} : {{groupe}} </h1> <br>
-    <br>
-    <div class="container">
-        <p>Nom : <strong>{{groupe.name}}</strong> </p>
-        <p>Nom du pasteur {{ lbl.intermediaire }} : <strong>{{groupe.nom_du_pasteur_du_groupe}}</strong> </p>
-        <p>Nom du Superviseur des Jeunes : <strong>{{groupe.nom_du_superviseur_des_jeunes}}</strong> </p>
-        <p>Nom du Superviseur Adjoin des Jeunes : <strong>{{groupe.nom_du_superviseur_adjoin_des_jeunes}}</strong> </p>
-        <p>Nbre de membres : <strong>{{groupe.nombre_de_membres}}</strong> </p>
+{% block gestion %}
+{% labels_for groupe.region as lbl %}
 
-        <p>Region : <strong><a href="{% url 'groupe_region' groupe.region %}">{{groupe.region}}</a> </strong> </p>
+<div class="container-fluid mt-4">
 
-        <br><br><br> <br>
-        {% if user.is_authenticated %}
-            {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' or user.profile.niveau_acces == 'REGION' %}
-                <a href="{% url 'edit_groupe' groupe.pk %}" class="btn btn-success">Modifier</a>
-                <a href="{% url 'delete_groupe' groupe.pk %}" class="btn btn-danger">Supprimer</a>
-            {% endif %}
-        {% endif %}
+  <!-- ── En-tête ───────────────────────────────────────────────────────────── -->
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-1 small">
+          <li class="breadcrumb-item"><a href="{% url 'groupe_liste' %}">Groupes</a></li>
+          <li class="breadcrumb-item active">{{ groupe.name }}</li>
+        </ol>
+      </nav>
+      <h3 class="mb-0 fw-bold">
+        <i class="bi bi-diagram-3-fill text-primary me-2"></i>{{ groupe.name }}
+      </h3>
+      <div class="text-muted small mt-1">
+        <i class="bi bi-geo-alt-fill text-danger me-1"></i>
+        <a href="{% url 'groupe_region' groupe.region %}">{{ groupe.region }}</a>
+      </div>
+    </div>
+    <div class="d-flex gap-2">
+      {% if user.is_authenticated %}
+      {% if user.is_superuser or user.profile.niveau_acces in 'ADMIN,REGION' %}
+      <a href="{% url 'edit_groupe' groupe.pk %}" class="btn btn-outline-success btn-sm">
+        <i class="bi bi-pencil-fill"></i> Modifier
+      </a>
+      <a href="{% url 'delete_groupe' groupe.pk %}" class="btn btn-outline-danger btn-sm">
+        <i class="bi bi-trash3-fill"></i> Supprimer
+      </a>
+      {% endif %}
+      {% endif %}
+      <a href="{% url 'groupe_liste' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> Retour
+      </a>
+    </div>
+  </div>
+
+  <div class="row g-4">
+
+    <!-- ── Colonne gauche : Infos ─────────────────────────────────────────────── -->
+    <div class="col-lg-4">
+
+      <!-- Infos principales -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header fw-semibold" style="background:#f0f4ff; border-left:4px solid #1d4ed8;">
+          <i class="bi bi-info-circle-fill text-primary"></i> Informations
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <div class="small text-muted fw-semibold mb-1 text-uppercase" style="letter-spacing:.05em;">Région</div>
+            <a href="{% url 'groupe_region' groupe.region %}" class="fw-bold text-decoration-none text-danger">
+              <i class="bi bi-geo-alt-fill me-1"></i>{{ groupe.region }}
+            </a>
+          </div>
+          {% if groupe.nombre_de_membres %}
+          <div class="mb-3">
+            <div class="small text-muted fw-semibold mb-1 text-uppercase" style="letter-spacing:.05em;">Nombre de membres</div>
+            <div class="fw-bold fs-5 text-primary">{{ groupe.nombre_de_membres }}</div>
+          </div>
+          {% endif %}
+          <div>
+            <div class="small text-muted fw-semibold mb-1 text-uppercase" style="letter-spacing:.05em;">Enregistré le</div>
+            <div class="fw-bold">{{ groupe.publish|date:"d/m/Y" }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Leadership -->
+      <div class="card shadow-sm border-0">
+        <div class="card-header fw-semibold" style="background:#f0fff4; border-left:4px solid #198754;">
+          <i class="bi bi-person-badge-fill text-success"></i> Leadership
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <div class="small text-muted fw-semibold mb-1">Pasteur {{ lbl.intermediaire }}</div>
+            <div class="fw-bold">{{ groupe.nom_du_pasteur_du_groupe|default:"—" }}</div>
+          </div>
+          <div class="mb-3">
+            <div class="small text-muted fw-semibold mb-1">Superviseur des Jeunes</div>
+            <div class="fw-bold">{{ groupe.nom_du_superviseur_des_jeunes|default:"—" }}</div>
+          </div>
+          <div>
+            <div class="small text-muted fw-semibold mb-1">Superviseur Adjoint des Jeunes</div>
+            <div class="fw-bold">{{ groupe.nom_du_superviseur_adjoin_des_jeunes|default:"—" }}</div>
+          </div>
+        </div>
+      </div>
 
     </div>
-    <br><br> <br>
+
+    <!-- ── Colonne droite : Églises du groupe ──────────────────────────────── -->
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-0">
+        <div class="card-header fw-semibold d-flex justify-content-between align-items-center" style="background:#f0f4ff;">
+          <span><i class="bi bi-building text-primary"></i> Églises du {{ lbl.intermediaire }}
+            <span class="badge bg-primary ms-1">{{ nb_eglises }}</span>
+          </span>
+          <a href="{% url 'eglises_groupe' groupe.name %}" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-eye"></i> Voir toutes
+          </a>
+        </div>
+        <div class="card-body p-0">
+          {% if eglises %}
+          <div class="table-responsive">
+            <table class="table table-sm table-hover mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Nom</th>
+                  <th>Pasteur</th>
+                  <th>Membres</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for e in eglises %}
+                <tr>
+                  <td class="fw-semibold">{{ e.nom }}</td>
+                  <td>{{ e.nom_du_pasteur|default:"—" }}</td>
+                  <td>{{ e.nombre_de_membres|default:"—" }}</td>
+                  <td>
+                    <a href="{% url 'eglise_details' e.pk %}" class="btn btn-xs btn-outline-primary py-0 px-2" style="font-size:.8rem;">
+                      <i class="bi bi-eye"></i>
+                    </a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="text-center text-muted py-4 small">
+            <i class="bi bi-building fs-2 opacity-25"></i>
+            <div class="mt-2">Aucune église dans ce groupe.</div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
 {% endblock %}

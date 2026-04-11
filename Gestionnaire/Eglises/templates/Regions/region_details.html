@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+{% block gestion %}
+
+<div class="container-fluid mt-4">
+
+  <!-- ── En-tête ───────────────────────────────────────────────────────────── -->
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-1 small">
+          <li class="breadcrumb-item"><a href="{% url 'region_list' %}">Régions</a></li>
+          <li class="breadcrumb-item active">{{ region.name }}</li>
+        </ol>
+      </nav>
+      <h3 class="mb-0 fw-bold">
+        <i class="bi bi-geo-alt-fill text-danger me-2"></i>{{ region.name }}
+      </h3>
+    </div>
+    <div class="d-flex gap-2">
+      {% if peut_modifier %}
+      <a href="{% url 'edit_region' region.pk %}" class="btn btn-outline-success btn-sm">
+        <i class="bi bi-pencil-fill"></i> Modifier
+      </a>
+      {% endif %}
+      {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' %}
+      <a href="{% url 'delete_region' region.pk %}" class="btn btn-outline-danger btn-sm">
+        <i class="bi bi-trash3-fill"></i> Supprimer
+      </a>
+      {% endif %}
+      <a href="{% url 'region_list' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> Retour
+      </a>
+    </div>
+  </div>
+
+  <div class="row g-4">
+
+    <!-- ── Colonne gauche : Infos ────────────────────────────────────────────── -->
+    <div class="col-lg-4">
+
+      <!-- Carte identité -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header fw-semibold" style="background:#fff2f2; border-left:4px solid #dc3545;">
+          <i class="bi bi-info-circle-fill text-danger"></i> Informations
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <div class="small text-muted text-uppercase fw-semibold mb-1" style="letter-spacing:.05em;">Pasteur régional</div>
+            <div class="fw-bold">{{ region.nom_du_pasteur_regional|default:"—" }}</div>
+          </div>
+          <div class="mb-3">
+            <div class="small text-muted text-uppercase fw-semibold mb-1" style="letter-spacing:.05em;">Nombre de membres</div>
+            <div class="fw-bold">{{ region.nombre_de_membres|default:"—" }}</div>
+          </div>
+          <div>
+            <div class="small text-muted text-uppercase fw-semibold mb-1" style="letter-spacing:.05em;">Enregistré le</div>
+            <div class="fw-bold">{{ region.publish|date:"d/m/Y" }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Statistiques -->
+      <div class="card shadow-sm border-0">
+        <div class="card-header fw-semibold" style="background:#f8fafc;">
+          <i class="bi bi-bar-chart-fill text-primary"></i> Statistiques
+        </div>
+        <div class="card-body p-0">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <span><i class="bi bi-diagram-3-fill text-primary me-2"></i>Groupes</span>
+              <span class="badge bg-primary rounded-pill">{{ nb_groupes }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <span><i class="bi bi-building text-success me-2"></i>Églises</span>
+              <span class="badge bg-success rounded-pill">{{ nb_eglises }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <span><i class="bi bi-person-fill text-info me-2"></i>Adultes</span>
+              <span class="badge bg-info rounded-pill">{{ nb_adultes }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <span><i class="bi bi-people-fill text-warning me-2"></i>Jeunes</span>
+              <span class="badge bg-warning rounded-pill text-dark">{{ nb_jeunes }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <span><i class="bi bi-emoji-smile text-danger me-2"></i>Enfants</span>
+              <span class="badge bg-danger rounded-pill">{{ nb_enfants }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center fw-bold">
+              <span>Total personnes</span>
+              <span class="badge bg-dark rounded-pill">{{ nb_adultes|add:nb_jeunes|add:nb_enfants }}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Colonne droite : Groupes + Églises ──────────────────────────────── -->
+    <div class="col-lg-8">
+
+      <!-- Groupes -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header fw-semibold d-flex justify-content-between align-items-center" style="background:#f0f4ff;">
+          <span><i class="bi bi-diagram-3-fill text-primary"></i> Groupes de la région</span>
+          <span class="badge bg-primary">{{ nb_groupes }}</span>
+        </div>
+        {% if groupes %}
+        <div class="table-responsive">
+          <table class="table table-sm table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Nom</th>
+                <th>Pasteur</th>
+                <th>Superviseur Jeunes</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for g in groupes %}
+              <tr>
+                <td class="fw-semibold">{{ g.name }}</td>
+                <td>{{ g.nom_du_pasteur_du_groupe|default:"—" }}</td>
+                <td>{{ g.nom_du_superviseur_des_jeunes|default:"—" }}</td>
+                <td>
+                  <a href="{% url 'groupe_details' g.pk %}" class="btn btn-xs btn-outline-primary py-0 px-2" style="font-size:.8rem;">
+                    <i class="bi bi-eye"></i>
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="card-body text-muted text-center py-3 small">Aucun groupe dans cette région.</div>
+        {% endif %}
+      </div>
+
+      <!-- Églises -->
+      <div class="card shadow-sm border-0">
+        <div class="card-header fw-semibold d-flex justify-content-between align-items-center" style="background:#f0fff4;">
+          <span><i class="bi bi-building text-success"></i> Églises de la région</span>
+          <span class="badge bg-success">{{ nb_eglises }}</span>
+        </div>
+        {% if eglises %}
+        <div class="table-responsive">
+          <table class="table table-sm table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Nom</th>
+                <th>Groupe</th>
+                <th>Pasteur</th>
+                <th>Membres</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for e in eglises %}
+              <tr>
+                <td class="fw-semibold">{{ e.nom }}</td>
+                <td>{{ e.groupe }}</td>
+                <td>{{ e.nom_du_pasteur|default:"—" }}</td>
+                <td>{{ e.nombre_de_membres|default:"—" }}</td>
+                <td>
+                  <a href="{% url 'eglise_details' e.pk %}" class="btn btn-xs btn-outline-success py-0 px-2" style="font-size:.8rem;">
+                    <i class="bi bi-eye"></i>
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="card-body text-muted text-center py-3 small">Aucune église dans cette région.</div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
