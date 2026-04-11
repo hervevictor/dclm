@@ -20,26 +20,24 @@ class RegionForm(forms.ModelForm):
 
 class GroupeForm(forms.ModelForm):
     class Meta:
-        model = Groupe 
-        fields = ('name', 'nom_du_pasteur_du_groupe', 
-                  'nom_du_superviseur_des_jeunes', 'nom_du_superviseur_adjoin_des_jeunes', 
-                  'nombre_de_membres', 'region')
-        
+        model = Groupe
+        fields = ('name', 'nom_du_pasteur_du_groupe',
+                  'nom_du_superviseur_des_jeunes', 'nom_du_superviseur_adjoin_des_jeunes',
+                  'region')
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'nom_du_pasteur_du_groupe': forms.TextInput(attrs={'class': 'form-control'}),
             'nom_du_superviseur_des_jeunes': forms.TextInput(attrs={'class': 'form-control'}),
             'nom_du_superviseur_adjoin_des_jeunes': forms.TextInput(attrs={'class': 'form-control'}),
-            'region': forms.Select(choices=choice, attrs={'class': 'form-control'}), 
-            'nombre_de_membres': forms.NumberInput(attrs={'class': 'form-control'}),
+            'region': forms.Select(choices=choice, attrs={'class': 'form-control'}),
         }
 
 
 
 class EgliseForm(forms.ModelForm):
     class Meta:
-        model = Eglise 
-        fields = ('auteur', 'nom', 'groupe', 'ville', 'region', 'nom_du_pasteur', 'nom_du_pasteur_adjoin', 'nom_du_dirigeant_des_jeunes', 'nom_du_dirigeant_adjoin_des_jeunes', 'nom_du_dirigeant_des_enfants', 'nom_du_dirigeant_adjoin_des_enfants', 'nombre_de_membres', 'telephone', 'bp', 'email', 'description', 'header_image', 'body_image', 'body_image1')
+        model = Eglise
+        fields = ('auteur', 'nom', 'groupe', 'ville', 'region', 'nom_du_pasteur', 'nom_du_pasteur_adjoin', 'nom_du_dirigeant_des_jeunes', 'nom_du_dirigeant_adjoin_des_jeunes', 'nom_du_dirigeant_des_enfants', 'nom_du_dirigeant_adjoin_des_enfants', 'telephone', 'bp', 'email', 'description', 'header_image', 'body_image', 'body_image1')
         
         widgets = {
             'nom': forms.TextInput(attrs={'class': 'form-control'}),

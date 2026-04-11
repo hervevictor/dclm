@@ -24,6 +24,35 @@ from django.utils import timezone
 from Membres.utils import filter_by_rbac, RBACMixin, AdminOnlyMixin
 
 
+# ─── Helper statistiques membres ───────────────────────────────────────────────
+
+def get_member_stats(**filter_kwargs):
+    """
+    Retourne la composition H/F par catégorie (Adultes, Jeunes, Enfants) + totaux.
+    Passer les filtres Django standard, ex: eglise=obj, eglise__groupe='Adidogomé'
+    """
+    a_h = Adulte.objects.filter(sexe='Masculin', **filter_kwargs).count()
+    a_f = Adulte.objects.filter(sexe='Feminin',  **filter_kwargs).count()
+    j_h = Jeune.objects.filter(sexe='Masculin',  **filter_kwargs).count()
+    j_f = Jeune.objects.filter(sexe='Feminin',   **filter_kwargs).count()
+    e_h = Enfant.objects.filter(sexe='Masculin', **filter_kwargs).count()
+    e_f = Enfant.objects.filter(sexe='Feminin',  **filter_kwargs).count()
+    return {
+        'adultes_h':     a_h,
+        'adultes_f':     a_f,
+        'adultes_total': a_h + a_f,
+        'jeunes_h':      j_h,
+        'jeunes_f':      j_f,
+        'jeunes_total':  j_h + j_f,
+        'enfants_h':     e_h,
+        'enfants_f':     e_f,
+        'enfants_total': e_h + e_f,
+        'total_h':       a_h + j_h + e_h,
+        'total_f':       a_f + j_f + e_f,
+        'total':         a_h + a_f + j_h + j_f + e_h + e_f,
+    }
+
+
 
 @login_required(login_url='/membres/login/')
 def index(request):
@@ -120,6 +149,7 @@ class EgliseDetails(DetailView):
                 )
             )
         )
+        context['stats'] = get_member_stats(eglise=self.object)
         return context
 
 
@@ -268,10 +298,18 @@ def Groupes(request):
 def groupeDetails(request, id):
     groupe = get_object_or_404(Groupe, pk=id)
     eglises = Eglise.objects.filter(groupe=groupe.name).order_by('nom')
+    # Stats calculées depuis les membres réels de chaque église du groupe
+    eglises_stats = []
+    for e in eglises:
+        s = get_member_stats(eglise=e)
+        eglises_stats.append({'eglise': e, 'stats': s})
+    stats = get_member_stats(eglise__groupe=groupe.name)
     context = {
         'groupe': groupe,
         'eglises': eglises,
+        'eglises_stats': eglises_stats,
         'nb_eglises': eglises.count(),
+        'stats': stats,
     }
     return render(request, 'Groupes/groupe_details.html', context)
 
@@ -375,9 +413,20 @@ def region_details(request, pk):
     region = get_object_or_404(Region, pk=pk)
     groupes = Groupe.objects.filter(region=region.name).order_by('name')
     eglises = Eglise.objects.filter(region=region.name).order_by('nom')
-    adultes = Adulte.objects.filter(eglise__region=region.name).count()
-    jeunes = Jeune.objects.filter(eglise__region=region.name).count()
-    enfants = Enfant.objects.filter(eglise__region=region.name).count()
+    # Stats membres calculées (pas le champ manuel)
+    stats = get_member_stats(eglise__region=region.name)
+    # Stats par groupe pour le tableau
+    groupes_stats = []
+    for g in groupes:
+        s = get_member_stats(eglise__groupe=g.name)
+        groupes_stats.append({'groupe': g, 'stats': s})
+    # Totaux par église pour le tableau des églises
+    eglises_avec_total = []
+    for e in eglises:
+        total = (Adulte.objects.filter(eglise=e).count() +
+                 Jeune.objects.filter(eglise=e).count() +
+                 Enfant.objects.filter(eglise=e).count())
+        eglises_avec_total.append({'eglise': e, 'total': total})
     peut_modifier = (
         request.user.is_superuser or
         (hasattr(request.user, 'profile') and
@@ -386,12 +435,12 @@ def region_details(request, pk):
     context = {
         'region': region,
         'groupes': groupes,
+        'groupes_stats': groupes_stats,
         'eglises': eglises,
+        'eglises_avec_total': eglises_avec_total,
         'nb_groupes': groupes.count(),
         'nb_eglises': eglises.count(),
-        'nb_adultes': adultes,
-        'nb_jeunes': jeunes,
-        'nb_enfants': enfants,
+        'stats': stats,
         'peut_modifier': peut_modifier,
     }
     return render(request, 'Regions/region_details.html', context)

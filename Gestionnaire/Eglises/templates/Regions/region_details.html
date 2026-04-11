@@ -59,7 +59,7 @@
         </div>
       </div>
 
-      <!-- Statistiques -->
+      <!-- Statistiques rapides -->
       <div class="card shadow-sm border-0">
         <div class="card-header fw-semibold" style="background:#f8fafc;">
           <i class="bi bi-bar-chart-fill text-primary"></i> Statistiques
@@ -76,19 +76,19 @@
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center">
               <span><i class="bi bi-person-fill text-info me-2"></i>Adultes</span>
-              <span class="badge bg-info rounded-pill">{{ nb_adultes }}</span>
+              <span class="badge bg-info rounded-pill">{{ stats.adultes_total }}</span>
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center">
               <span><i class="bi bi-people-fill text-warning me-2"></i>Jeunes</span>
-              <span class="badge bg-warning rounded-pill text-dark">{{ nb_jeunes }}</span>
+              <span class="badge bg-warning rounded-pill text-dark">{{ stats.jeunes_total }}</span>
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center">
               <span><i class="bi bi-emoji-smile text-danger me-2"></i>Enfants</span>
-              <span class="badge bg-danger rounded-pill">{{ nb_enfants }}</span>
+              <span class="badge bg-danger rounded-pill">{{ stats.enfants_total }}</span>
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center fw-bold">
-              <span>Total personnes</span>
-              <span class="badge bg-dark rounded-pill">{{ nb_adultes|add:nb_jeunes|add:nb_enfants }}</span>
+              <span>Total membres</span>
+              <span class="badge bg-dark rounded-pill">{{ stats.total }}</span>
             </li>
           </ul>
         </div>
@@ -96,40 +96,70 @@
 
     </div>
 
-    <!-- ── Colonne droite : Groupes + Églises ──────────────────────────────── -->
+    <!-- ── Colonne droite : Stats + Groupes + Églises ────────────────────── -->
     <div class="col-lg-8">
 
-      <!-- Groupes -->
+      <!-- Stats globales de la région -->
+      {% include "partials/stats_membres.html" with stats=stats titre="Composition totale de la région" card_class="mb-4" %}
+
+      <!-- Groupes avec stats -->
       <div class="card shadow-sm border-0 mb-4">
         <div class="card-header fw-semibold d-flex justify-content-between align-items-center" style="background:#f0f4ff;">
           <span><i class="bi bi-diagram-3-fill text-primary"></i> Groupes de la région</span>
           <span class="badge bg-primary">{{ nb_groupes }}</span>
         </div>
-        {% if groupes %}
+        {% if groupes_stats %}
         <div class="table-responsive">
-          <table class="table table-sm table-hover mb-0">
+          <table class="table table-sm table-hover mb-0 text-center">
             <thead class="table-light">
               <tr>
-                <th>Nom</th>
-                <th>Pasteur</th>
-                <th>Superviseur Jeunes</th>
+                <th class="text-start ps-3">Groupe</th>
+                <th colspan="2" class="text-info">Adultes</th>
+                <th colspan="2" class="text-warning">Jeunes</th>
+                <th colspan="2" class="text-success">Enfants</th>
+                <th class="fw-bold">Total</th>
                 <th></th>
+              </tr>
+              <tr class="table-light" style="font-size:.78rem;">
+                <th class="text-start ps-3"></th>
+                <th class="text-muted">H</th><th class="text-muted">F</th>
+                <th class="text-muted">H</th><th class="text-muted">F</th>
+                <th class="text-muted">H</th><th class="text-muted">F</th>
+                <th></th><th></th>
               </tr>
             </thead>
             <tbody>
-              {% for g in groupes %}
+              {% for item in groupes_stats %}
               <tr>
-                <td class="fw-semibold">{{ g.name }}</td>
-                <td>{{ g.nom_du_pasteur_du_groupe|default:"—" }}</td>
-                <td>{{ g.nom_du_superviseur_des_jeunes|default:"—" }}</td>
+                <td class="text-start ps-3 fw-semibold">{{ item.groupe.name }}</td>
+                <td>{{ item.stats.adultes_h }}</td>
+                <td>{{ item.stats.adultes_f }}</td>
+                <td>{{ item.stats.jeunes_h }}</td>
+                <td>{{ item.stats.jeunes_f }}</td>
+                <td>{{ item.stats.enfants_h }}</td>
+                <td>{{ item.stats.enfants_f }}</td>
+                <td class="fw-bold text-primary">{{ item.stats.total }}</td>
                 <td>
-                  <a href="{% url 'groupe_details' g.pk %}" class="btn btn-xs btn-outline-primary py-0 px-2" style="font-size:.8rem;">
+                  <a href="{% url 'groupe_details' item.groupe.pk %}" class="btn btn-xs btn-outline-primary py-0 px-2" style="font-size:.78rem;">
                     <i class="bi bi-eye"></i>
                   </a>
                 </td>
               </tr>
               {% endfor %}
             </tbody>
+            <tfoot class="table-dark fw-bold">
+              <tr>
+                <td class="text-start ps-3">TOTAL</td>
+                <td>{{ stats.adultes_h }}</td>
+                <td>{{ stats.adultes_f }}</td>
+                <td>{{ stats.jeunes_h }}</td>
+                <td>{{ stats.jeunes_f }}</td>
+                <td>{{ stats.enfants_h }}</td>
+                <td>{{ stats.enfants_f }}</td>
+                <td class="text-warning">{{ stats.total }}</td>
+                <td></td>
+              </tr>
+            </tfoot>
           </table>
         </div>
         {% else %}
@@ -151,19 +181,19 @@
                 <th>Nom</th>
                 <th>Groupe</th>
                 <th>Pasteur</th>
-                <th>Membres</th>
+                <th class="text-center">Membres</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
-              {% for e in eglises %}
+              {% for item in eglises_avec_total %}
               <tr>
-                <td class="fw-semibold">{{ e.nom }}</td>
-                <td>{{ e.groupe }}</td>
-                <td>{{ e.nom_du_pasteur|default:"—" }}</td>
-                <td>{{ e.nombre_de_membres|default:"—" }}</td>
+                <td class="fw-semibold">{{ item.eglise.nom }}</td>
+                <td>{{ item.eglise.groupe }}</td>
+                <td>{{ item.eglise.nom_du_pasteur|default:"—" }}</td>
+                <td class="text-center fw-bold text-primary">{{ item.total }}</td>
                 <td>
-                  <a href="{% url 'eglise_details' e.pk %}" class="btn btn-xs btn-outline-success py-0 px-2" style="font-size:.8rem;">
+                  <a href="{% url 'eglise_details' item.eglise.pk %}" class="btn btn-xs btn-outline-success py-0 px-2" style="font-size:.8rem;">
                     <i class="bi bi-eye"></i>
                   </a>
                 </td>

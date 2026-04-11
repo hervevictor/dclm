@@ -114,12 +114,6 @@
           <i class="bi bi-info-circle text-secondary"></i> Informations
         </div>
         <div class="card-body">
-          {% if eglise.nombre_de_membres %}
-          <div class="mb-2">
-            <div class="small text-muted fw-semibold mb-1">Nombre de membres</div>
-            <div class="fw-bold fs-5 text-primary">{{ eglise.nombre_de_membres }}</div>
-          </div>
-          {% endif %}
           <div class="mb-2">
             <div class="small text-muted fw-semibold mb-1">Enregistré le</div>
             <div class="fw-bold">{{ eglise.publish|date:"d/m/Y" }}</div>
@@ -170,6 +164,9 @@
           </div>
         </div>
       </div>
+
+      <!-- Composition membres -->
+      {% include "partials/stats_membres.html" with stats=stats titre="Composition de l'église" card_class="mb-4" %}
 
       <!-- Description -->
       {% if eglise.description %}

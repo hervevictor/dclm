@@ -92,8 +92,13 @@
 
     </div>
 
-    <!-- ── Colonne droite : Églises du groupe ──────────────────────────────── -->
+    <!-- ── Colonne droite : Stats + Églises ───────────────────────────────── -->
     <div class="col-lg-8">
+
+      <!-- Stats globales du groupe -->
+      {% include "partials/stats_membres.html" with stats=stats titre="Composition totale du groupe" card_class="mb-4" %}
+
+      <!-- Tableau par église avec stats -->
       <div class="card shadow-sm border-0">
         <div class="card-header fw-semibold d-flex justify-content-between align-items-center" style="background:#f0f4ff;">
           <span><i class="bi bi-building text-primary"></i> Églises du {{ lbl.intermediaire }}
@@ -104,31 +109,58 @@
           </a>
         </div>
         <div class="card-body p-0">
-          {% if eglises %}
+          {% if eglises_stats %}
           <div class="table-responsive">
-            <table class="table table-sm table-hover mb-0">
+            <table class="table table-sm table-hover mb-0 text-center">
               <thead class="table-light">
                 <tr>
-                  <th>Nom</th>
-                  <th>Pasteur</th>
-                  <th>Membres</th>
+                  <th class="text-start ps-3">Église</th>
+                  <th colspan="2" class="text-info">Adultes</th>
+                  <th colspan="2" class="text-warning">Jeunes</th>
+                  <th colspan="2" class="text-success">Enfants</th>
+                  <th class="fw-bold">Total</th>
                   <th></th>
+                </tr>
+                <tr class="table-light" style="font-size:.78rem;">
+                  <th class="text-start ps-3"></th>
+                  <th class="text-muted">H</th><th class="text-muted">F</th>
+                  <th class="text-muted">H</th><th class="text-muted">F</th>
+                  <th class="text-muted">H</th><th class="text-muted">F</th>
+                  <th></th><th></th>
                 </tr>
               </thead>
               <tbody>
-                {% for e in eglises %}
+                {% for item in eglises_stats %}
                 <tr>
-                  <td class="fw-semibold">{{ e.nom }}</td>
-                  <td>{{ e.nom_du_pasteur|default:"—" }}</td>
-                  <td>{{ e.nombre_de_membres|default:"—" }}</td>
+                  <td class="text-start ps-3 fw-semibold">{{ item.eglise.nom }}</td>
+                  <td>{{ item.stats.adultes_h }}</td>
+                  <td>{{ item.stats.adultes_f }}</td>
+                  <td>{{ item.stats.jeunes_h }}</td>
+                  <td>{{ item.stats.jeunes_f }}</td>
+                  <td>{{ item.stats.enfants_h }}</td>
+                  <td>{{ item.stats.enfants_f }}</td>
+                  <td class="fw-bold text-primary">{{ item.stats.total }}</td>
                   <td>
-                    <a href="{% url 'eglise_details' e.pk %}" class="btn btn-xs btn-outline-primary py-0 px-2" style="font-size:.8rem;">
+                    <a href="{% url 'eglise_details' item.eglise.pk %}" class="btn btn-xs btn-outline-primary py-0 px-2" style="font-size:.78rem;">
                       <i class="bi bi-eye"></i>
                     </a>
                   </td>
                 </tr>
                 {% endfor %}
               </tbody>
+              <tfoot class="table-dark fw-bold">
+                <tr>
+                  <td class="text-start ps-3">TOTAL</td>
+                  <td>{{ stats.adultes_h }}</td>
+                  <td>{{ stats.adultes_f }}</td>
+                  <td>{{ stats.jeunes_h }}</td>
+                  <td>{{ stats.jeunes_f }}</td>
+                  <td>{{ stats.enfants_h }}</td>
+                  <td>{{ stats.enfants_f }}</td>
+                  <td class="text-warning">{{ stats.total }}</td>
+                  <td></td>
+                </tr>
+              </tfoot>
             </table>
           </div>
           {% else %}
