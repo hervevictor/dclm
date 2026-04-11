@@ -244,3 +244,66 @@ msgstr "Systéme de gestion d'une communauté religieuse. Allant des liste des p
 
 msgid "home_cta_desc"
 msgstr "Pour aller sur l'interface des églises et les autres éléments, cliquez sur \"COMMUNAUTÉ\" (l'icone ou ce bouton)"
+
+msgid "about_intro"
+msgstr "Communauté est une application ou un système de gestion des églises ou toute assemblée réligieuse. Elle touche les domaines suivants :"
+
+msgid "about_item1"
+msgstr "La liste des Eglises, Groupes, Régions"
+
+msgid "about_item2"
+msgstr "Liste des Personnes : Adultes, Jeunes et Enfants"
+
+msgid "about_item3"
+msgstr "Les Bilans des activités, des séances de culte."
+
+msgid "about_item4"
+msgstr "Les particularités : difficultés et les projets."
+
+msgid "about_item5"
+msgstr "Lumière à la cité : Liste des établissements, des participants et des études."
+
+msgid "about_item6"
+msgstr "Les Messages du dimanche, les hymnes et les annonces."
+
+msgid "about_desc"
+msgstr "Communauté est conçue pour faciliter la tâche aux responsables d'églises en leur donnant en temps réel et après des années des informations dont ils auront besoin. Elle a une base de données solide, des barres de recherche et un système de filtre par régions, groupes, églises, séance et par date... Certaines informations (les plus importantes) ne sont accessibles qu'aux responsables. Même les églises ne peuvent pas accéder aux infos privées des uns des autres."
+
+msgid "Les informations sur l'église."
+msgstr "Les informations sur l'église."
+
+msgid "svc_eglises_title"
+msgstr "Eglises"
+
+msgid "svc_eglises_desc"
+msgstr "La liste et les informations (détails) sur les églises ainsi que la possibilité de faire des filtres (nombre d'églises par groupe, région et national) et de rechercher une église par son nom."
+
+msgid "svc_groupes_title"
+msgstr "Groupes"
+
+msgid "svc_groupes_desc"
+msgstr "La liste des groupes ainsi que les informations supplémentaires et, comme l'église, la possibilité de filtrer par région et national avec leur nombre."
+
+msgid "svc_bilans_title"
+msgstr "Bilans des Séances et autres"
+
+msgid "svc_bilans_desc"
+msgstr "La liste, le filtre par séance (Lundi, Jeudi et Dimanche) pour voir les séances par groupe, région et le total. Bilan des cellules et événements spéciaux."
+
+msgid "svc_personnes_title"
+msgstr "Personnes"
+
+msgid "svc_personnes_desc"
+msgstr "La liste des Jeunes, Enfants et Adultes ainsi que les détails avec les filtres par district, groupe, région et national avec la possibilité de rechercher une personne par son nom."
+
+msgid "svc_lumiere_title"
+msgstr "Lumière à la Cité et particularités"
+
+msgid "svc_lumiere_desc"
+msgstr "Nous avons la liste des établissements, des participants et les rapports des études. Pour les particularités, les membres de l'église peuvent poster leurs projets ainsi que leurs difficultés."
+
+msgid "svc_annonces_title"
+msgstr "Annonces, Messages"
+
+msgid "svc_annonces_desc"
+msgstr "Nous avons la liste des annonces et les messages avec les hymnes pour le culte. Sur cette page s'affichent les récentes annonces et messages."

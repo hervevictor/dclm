@@ -139,25 +139,19 @@
         <div class="row gy-4">
 
           <div class="col-lg-6 content" data-aos="fade-up" data-aos-delay="100">
-            <p>
-              Communauté est une application ou un systeme de gestion des églises ou toute assemblée réligieuse.
-              Elle touche les domaines suivants : 
-            </p>
+            <p>{% trans "about_intro" %}</p>
             <ul>
-              <li><i class="bi bi-check2-circle"></i> <span>La liste des Eglises, Groupes, Régions</span></li>
-              <li><i class="bi bi-check2-circle"></i> <span>Liste des Personnes : Adultes, Jeunes et Enfants</span></li>
-              <li><i class="bi bi-check2-circle"></i> <span>Les Bilans des activités, des séance de culte. </span></li>
-              <li><i class="bi bi-check2-circle"></i> <span>Les particularités :  difficultés et les projets. </span></li>
-              <li><i class="bi bi-check2-circle"></i> <span>Lumière à la cité : Liste des établissements, des participants et des études. </span></li>
-              <li><i class="bi bi-check2-circle"></i> <span>Les Messages du dimanche, les hymnes et les annonces.</span></li>
+              <li><i class="bi bi-check2-circle"></i> <span>{% trans "about_item1" %}</span></li>
+              <li><i class="bi bi-check2-circle"></i> <span>{% trans "about_item2" %}</span></li>
+              <li><i class="bi bi-check2-circle"></i> <span>{% trans "about_item3" %}</span></li>
+              <li><i class="bi bi-check2-circle"></i> <span>{% trans "about_item4" %}</span></li>
+              <li><i class="bi bi-check2-circle"></i> <span>{% trans "about_item5" %}</span></li>
+              <li><i class="bi bi-check2-circle"></i> <span>{% trans "about_item6" %}</span></li>
             </ul>
           </div>
 
           <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
-            <p>
-              Communauté est conçue pour facilité la tâche aux responsables d'églises en leurs donnant en temps réel et après des années des informations dont ils auront besoin. Elle a une base de données solide, des barres de recherche et un système de filtre des données par regions, groupes, eglies, séance et par date...  
-              <br> Certains informations(les plus importantes) ne sont accessibles qu'aux responsables et il faut un compte spécifique pour y accéder. Ce système de sécurité permet de garder secret certains infos. Même les églises ne peuvents pas accéder aux infos privées des uns des autres...
-            </p>
+            <p>{% trans "about_desc" %}</p>
           </div>
 
         </div>
@@ -175,7 +169,7 @@
           <div class="tab-pane fade active show" id="features-tab-1">
             <div class="row">
               <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0">
-                <h3>Les informations sur l'église.</h3>
+                <h3>{% trans "Les informations sur l'église." %}</h3>
                 <p class="fst-italic">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
                   magna aliqua.
@@ -379,9 +373,9 @@
                 <i class="bi bi-cash-stack" style="color: #0dcaf0;"></i>
               </div>
               <a href="#" class="stretched-link">
-                <h3>Eglises</h3>
+                <h3>{% trans "svc_eglises_title" %}</h3>
               </a>
-              <p>La liste et les informations (details) sur les églises ainsi que la possibilté de faire des filtres (nombre d'églises par groupe, region et national) et de rechercher une église par son nom.</p>
+              <p>{% trans "svc_eglises_desc" %}</p>
             </div>
           </div><!-- End Service Item -->
 
@@ -391,9 +385,9 @@
                 <i class="bi bi-calendar4-week" style="color: #fd7e14;"></i>
               </div>
               <a href="#" class="stretched-link">
-                <h3>Groupes</h3>
+                <h3>{% trans "svc_groupes_title" %}</h3>
               </a>
-              <p>La liste des groupes ainsi que les informations suplémentaire et comme l'église, la possibilité de filtre par régoin et national avec leur nombre.</p>
+              <p>{% trans "svc_groupes_desc" %}</p>
             </div>
           </div><!-- End Service Item -->
 
@@ -403,9 +397,9 @@
                 <i class="bi bi-chat-text" style="color: #20c997;"></i>
               </div>
               <a href="#" class="stretched-link">
-                <h3>Bilans des Séances et autres</h3>
+                <h3>{% trans "svc_bilans_title" %}</h3>
               </a>
-              <p>La liste, le filtre par séance (Lundi , Jeudi et dimanche) de voir les séance par groupe, région et le total. Bilan des cellules et évenement spéciaux</p>
+              <p>{% trans "svc_bilans_desc" %}</p>
             </div>
           </div><!-- End Service Item -->
 
@@ -415,29 +409,27 @@
                 <i class="bi bi-credit-card-2-front" style="color: #df1529;"></i>
               </div>
               <a href="#" class="stretched-link">
-                <h3>Personnes</h3>
+                <h3>{% trans "svc_personnes_title" %}</h3>
               </a>
-              <p>La liste des Jeunes, Enfants et Adultes ainsi que les détails avec les filtre par district, groupe, région et national avec la possibilté de rechercher une personne par son nom.</p>
+              <p>{% trans "svc_personnes_desc" %}</p>
             </div>
           </div><!-- End Service Item -->
 
           <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
             <div class="service-item position-relative">
-             
               <a href="#" class="stretched-link">
-                <h3>Lumière à la cite et particularités</h3>
+                <h3>{% trans "svc_lumiere_title" %}</h3>
               </a>
-              <p>Nous avons la liste des établissements, des participants et les rapports des études. Pour les particularités,les membres de l'église ou autres peuvent poster leurs projets ainsi que leurs difficultés </p>
+              <p>{% trans "svc_lumiere_desc" %}</p>
             </div>
           </div><!-- End Service Item -->
 
           <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
             <div class="service-item position-relative">
-              
               <a href="#" class="stretched-link">
-                <h3>Annonces, Messages</h3>
+                <h3>{% trans "svc_annonces_title" %}</h3>
               </a>
-              <p>Nous avons la liste des annonces et les messages avec les hymnes pour le culte. Sur cette page s'affiche les récents annonces et message. après 6 pour le message et 15 jours pour les annonces ils disparaissent et si avant ces délais un poste est fait il remplace l'ancien. </p>
+              <p>{% trans "svc_annonces_desc" %}</p>
             </div>
           </div><!-- End Service Item -->
 

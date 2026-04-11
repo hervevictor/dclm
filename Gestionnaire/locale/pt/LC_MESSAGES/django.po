@@ -244,3 +244,66 @@ msgstr "Sistema de gestão de comunidade religiosa. Das listas de membros às at
 
 msgid "home_cta_desc"
 msgstr "Para acessar a interface das igrejas, clique em \"COMMUNAUTÉ\" (o ícone ou este botão)"
+
+msgid "about_intro"
+msgstr "Communauté é uma aplicação ou sistema de gestão de igrejas e assembleias religiosas. Abrange os seguintes domínios:"
+
+msgid "about_item1"
+msgstr "Lista de Igrejas, Grupos, Regiões"
+
+msgid "about_item2"
+msgstr "Lista de Pessoas: Adultos, Jovens e Crianças"
+
+msgid "about_item3"
+msgstr "Relatórios de atividades e sessões de culto."
+
+msgid "about_item4"
+msgstr "Particularidades: dificuldades e projetos."
+
+msgid "about_item5"
+msgstr "Luz à Cidade: Lista de estabelecimentos, participantes e estudos."
+
+msgid "about_item6"
+msgstr "Mensagens de domingo, hinos e anúncios."
+
+msgid "about_desc"
+msgstr "Communauté foi concebida para facilitar a tarefa dos responsáveis de igrejas, dando-lhes em tempo real informações de que necessitarão. Tem uma base de dados sólida, barras de pesquisa e um sistema de filtro por regiões, grupos, igrejas, sessões e datas. Certas informações só são acessíveis aos responsáveis. As igrejas não podem aceder aos dados privados umas das outras."
+
+msgid "Les informations sur l'église."
+msgstr "Informações da Igreja."
+
+msgid "svc_eglises_title"
+msgstr "Igrejas"
+
+msgid "svc_eglises_desc"
+msgstr "A lista e informações (detalhes) sobre as igrejas, com opções de filtragem por grupo, região e nacional, e a possibilidade de pesquisar uma igreja pelo nome."
+
+msgid "svc_groupes_title"
+msgstr "Grupos"
+
+msgid "svc_groupes_desc"
+msgstr "A lista dos grupos com informações adicionais e a possibilidade de filtrar por região e nacional com a sua contagem."
+
+msgid "svc_bilans_title"
+msgstr "Relatórios de Sessões e outros"
+
+msgid "svc_bilans_desc"
+msgstr "A lista, filtro por sessão (Segunda, Quinta e Domingo) para ver as sessões por grupo, região e total. Relatórios de células e eventos especiais."
+
+msgid "svc_personnes_title"
+msgstr "Membros"
+
+msgid "svc_personnes_desc"
+msgstr "A lista de Jovens, Crianças e Adultos com detalhes e filtros por distrito, grupo, região e nacional, com a possibilidade de pesquisar uma pessoa pelo nome."
+
+msgid "svc_lumiere_title"
+msgstr "Luz à Cidade e Particularidades"
+
+msgid "svc_lumiere_desc"
+msgstr "Temos a lista de estabelecimentos, participantes e relatórios de estudos. Para as particularidades, os membros podem publicar os seus projetos e dificuldades."
+
+msgid "svc_annonces_title"
+msgstr "Anúncios, Mensagens"
+
+msgid "svc_annonces_desc"
+msgstr "Temos a lista de anúncios e mensagens com hinos para o culto. Esta página exibe os anúncios e mensagens mais recentes."
