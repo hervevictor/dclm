@@ -736,6 +736,15 @@
   <!-- Traduction contenu pages -->
   <script src="{% static 'js/i18n_content.js' %}"></script>
 
+  <!-- Bloquer la molette sur les champs numériques (évite les changements accidentels) -->
+  <script>
+  document.addEventListener('wheel', function(e) {
+    if (document.activeElement && document.activeElement.type === 'number') {
+      document.activeElement.blur();
+    }
+  }, { passive: true });
+  </script>
+
 </body>
 
 </html>
