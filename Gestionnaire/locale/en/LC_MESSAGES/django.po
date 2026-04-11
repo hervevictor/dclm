@@ -214,3 +214,33 @@ msgstr "All rights reserved"
 
 msgid "Langue"
 msgstr "Language"
+
+msgid "Lire plus"
+msgstr "Read more"
+
+msgid "À Propos"
+msgstr "About"
+
+msgid "Qu'est-ce que COMMUNAUTÉ"
+msgstr "What is COMMUNAUTÉ"
+
+msgid "Pour visiter l'interface Église"
+msgstr "Visit the Church interface"
+
+msgid "Details"
+msgstr "Details"
+
+msgid "Les différents partie de l'application"
+msgstr "The different parts of the application"
+
+msgid "Informations"
+msgstr "Information"
+
+msgid "Annonces et Hymnes"
+msgstr "Announcements & Hymns"
+
+msgid "home_hero_desc"
+msgstr "Church community management system. From membership lists to all activities."
+
+msgid "home_cta_desc"
+msgstr "To access the churches interface and other sections, click on \"COMMUNAUTÉ\" (the icon or this button)"

@@ -214,3 +214,33 @@ msgstr "Tous droits réservés"
 
 msgid "Langue"
 msgstr "Langue"
+
+msgid "Lire plus"
+msgstr "Lire plus"
+
+msgid "À Propos"
+msgstr "À Propos"
+
+msgid "Qu'est-ce que COMMUNAUTÉ"
+msgstr "Qu'est-ce que COMMUNAUTÉ"
+
+msgid "Pour visiter l'interface Église"
+msgstr "Pour visiter l'interface Église"
+
+msgid "Details"
+msgstr "Détails"
+
+msgid "Les différents partie de l'application"
+msgstr "Les différentes parties de l'application"
+
+msgid "Informations"
+msgstr "Informations"
+
+msgid "Annonces et Hymnes"
+msgstr "Annonces et Hymnes"
+
+msgid "home_hero_desc"
+msgstr "Systéme de gestion d'une communauté religieuse. Allant des liste des personnes jusqu'aux activités."
+
+msgid "home_cta_desc"
+msgstr "Pour aller sur l'interface des églises et les autres éléments, cliquez sur \"COMMUNAUTÉ\" (l'icone ou ce bouton)"

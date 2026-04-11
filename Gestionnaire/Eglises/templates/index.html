@@ -1,6 +1,7 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ LANGUAGE_CODE }}">
 
 <head>
   <meta charset="utf-8">
@@ -48,9 +49,39 @@
       </a>
 
       <nav id="navmenu" class="navmenu">
-        
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
+
+      <!-- Sélecteur de langue -->
+      <div class="dropdown ms-3">
+        <button class="btn btn-outline-light btn-sm dropdown-toggle d-flex align-items-center gap-1"
+                type="button" data-bs-toggle="dropdown">
+          <i class="bi bi-translate"></i>
+          {% get_current_language as CURRENT_LANG %}
+          {{ CURRENT_LANG|upper }}
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end shadow">
+          {% get_available_languages as LANGUAGES_LIST %}
+          {% get_language_info_list for LANGUAGES_LIST as langs %}
+          {% for lang in langs %}
+          <li>
+            <form method="post" action="{% url 'set_language' %}">
+              {% csrf_token %}
+              <input type="hidden" name="language" value="{{ lang.code }}">
+              <input type="hidden" name="next" value="{{ request.get_full_path }}">
+              <button type="submit" class="dropdown-item {% if lang.code == CURRENT_LANG %}fw-bold text-primary{% endif %}">
+                {% if lang.code == 'fr' %}🇫🇷{% endif %}
+                {% if lang.code == 'en' %}🇬🇧{% endif %}
+                {% if lang.code == 'pt' %}🇧🇷{% endif %}
+                {% if lang.code == 'de' %}🇩🇪{% endif %}
+                {% if lang.code == 'es' %}🇪🇸{% endif %}
+                {{ lang.name_local }}
+              </button>
+            </form>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
 
     </div>
   </header>
@@ -66,8 +97,8 @@
         <div class="carousel-item active">
           <div class="carousel-container">
             <h2 class="animate__animated animate__fadeInDown">COMMUNAUTÉ</h2>
-            <p class="animate__animated animate__fadeInUp">Systéme de gestion  d'une communauté religieuse. Allant des liste des personnes jusqu'aux activités.</p>
-            <a href="#about" class="btn-get-started animate__animated animate__fadeInUp scrollto">Lire plus</a>
+            <p class="animate__animated animate__fadeInUp">{% trans "home_hero_desc" %}</p>
+            <a href="#about" class="btn-get-started animate__animated animate__fadeInUp scrollto">{% trans "Lire plus" %}</a>
           </div>
         </div>
 
@@ -99,8 +130,8 @@
 
       <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
-        <h2>À Propos</h2>
-        <p>Qu'est-ce que COMMUNAUTÉ</p>
+        <h2>{% trans "À Propos" %}</h2>
+        <p>{% trans "Qu'est-ce que COMMUNAUTÉ" %}</p>
       </div><!-- End Section Title -->
 
       <div class="container">
@@ -254,8 +285,8 @@
 
         <!-- Section Title -->
         <div class="container section-title" data-aos="fade-up">
-          <h2>informations</h2>
-          <p>Annonces et Hymnes</p>
+          <h2>{% trans "Informations" %}</h2>
+          <p>{% trans "Annonces et Hymnes" %}</p>
         </div><!-- End Section Title -->
   
         <div class="container">
@@ -317,8 +348,8 @@
 
         <div class="row" data-aos="zoom-in" data-aos-delay="100">
           <div class="col-xl-9 text-center text-xl-start">
-            <h3>Pour visiter l'interface Église</h3>
-            <p>Pour aller sur l'interface des églises et les autres éléments, cliquez sur "COMMUNAUTÉ" (l'icone ou ce button)  </p>
+            <h3>{% trans "Pour visiter l'interface Église" %}</h3>
+            <p>{% trans "home_cta_desc" %}</p>
           </div>
           <div class="col-xl-3 cta-btn-container text-center">
             <a class="cta-btn align-middle" href="{% url 'eglises' %}">COMMUNAUTÉ</a>
@@ -334,8 +365,8 @@
 
       <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
-        <h2>Details </h2>
-        <p>Les différents partie de l'application</p>
+        <h2>{% trans "Details" %}</h2>
+        <p>{% trans "Les différents partie de l'application" %}</p>
       </div><!-- End Section Title -->
 
       <div class="container">
@@ -481,6 +512,9 @@
 
   <!-- Main JS File -->
   <script src="{% static 'assets1/js/main.js' %}"></script>
+
+  <!-- Traduction contenu pages -->
+  <script src="{% static 'js/i18n_content.js' %}"></script>
 
 </body>
 

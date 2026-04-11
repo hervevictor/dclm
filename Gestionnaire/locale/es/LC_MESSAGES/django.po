@@ -214,3 +214,33 @@ msgstr "Todos los derechos reservados"
 
 msgid "Langue"
 msgstr "Idioma"
+
+msgid "Lire plus"
+msgstr "Leer más"
+
+msgid "À Propos"
+msgstr "Acerca de"
+
+msgid "Qu'est-ce que COMMUNAUTÉ"
+msgstr "¿Qué es COMMUNAUTÉ?"
+
+msgid "Pour visiter l'interface Église"
+msgstr "Visitar la interfaz de la Iglesia"
+
+msgid "Details"
+msgstr "Detalles"
+
+msgid "Les différents partie de l'application"
+msgstr "Las diferentes partes de la aplicación"
+
+msgid "Informations"
+msgstr "Información"
+
+msgid "Annonces et Hymnes"
+msgstr "Anuncios e Himnos"
+
+msgid "home_hero_desc"
+msgstr "Sistema de gestión de comunidad religiosa. Desde listas de miembros hasta todas las actividades."
+
+msgid "home_cta_desc"
+msgstr "Para acceder a la interfaz de iglesias, haga clic en \"COMMUNAUTÉ\" (el ícono o este botón)"
