@@ -119,10 +119,16 @@
         <li class="nav-item dropdown pe-3">
 
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+            {% if user.is_authenticated and user.first_name %}
+            <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1d4ed8,#7c3aed);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.9rem;flex-shrink:0;">
+              {{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}
+            </div>
+            {% else %}
             <img src="{% static 'images/profile.png' %}" alt="Profile" class="rounded-circle">
+            {% endif %}
             <span class="d-none d-md-block dropdown-toggle ps-2">
               {% if user.is_authenticated %}
-              {{user.username}}
+              {{ user.username }}
               {% else %}
               {% trans "Connexion" %}
               {% endif %}
@@ -133,16 +139,18 @@
             {% if user.is_authenticated %}
 
             <li class="dropdown-header">
-              <h6>{{user.last_name}}</h6>
-              <span>{{user.first_name}}</span>
+              <h6>{% if user.first_name or user.last_name %}{{ user.first_name }} {{ user.last_name }}{% else %}{{ user.username }}{% endif %}</h6>
+              <span>
+                {% if user.profile %}{{ user.profile.get_niveau_acces_display }}{% endif %}
+              </span>
             </li>
             <li>
               <hr class="dropdown-divider">
             </li>
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="{% url 'edit_profile' %}">
-                <i class="bi bi-person"></i>
+              <a class="dropdown-item d-flex align-items-center" href="{% url 'profil' %}">
+                <i class="bi bi-person-circle"></i>
                 <span>{% trans "Modifier mon Compte" %}</span>
               </a>
             </li>

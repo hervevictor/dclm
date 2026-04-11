@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView
 from django.contrib.auth.views import PasswordChangeView
@@ -40,6 +41,13 @@ class PasswordsChangeView(PasswordChangeView):
 class UserListView(AdminOnlyMixin, UpdateView):
     """Vue réservée aux ADMIN pour voir et gérer tous les utilisateurs."""
     pass  # Remplacé par la FBV ci-dessous pour plus de flexibilité
+
+
+@login_required(login_url='/membres/login/')
+def profil(request):
+    """Page de profil de l'utilisateur connecté."""
+    profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    return render(request, 'registration/profil.html', {'profile': profile})
 
 
 @admin_required

@@ -1,0 +1,294 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block gestion %}
+{% with user=request.user profile=profile %}
+
+<style>
+.avatar-circle {
+  width: 90px; height: 90px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem; font-weight: 700; letter-spacing: 1px;
+  color: #fff;
+  flex-shrink: 0;
+}
+.info-row { display: flex; flex-direction: column; gap: 0; }
+.info-label { font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color: #8898aa; font-weight: 600; }
+.info-value { font-size: .97rem; color: #222; font-weight: 500; }
+.section-divider {
+  border: none; border-top: 1px solid #e9ecef; margin: 1.2rem 0;
+}
+.badge-niveau {
+  font-size: .82rem; padding: .35em .85em; border-radius: 20px; font-weight: 600;
+}
+.action-btn {
+  display: flex; align-items: center; gap: .5rem;
+  padding: .55rem 1.1rem; border-radius: 8px;
+  font-size: .9rem; font-weight: 500; text-decoration: none;
+  transition: all .18s;
+}
+.action-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,.12); }
+.stat-box {
+  background: #f8fafc; border: 1px solid #e9ecef;
+  border-radius: 10px; padding: .8rem 1rem; text-align: center;
+}
+</style>
+
+<div class="container-fluid mt-4" style="max-width:900px;">
+
+  <!-- ── Titre ─────────────────────────────────────────────────────────────── -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="mb-0"><i class="bi bi-person-circle text-primary"></i> Mon Profil</h3>
+    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary btn-sm">
+      <i class="bi bi-grid"></i> Dashboard
+    </a>
+  </div>
+
+  <div class="row g-4">
+
+    <!-- ── Colonne gauche : Identité + Accès ──────────────────────────────── -->
+    <div class="col-lg-4">
+
+      <!-- Carte identité -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body text-center py-4">
+
+          <!-- Avatar -->
+          {% with initiales=user.first_name|slice:":1"|add:user.last_name|slice:":1" %}
+          {% if initiales %}
+          <div class="avatar-circle mx-auto mb-3" style="background: linear-gradient(135deg,#1d4ed8,#7c3aed);">
+            {{ initiales|upper }}
+          </div>
+          {% else %}
+          <div class="avatar-circle mx-auto mb-3" style="background: linear-gradient(135deg,#64748b,#334155);">
+            <i class="bi bi-person-fill" style="font-size:2.2rem;"></i>
+          </div>
+          {% endif %}
+          {% endwith %}
+
+          <!-- Nom complet -->
+          <h5 class="fw-bold mb-0">
+            {% if user.first_name or user.last_name %}
+              {{ user.first_name }} {{ user.last_name }}
+            {% else %}
+              {{ user.username }}
+            {% endif %}
+          </h5>
+          <div class="text-muted small mb-3">@{{ user.username }}</div>
+
+          <!-- Badge niveau d'accès -->
+          {% if profile.niveau_acces == 'ADMIN' %}
+            <span class="badge badge-niveau bg-danger"><i class="bi bi-shield-fill-check"></i> {{ profile.get_niveau_acces_display }}</span>
+          {% elif profile.niveau_acces == 'COMPTABLE' %}
+            <span class="badge badge-niveau bg-warning text-dark"><i class="bi bi-briefcase-fill"></i> {{ profile.get_niveau_acces_display }}</span>
+          {% elif profile.niveau_acces == 'REGION' %}
+            <span class="badge badge-niveau bg-success"><i class="bi bi-geo-alt-fill"></i> {{ profile.get_niveau_acces_display }}</span>
+          {% elif profile.niveau_acces == 'GROUPE' %}
+            <span class="badge badge-niveau bg-info text-dark"><i class="bi bi-diagram-3-fill"></i> {{ profile.get_niveau_acces_display }}</span>
+          {% else %}
+            <span class="badge badge-niveau bg-primary"><i class="bi bi-building"></i> {{ profile.get_niveau_acces_display }}</span>
+          {% endif %}
+
+          {% if user.is_superuser %}
+          <div class="mt-2">
+            <span class="badge bg-dark"><i class="bi bi-star-fill"></i> Superadmin</span>
+          </div>
+          {% endif %}
+
+          <hr class="section-divider">
+
+          <!-- Zone d'accès -->
+          <div class="text-start px-2">
+            <div class="small text-muted fw-semibold mb-2 text-uppercase" style="letter-spacing:.05em;">Zone d'accès</div>
+
+            {% if profile.region_assignee %}
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <i class="bi bi-geo-alt-fill text-danger"></i>
+              <div>
+                <div class="info-label">Région</div>
+                <div class="info-value">{{ profile.region_assignee }}</div>
+              </div>
+            </div>
+            {% endif %}
+
+            {% if profile.groupe_assigne %}
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <i class="bi bi-diagram-3-fill text-primary"></i>
+              <div>
+                <div class="info-label">Groupe</div>
+                <div class="info-value">{{ profile.groupe_assigne }}</div>
+              </div>
+            </div>
+            {% endif %}
+
+            {% if profile.district_assigne %}
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <i class="bi bi-building text-success"></i>
+              <div>
+                <div class="info-label">District / Église</div>
+                <div class="info-value">{{ profile.district_assigne }}</div>
+              </div>
+            </div>
+            {% endif %}
+
+            {% if profile.section_assignee != 'TOUS' %}
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <i class="bi bi-people-fill text-warning"></i>
+              <div>
+                <div class="info-label">Section</div>
+                <div class="info-value">{{ profile.get_section_assignee_display }}</div>
+              </div>
+            </div>
+            {% else %}
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <i class="bi bi-people-fill text-secondary"></i>
+              <div>
+                <div class="info-label">Section</div>
+                <div class="info-value">Toutes les sections</div>
+              </div>
+            </div>
+            {% endif %}
+
+            {% if not profile.region_assignee and not profile.groupe_assigne and not profile.district_assigne and not user.is_superuser %}
+            <div class="text-muted small fst-italic">Accès national complet</div>
+            {% endif %}
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Stats rapides -->
+      <div class="row g-2">
+        <div class="col-6">
+          <div class="stat-box">
+            <div class="info-label mb-1">Membre depuis</div>
+            <div class="fw-bold small">{{ user.date_joined|date:"d/m/Y" }}</div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="stat-box">
+            <div class="info-label mb-1">Dernière connexion</div>
+            <div class="fw-bold small">
+              {% if user.last_login %}
+                {{ user.last_login|date:"d/m/Y" }}
+              {% else %}
+                —
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="stat-box">
+            <div class="info-label mb-1">Statut du compte</div>
+            <div class="fw-bold small">
+              {% if user.is_active %}
+                <span class="text-success"><i class="bi bi-check-circle-fill"></i> Actif</span>
+              {% else %}
+                <span class="text-danger"><i class="bi bi-x-circle-fill"></i> Désactivé</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Colonne droite : Infos + Actions ───────────────────────────────── -->
+    <div class="col-lg-8">
+
+      <!-- Informations personnelles -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center py-3">
+          <div class="fw-bold"><i class="bi bi-person-lines-fill text-primary"></i> Informations personnelles</div>
+          <a href="{% url 'edit_profile' %}" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-pencil-fill"></i> Modifier
+          </a>
+        </div>
+        <div class="card-body">
+          <div class="row g-4">
+            <div class="col-sm-6">
+              <div class="info-row">
+                <span class="info-label">Prénom</span>
+                <span class="info-value">{{ user.first_name|default:"—" }}</span>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="info-row">
+                <span class="info-label">Nom</span>
+                <span class="info-value">{{ user.last_name|default:"—" }}</span>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="info-row">
+                <span class="info-label">Nom d'utilisateur</span>
+                <span class="info-value">{{ user.username }}</span>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="info-row">
+                <span class="info-label">Adresse e-mail</span>
+                <span class="info-value">{{ user.email|default:"—" }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sécurité -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white border-bottom py-3">
+          <div class="fw-bold"><i class="bi bi-shield-lock-fill text-warning"></i> Sécurité</div>
+        </div>
+        <div class="card-body">
+          <div class="d-flex align-items-center justify-content-between py-2">
+            <div>
+              <div class="fw-semibold">Mot de passe</div>
+              <div class="text-muted small">Changer votre mot de passe pour sécuriser votre compte</div>
+            </div>
+            <a href="{% url 'change_password' %}" class="action-btn btn btn-outline-warning">
+              <i class="bi bi-key-fill"></i> Changer
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions rapides -->
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white border-bottom py-3">
+          <div class="fw-bold"><i class="bi bi-lightning-fill text-success"></i> Accès rapides</div>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <a href="{% url 'dashboard' %}" class="action-btn btn btn-outline-primary w-100 justify-content-center">
+                <i class="bi bi-grid-1x2-fill"></i> Dashboard
+              </a>
+            </div>
+            <div class="col-sm-6">
+              <a href="{% url 'eglise_list' %}" class="action-btn btn btn-outline-secondary w-100 justify-content-center">
+                <i class="bi bi-building"></i> Mes Églises
+              </a>
+            </div>
+            {% if profile.niveau_acces in 'ADMIN,COMPTABLE' or request.user.is_superuser %}
+            <div class="col-sm-6">
+              <a href="{% url 'user_list' %}" class="action-btn btn btn-outline-danger w-100 justify-content-center">
+                <i class="bi bi-people-fill"></i> Gestion utilisateurs
+              </a>
+            </div>
+            {% endif %}
+            <div class="col-sm-6">
+              <a href="{% url 'logout' %}" class="action-btn btn btn-outline-dark w-100 justify-content-center">
+                <i class="bi bi-box-arrow-right"></i> Déconnexion
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endwith %}
+{% endblock %}
