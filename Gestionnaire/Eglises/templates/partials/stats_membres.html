@@ -18,28 +18,28 @@ Variables attendues : stats (dict retourné par get_member_stats), titre (option
         <thead class="table-light">
           <tr>
             <th class="text-start ps-3">Catégorie</th>
-            <th><i class="bi bi-gender-male text-primary"></i> Hommes</th>
-            <th><i class="bi bi-gender-female text-danger"></i> Femmes</th>
+            <th><i class="bi bi-gender-male text-primary"></i> Masc.</th>
+            <th><i class="bi bi-gender-female text-danger"></i> Fém.</th>
             <th class="fw-bold">Total</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td class="text-start ps-3 fw-semibold text-info">Adultes</td>
-            <td>{{ stats.adultes_h }}</td>
-            <td>{{ stats.adultes_f }}</td>
+            <td><span class="text-muted small me-1">H</span>{{ stats.adultes_h }}</td>
+            <td><span class="text-muted small me-1">F</span>{{ stats.adultes_f }}</td>
             <td class="fw-bold">{{ stats.adultes_total }}</td>
           </tr>
           <tr>
             <td class="text-start ps-3 fw-semibold text-warning">Jeunes</td>
-            <td>{{ stats.jeunes_h }}</td>
-            <td>{{ stats.jeunes_f }}</td>
+            <td><span class="text-muted small me-1">G</span>{{ stats.jeunes_h }}</td>
+            <td><span class="text-muted small me-1">F</span>{{ stats.jeunes_f }}</td>
             <td class="fw-bold">{{ stats.jeunes_total }}</td>
           </tr>
           <tr>
             <td class="text-start ps-3 fw-semibold text-success">Enfants</td>
-            <td>{{ stats.enfants_h }}</td>
-            <td>{{ stats.enfants_f }}</td>
+            <td><span class="text-muted small me-1">G</span>{{ stats.enfants_h }}</td>
+            <td><span class="text-muted small me-1">F</span>{{ stats.enfants_f }}</td>
             <td class="fw-bold">{{ stats.enfants_total }}</td>
           </tr>
         </tbody>
