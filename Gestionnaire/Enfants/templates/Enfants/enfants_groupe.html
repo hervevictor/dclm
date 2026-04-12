@@ -1,49 +1,50 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block gestion %}
-    <h2>Le nombre d'enfants dans ce groupe ({{group}}) est <strong> {{enfants_groupe_nombre}} </strong>  </h2>
-<br><br>
-    <section class="container-fluid">
-        <div class="row">
-            
-            
-            <!-- Table with stripped rows -->
-            <table class="table datatable">
-                <thead>
-                  <tr>
-                    <th>
-                      <b>N</b>om
-                    </th>
-                    <th>Prenom</th>
-                    <th>Classe</th>
-                    <th data-type="date" data-format="YYYY/DD/MM">date de naissance</th>
-                    <th>Sexe</th>
-                    <th>Eglise</th>
-                  </tr>
-                </thead>
-                <tbody>
-  
-                  {% if enfants_groupe %}
-                      {% for enfant in enfants_groupe %}
-                          <tr>
-                          <td><a href="{% url 'enfant_details' enfant.pk %}">{{enfant.nom}}</a></td>
-                          <td>{{enfant.prenom}}</td>
-                          <td>{{enfant.classe}}</td>
-                          <td>{{enfant.date_de_naissance}}</td>
-                          <td>{{enfant.sexe}}</td>
-                          <td>{{enfant.eglise}}</td>
-                          </tr>
-                          {% endfor %}
-                      {% else %}
-                      <strong>Pas d'enfants pour ce groupe ({{group}}) !</strong>
-                  {% endif %}
-               
-                </tbody>
-              </table>
-              <!-- End Table with stripped rows -->
-  
-        </div>
-    </section>
-<br><br><br>
+
+<div class="container-fluid mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <div>
+      <h4 class="mb-0 fw-bold">
+        <i class="bi bi-emoji-smile text-danger me-2"></i>Enfants — {{ group }}
+      </h4>
+      <div class="text-muted small mt-1">{{ enfants_groupe_nombre }} enfant{{ enfants_groupe_nombre|pluralize }}</div>
+    </div>
+    {% include "partials/export_membres_btn.html" with export_niveau="groupe" export_valeur=group %}
+  </div>
+
+  <div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+      <table class="table table-sm table-hover datatable mb-0">
+        <thead class="table-dark">
+          <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Classe</th>
+            <th>Date de naissance</th>
+            <th>Sexe</th>
+            <th>Église</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if enfants_groupe %}
+            {% for enfant in enfants_groupe %}
+            <tr>
+              <td><a href="{% url 'enfant_details' enfant.pk %}">{{ enfant.nom }}</a></td>
+              <td>{{ enfant.prenom }}</td>
+              <td>{{ enfant.classe }}</td>
+              <td>{{ enfant.date_de_naissance }}</td>
+              <td>{{ enfant.sexe }}</td>
+              <td>{{ enfant.eglise }}</td>
+            </tr>
+            {% endfor %}
+          {% else %}
+          <tr><td colspan="6" class="text-center text-muted py-3">Pas d'enfants pour ce groupe ({{ group }}).</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
 {% endblock %}

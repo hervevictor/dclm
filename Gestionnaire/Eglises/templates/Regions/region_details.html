@@ -27,6 +27,21 @@
         <i class="bi bi-trash3-fill"></i> Supprimer
       </a>
       {% endif %}
+      <!-- Export membres de cette région -->
+      <div class="btn-group">
+        <button type="button" class="btn btn-outline-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+          <i class="bi bi-download"></i> Exporter
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><h6 class="dropdown-header">Cette région</h6></li>
+          <li><a class="dropdown-item" href="{% url 'export_membres' %}?niveau=region&valeur={{ region.name|urlencode }}&fmt=XLS"><i class="bi bi-file-earmark-excel text-success me-2"></i>Excel</a></li>
+          <li><a class="dropdown-item" href="{% url 'export_membres' %}?niveau=region&valeur={{ region.name|urlencode }}&fmt=PDF"><i class="bi bi-file-earmark-pdf text-danger me-2"></i>PDF</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><h6 class="dropdown-header">Liste nationale</h6></li>
+          <li><a class="dropdown-item" href="{% url 'export_membres' %}?niveau=national&fmt=XLS"><i class="bi bi-file-earmark-excel text-success me-2"></i>Excel (national)</a></li>
+          <li><a class="dropdown-item" href="{% url 'export_membres' %}?niveau=national&fmt=PDF"><i class="bi bi-file-earmark-pdf text-danger me-2"></i>PDF (national)</a></li>
+        </ul>
+      </div>
       <a href="{% url 'region_list' %}" class="btn btn-outline-secondary btn-sm">
         <i class="bi bi-arrow-left"></i> Retour
       </a>

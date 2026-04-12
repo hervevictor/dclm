@@ -7,11 +7,23 @@
     <h4 class="mb-0"><i class="bi bi-geo-alt-fill text-danger"></i> Régions
       <span class="badge bg-secondary ms-2">{{ regions_count }}</span>
     </h4>
-    {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' %}
-    <a href="{% url 'add_region' %}" class="btn btn-danger btn-sm">
-      <i class="bi bi-plus-circle"></i> Ajouter une région
-    </a>
-    {% endif %}
+    <div class="d-flex gap-2">
+      <!-- Export national -->
+      <div class="btn-group">
+        <button type="button" class="btn btn-outline-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+          <i class="bi bi-download"></i> Export national
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="{% url 'export_membres' %}?niveau=national&fmt=XLS"><i class="bi bi-file-earmark-excel text-success me-2"></i>Excel</a></li>
+          <li><a class="dropdown-item" href="{% url 'export_membres' %}?niveau=national&fmt=PDF"><i class="bi bi-file-earmark-pdf text-danger me-2"></i>PDF</a></li>
+        </ul>
+      </div>
+      {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' %}
+      <a href="{% url 'add_region' %}" class="btn btn-danger btn-sm">
+        <i class="bi bi-plus-circle"></i> Ajouter une région
+      </a>
+      {% endif %}
+    </div>
   </div>
 
   {% if not regions %}

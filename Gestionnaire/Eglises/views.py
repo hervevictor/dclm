@@ -446,3 +446,28 @@ def region_details(request, pk):
     return render(request, 'Regions/region_details.html', context)
 
 
+# ─── Export membres ────────────────────────────────────────────────────────────
+
+@login_required(login_url='/membres/login/')
+def export_membres_view(request):
+    """
+    Export PDF ou Excel de la liste des membres selon le niveau géographique.
+    Paramètres GET :
+      - niveau  : national | region | groupe | eglise
+      - valeur  : nom de région/groupe ou pk d'église (inutilisé pour national)
+      - fmt     : PDF | XLS
+    """
+    from .exports_membres import export_membres
+    niveau = request.GET.get('niveau', 'national')
+    valeur = request.GET.get('valeur', '')
+    fmt    = request.GET.get('fmt', 'XLS').upper()
+
+    # Pour le niveau église, valeur est un pk entier
+    if niveau == 'eglise':
+        try:
+            valeur = int(valeur)
+        except (ValueError, TypeError):
+            from django.http import HttpResponseBadRequest
+            return HttpResponseBadRequest("Paramètre 'valeur' invalide.")
+
+    return export_membres(niveau, valeur, fmt)

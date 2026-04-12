@@ -33,6 +33,17 @@
       </a>
       {% endif %}
       {% endif %}
+      <!-- Export membres de ce groupe -->
+      <div class="btn-group">
+        <button type="button" class="btn btn-outline-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+          <i class="bi bi-download"></i> Exporter
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><h6 class="dropdown-header">Ce groupe</h6></li>
+          <li><a class="dropdown-item" href="{% url 'export_membres' %}?niveau=groupe&valeur={{ groupe.name|urlencode }}&fmt=XLS"><i class="bi bi-file-earmark-excel text-success me-2"></i>Excel</a></li>
+          <li><a class="dropdown-item" href="{% url 'export_membres' %}?niveau=groupe&valeur={{ groupe.name|urlencode }}&fmt=PDF"><i class="bi bi-file-earmark-pdf text-danger me-2"></i>PDF</a></li>
+        </ul>
+      </div>
       <a href="{% url 'groupe_liste' %}" class="btn btn-outline-secondary btn-sm">
         <i class="bi bi-arrow-left"></i> Retour
       </a>
@@ -56,12 +67,10 @@
               <i class="bi bi-geo-alt-fill me-1"></i>{{ groupe.region }}
             </a>
           </div>
-          {% if groupe.nombre_de_membres %}
           <div class="mb-3">
             <div class="small text-muted fw-semibold mb-1 text-uppercase" style="letter-spacing:.05em;">Nombre de membres</div>
-            <div class="fw-bold fs-5 text-primary">{{ groupe.nombre_de_membres }}</div>
+            <div class="fw-bold fs-5 text-primary">{{ stats.total }}</div>
           </div>
-          {% endif %}
           <div>
             <div class="small text-muted fw-semibold mb-1 text-uppercase" style="letter-spacing:.05em;">Enregistré le</div>
             <div class="fw-bold">{{ groupe.publish|date:"d/m/Y" }}</div>

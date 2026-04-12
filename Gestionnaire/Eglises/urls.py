@@ -31,6 +31,8 @@ urlpatterns = [
     path('regions/<int:pk>/', region_details, name='region_details'),
     path('regions/<int:pk>/modifier/', edit_region, name='edit_region'),
     path('regions/<int:pk>/supprimer/', delete_region, name='delete_region'),
+
+    path('membres/export/', export_membres_view, name='export_membres'),
 ]
 
 

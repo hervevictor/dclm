@@ -1,0 +1,22 @@
+{% comment %}
+Bouton dropdown export membres (combiné Adultes+Jeunes+Enfants).
+Variables requises : export_niveau, export_valeur (optionnel pour national)
+{% endcomment %}
+<div class="btn-group">
+  <button type="button" class="btn btn-outline-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+    <i class="bi bi-download"></i> Exporter la liste complète
+  </button>
+  <ul class="dropdown-menu">
+    <li><h6 class="dropdown-header"><i class="bi bi-people-fill me-1"></i>Adultes + Jeunes + Enfants</h6></li>
+    <li>
+      <a class="dropdown-item" href="{% url 'export_membres' %}?niveau={{ export_niveau }}&valeur={{ export_valeur|urlencode }}&fmt=XLS">
+        <i class="bi bi-file-earmark-excel text-success me-2"></i>Excel (.xlsx)
+      </a>
+    </li>
+    <li>
+      <a class="dropdown-item" href="{% url 'export_membres' %}?niveau={{ export_niveau }}&valeur={{ export_valeur|urlencode }}&fmt=PDF">
+        <i class="bi bi-file-earmark-pdf text-danger me-2"></i>PDF
+      </a>
+    </li>
+  </ul>
+</div>
