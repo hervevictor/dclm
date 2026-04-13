@@ -47,6 +47,18 @@
       font-weight: 600;
     }
     .lang-flag { font-size: 1.1rem; margin-right: .35rem; }
+
+    /* Overlay sombre derrière la sidebar sur mobile */
+    #sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.45);
+      z-index: 995;
+    }
+    #sidebar-overlay.active {
+      display: block;
+    }
   </style>
 
 </head>
@@ -196,6 +208,9 @@
     </nav><!-- End Icons Navigation -->
 
   </header><!-- End Header -->
+
+  <!-- Overlay mobile sidebar -->
+  <div id="sidebar-overlay"></div>
 
   <!-- ======= Sidebar ======= -->
   <aside id="sidebar" class="sidebar">
@@ -773,6 +788,54 @@
       document.activeElement.blur();
     }
   }, { passive: true });
+  </script>
+
+  <!-- ======= Sidebar Toggle ======= -->
+  <script>
+  (function () {
+    var btn     = document.querySelector('.toggle-sidebar-btn');
+    var overlay = document.getElementById('sidebar-overlay');
+
+    function isMobile() {
+      return window.innerWidth < 1200;
+    }
+
+    function openSidebar() {
+      document.body.classList.add('toggle-sidebar');
+      if (isMobile()) overlay.classList.add('active');
+    }
+
+    function closeSidebar() {
+      document.body.classList.remove('toggle-sidebar');
+      overlay.classList.remove('active');
+    }
+
+    function toggleSidebar() {
+      if (isMobile()) {
+        // Mobile : toggle-sidebar = sidebar visible
+        if (document.body.classList.contains('toggle-sidebar')) {
+          closeSidebar();
+        } else {
+          openSidebar();
+        }
+      } else {
+        // Desktop : toggle-sidebar = sidebar cachée
+        document.body.classList.toggle('toggle-sidebar');
+      }
+    }
+
+    if (btn) btn.addEventListener('click', toggleSidebar);
+
+    // Fermer en cliquant sur l'overlay (mobile)
+    if (overlay) overlay.addEventListener('click', closeSidebar);
+
+    // Fermer la sidebar mobile si on redimensionne vers desktop
+    window.addEventListener('resize', function () {
+      if (!isMobile()) {
+        overlay.classList.remove('active');
+      }
+    });
+  })();
   </script>
 
 </body>
