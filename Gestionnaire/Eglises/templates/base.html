@@ -299,7 +299,7 @@
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-layout-text-window-reverse"></i><span>{% trans "Personnels" %}</span><i
+          <i class="bi bi-layout-text-window-reverse"></i><span>{% trans "Membres" %}</span><i
             class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
@@ -702,6 +702,86 @@
         </ul>
       </li>
       {% endif %}
+      {% endif %}
+
+      <!-- ======= Croissance ======= -->
+      {% if user.is_authenticated %}
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#croissance-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-graph-up-arrow text-success"></i><span>{% trans "Croissance" %}</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="croissance-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="{% url 'croissance_national' %}">
+              <i class="bi bi-globe"></i><span>{% trans "Vue Nationale" %}</span>
+            </a>
+          </li>
+          <li><hr class="my-1 opacity-25"></li>
+          <li>
+            <a href="{% url 'nouveau_venu_liste' %}">
+              <i class="bi bi-list-ul"></i><span>{% trans "Liste des nouveaux venus" %}</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'nouveau_venu_add' %}">
+              <i class="bi bi-person-plus text-success"></i><span style="font-size:.85em;padding-left:.5rem">{% trans "Enregistrer un nouveau venu" %}</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      {% endif %}
+
+      <!-- ======= Quotas (attribution de fonds) ======= -->
+      {% if user.is_authenticated %}
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#quotas-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-pie-chart-fill text-primary"></i><span>{% trans "Quotas" %}</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="quotas-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="{% url 'quota_national' %}">
+              <i class="bi bi-globe"></i><span>{% trans "Vue Nationale" %}</span>
+            </a>
+          </li>
+          {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' or user.profile.niveau_acces == 'COMPTABLE' %}
+          <li><hr class="my-1 opacity-25"></li>
+          <li>
+            <a href="{% url 'quota_attribuer_region' %}">
+              <i class="bi bi-building text-warning"></i><span style="font-size:.85em;padding-left:.5rem">{% trans "Quota → Région" %}</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'quota_attribuer_groupe' %}">
+              <i class="bi bi-diagram-3 text-warning"></i><span style="font-size:.85em;padding-left:.5rem">{% trans "Quota → Groupe" %}</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'quota_attribuer_eglise' %}">
+              <i class="bi bi-circle text-warning"></i><span style="font-size:.85em;padding-left:.5rem">{% trans "Quota → Église" %}</span>
+            </a>
+          </li>
+          {% endif %}
+        </ul>
+      </li>
+
+      <!-- ======= Paiements Quota (suivi du règlement des fonds attribués) ======= -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#paiequota-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-cash-stack text-success"></i><span>{% trans "Paiements Quota" %}</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="paiequota-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="{% url 'versement_quota_list' %}">
+              <i class="bi bi-list-ul"></i><span>{% trans "Liste des paiements" %}</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'versement_quota_add' %}">
+              <i class="bi bi-circle"></i><span style="font-size:.85em;padding-left:.5rem">{% trans "Enregistrer un paiement" %}</span>
+            </a>
+          </li>
+        </ul>
+      </li>
       {% endif %}
       <hr>
 

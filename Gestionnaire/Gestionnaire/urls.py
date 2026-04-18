@@ -40,7 +40,9 @@ urlpatterns = [
     path('gck/', include('GCK.urls')),
     path('voeux/', include('Voeux.urls')),
     path('retraites/', include('Retraites.urls')),
-    
-    
-    
+    path('quotas/', include('Quotas.urls')),
+    path('croissance/', include('Croissance.urls')),
+
+
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -57,6 +57,8 @@ INSTALLED_APPS = [
     'GCK.apps.GckConfig',
     'Voeux.apps.VoeuxConfig',
     'Retraites.apps.RetraitesConfig',
+    'Quotas.apps.QuotasConfig',
+    'Croissance.apps.CroissanceConfig',
     'simple_history',
 ]
 

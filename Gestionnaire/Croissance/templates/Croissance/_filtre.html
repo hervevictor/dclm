@@ -1,0 +1,61 @@
+{% comment %}Partial : barre de filtre réutilisable{% endcomment %}
+<form method="get" class="card border-0 shadow-sm mb-4">
+  <div class="card-body py-2 px-3">
+    <div class="row g-2 align-items-end">
+      <div class="col-auto">
+        <label class="form-label small fw-semibold mb-1">Mode</label>
+        {{ form.mode }}
+      </div>
+
+      <div class="col-auto filtre-mois" style="display:none;">
+        <label class="form-label small fw-semibold mb-1">Mois</label>
+        {{ form.mois }}
+      </div>
+
+      <div class="col-auto filtre-annee" style="display:none;">
+        <label class="form-label small fw-semibold mb-1">Année</label>
+        {{ form.annee }}
+      </div>
+
+      <div class="col-auto filtre-periode" style="display:none;">
+        <label class="form-label small fw-semibold mb-1">Du</label>
+        {{ form.date_debut }}
+      </div>
+      <div class="col-auto filtre-periode" style="display:none;">
+        <label class="form-label small fw-semibold mb-1">Au</label>
+        {{ form.date_fin }}
+      </div>
+
+      <div class="col-auto">
+        <label class="form-label small fw-semibold mb-1">Origine</label>
+        {{ form.origine }}
+      </div>
+      <div class="col-auto">
+        <label class="form-label small fw-semibold mb-1">Statut</label>
+        {{ form.statut }}
+      </div>
+      <div class="col-auto">
+        <label class="form-label small fw-semibold mb-1">Catégorie</label>
+        {{ form.categorie }}
+      </div>
+
+      <div class="col-auto mt-auto">
+        <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-filter"></i> Filtrer</button>
+        <a href="?" class="btn btn-outline-secondary btn-sm ms-1"><i class="bi bi-x"></i></a>
+      </div>
+    </div>
+  </div>
+</form>
+
+<script>
+(function(){
+  var sel = document.getElementById('mode-filtre');
+  function updateMode(){
+    var v = sel ? sel.value : '';
+    document.querySelectorAll('.filtre-mois').forEach(function(el){ el.style.display = v==='mois' ? '' : 'none'; });
+    document.querySelectorAll('.filtre-annee').forEach(function(el){ el.style.display = v==='annee' ? '' : 'none'; });
+    document.querySelectorAll('.filtre-periode').forEach(function(el){ el.style.display = v==='periode' ? '' : 'none'; });
+  }
+  if(sel){ sel.addEventListener('change', updateMode); updateMode(); }
+})();
+</script>

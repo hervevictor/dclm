@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block gestion %}
+<div class="container-fluid mt-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <div>
+      <h4 class="mb-0 fw-bold"><i class="bi bi-people text-success me-2"></i>Nouveaux Venus</h4>
+      <div class="text-muted small mt-1">Total : <strong>{{ total }}</strong></div>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+      <button onclick="window.print()" class="btn btn-outline-secondary btn-sm"><i class="bi bi-printer"></i> Imprimer</button>
+      <a href="{% url 'nouveau_venu_add' %}" class="btn btn-success btn-sm"><i class="bi bi-person-plus"></i> Ajouter</a>
+      <a href="{% url 'croissance_national' %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-graph-up-arrow"></i> Graphiques</a>
+    </div>
+  </div>
+
+  {% include 'Croissance/_filtre.html' %}
+
+  <div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-sm table-hover mb-0">
+          <thead class="table-dark">
+            <tr>
+              <th>N°</th>
+              <th>Nom & Prénom</th>
+              <th>Sexe</th>
+              <th>Catégorie</th>
+              <th>Téléphone</th>
+              <th>Église</th>
+              <th>Groupe</th>
+              <th>Date</th>
+              <th>Origine</th>
+              <th>Statut</th>
+              <th class="no-print"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for nv in nouveaux %}
+            <tr>
+              <td class="text-muted">{{ forloop.counter }}</td>
+              <td class="fw-semibold">
+                {{ nv.nom_complet }}
+                {% if nv.categorie == 'JEUNE' %}<span class="badge bg-info text-dark ms-1" style="font-size:.65rem;">Jeune</span>{% endif %}
+                {% if nv.categorie == 'ENFANT' %}<span class="badge bg-warning text-dark ms-1" style="font-size:.65rem;">Enfant</span>{% endif %}
+              </td>
+              <td>{{ nv.get_sexe_display }}</td>
+              <td>{{ nv.get_categorie_display }}</td>
+              <td>{{ nv.telephone|default:"—" }}</td>
+              <td>{{ nv.eglise.nom }}</td>
+              <td>{{ nv.eglise.groupe }}</td>
+              <td>{{ nv.date_venue|date:"d/m/Y" }}</td>
+              <td><span class="badge" style="background:#e0e7ff;color:#3730a3;font-size:.72rem;">{{ nv.get_origine_display }}</span></td>
+              <td>
+                {% if nv.statut == 'RESTE' %}<span class="badge bg-success">Intégré</span>
+                {% elif nv.statut == 'PARTI' %}<span class="badge bg-danger">Parti</span>
+                {% else %}<span class="badge bg-warning text-dark">Suivi</span>{% endif %}
+              </td>
+              <td class="no-print">
+                <a href="{% url 'nouveau_venu_edit' nv.pk %}" class="btn btn-xs btn-outline-secondary py-0 px-1" style="font-size:.75rem;"><i class="bi bi-pencil"></i></a>
+                <a href="{% url 'nouveau_venu_delete' nv.pk %}" class="btn btn-xs btn-outline-danger py-0 px-1 ms-1" style="font-size:.75rem;"><i class="bi bi-trash3"></i></a>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="11" class="text-center text-muted py-4">Aucun nouveau venu enregistré.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+@media print {
+  .no-print, form, .btn, aside, header, footer { display: none !important; }
+  .table { font-size: 11px; }
+  .badge { border: 1px solid #ccc; color: #000 !important; background: #fff !important; }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block gestion %}
+<div class="container-fluid mt-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+      <h4 class="mb-0 fw-bold"><i class="bi bi-cash-coin text-success me-2"></i>Paiements Quota</h4>
+      <div class="text-muted small mt-1">Total payé : <strong class="text-success">{{ total|floatformat:0 }} FCFA</strong></div>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="{% url 'versement_quota_add' %}" class="btn btn-success btn-sm"><i class="bi bi-plus-circle"></i> Enregistrer un paiement</a>
+      <a href="{% url 'quota_national' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Quotas</a>
+    </div>
+  </div>
+
+  <div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-sm table-hover mb-0">
+          <thead class="table-dark">
+            <tr>
+              <th>Date</th>
+              <th>Église</th>
+              <th>Groupe</th>
+              <th>Région</th>
+              <th class="text-end">Montant (FCFA)</th>
+              <th>Reçu</th>
+              <th>Saisi par</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for v in versements %}
+            <tr>
+              <td>{{ v.date|date:"d/m/Y" }}</td>
+              <td class="fw-semibold">{{ v.eglise.nom }}</td>
+              <td>{{ v.eglise.groupe }}</td>
+              <td>{{ v.eglise.region }}</td>
+              <td class="text-end text-success fw-semibold">{{ v.montant|floatformat:0 }}</td>
+              <td>
+                {% if v.photo_recu %}
+                <a href="{{ v.photo_recu.url }}" target="_blank"><i class="bi bi-image text-secondary"></i></a>
+                {% else %}<span class="text-muted">—</span>{% endif %}
+              </td>
+              <td class="text-muted small">{{ v.auteur.username|default:"—" }}</td>
+              <td>
+                {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' %}
+                <a href="{% url 'versement_quota_supprimer' v.pk %}" class="btn btn-xs btn-outline-danger py-0 px-1" style="font-size:.78rem;" title="Supprimer">
+                  <i class="bi bi-trash3"></i>
+                </a>
+                {% endif %}
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="8" class="text-center text-muted py-4">Aucun versement.</td></tr>
+            {% endfor %}
+          </tbody>
+          <tfoot class="table-dark fw-bold">
+            <tr>
+              <td colspan="4">TOTAL</td>
+              <td class="text-end text-success">{{ total|floatformat:0 }}</td>
+              <td colspan="3"></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

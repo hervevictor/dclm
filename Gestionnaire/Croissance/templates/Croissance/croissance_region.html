@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block gestion %}
+<div class="container-fluid mt-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <div>
+      <h4 class="mb-0 fw-bold"><i class="bi bi-graph-up-arrow text-success me-2"></i>Croissance – {{ region }}</h4>
+      <div class="text-muted small mt-1">Compilation par groupe</div>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+      <a href="{% url 'nouveau_venu_add' %}" class="btn btn-success btn-sm"><i class="bi bi-person-plus"></i> Nouveau venu</a>
+      <a href="{% url 'croissance_national' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> National</a>
+    </div>
+  </div>
+
+  {% include 'Croissance/_filtre.html' %}
+  {% include 'Croissance/_stats_cards.html' %}
+  {% include 'Croissance/_chart.html' %}
+
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-white fw-semibold py-2">
+      <i class="bi bi-table text-primary me-1"></i> Compilation par groupe
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-sm table-hover mb-0">
+          <thead class="table-dark">
+            <tr>
+              <th>Groupe</th>
+              <th class="text-center">Total</th>
+              <th class="text-center">Intégrés</th>
+              <th class="text-center">Partis</th>
+              <th class="text-center">Rétention</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in rows %}
+            <tr>
+              <td class="fw-semibold">{{ row.nom }}</td>
+              <td class="text-center"><span class="badge bg-primary">{{ row.total }}</span></td>
+              <td class="text-center"><span class="badge bg-success">{{ row.restes }}</span></td>
+              <td class="text-center"><span class="badge bg-danger">{{ row.partis }}</span></td>
+              <td class="text-center">
+                <div class="d-flex align-items-center gap-1 justify-content-center">
+                  <div class="progress" style="width:60px;height:6px;">
+                    <div class="progress-bar {% if row.taux >= 70 %}bg-success{% elif row.taux >= 40 %}bg-warning{% else %}bg-danger{% endif %}"
+                         style="width:{{ row.taux }}%"></div>
+                  </div>
+                  <small>{{ row.taux }}%</small>
+                </div>
+              </td>
+              <td>
+                <a href="{% url 'croissance_groupe' row.nom %}" class="btn btn-xs btn-outline-primary py-0 px-1" style="font-size:.78rem;">
+                  <i class="bi bi-eye"></i>
+                </a>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" class="text-center text-muted py-3">Aucune donnée.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

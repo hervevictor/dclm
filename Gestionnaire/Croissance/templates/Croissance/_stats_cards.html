@@ -1,0 +1,39 @@
+{% comment %}Partial : cartes statistiques{% endcomment %}
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-2">
+    <div class="card border-0 shadow-sm text-center py-2" style="border-left:4px solid #0d6efd !important;">
+      <div class="small text-muted fw-semibold text-uppercase" style="font-size:.7rem;">Total</div>
+      <div class="fw-bold fs-4 text-primary">{{ stats.total }}</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-2">
+    <div class="card border-0 shadow-sm text-center py-2" style="border-left:4px solid #198754 !important;">
+      <div class="small text-muted fw-semibold text-uppercase" style="font-size:.7rem;">Intégrés</div>
+      <div class="fw-bold fs-4 text-success">{{ stats.restes }}</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-2">
+    <div class="card border-0 shadow-sm text-center py-2" style="border-left:4px solid #dc3545 !important;">
+      <div class="small text-muted fw-semibold text-uppercase" style="font-size:.7rem;">Partis</div>
+      <div class="fw-bold fs-4 text-danger">{{ stats.partis }}</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-2">
+    <div class="card border-0 shadow-sm text-center py-2" style="border-left:4px solid #f59e0b !important;">
+      <div class="small text-muted fw-semibold text-uppercase" style="font-size:.7rem;">En suivi</div>
+      <div class="fw-bold fs-4 text-warning">{{ stats.suivis }}</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-2">
+    <div class="card border-0 shadow-sm text-center py-2" style="border-left:4px solid #6c757d !important;">
+      <div class="small text-muted fw-semibold text-uppercase" style="font-size:.7rem;">Jeunes</div>
+      <div class="fw-bold fs-4">{{ stats.jeunes }}</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-2">
+    <div class="card border-0 shadow-sm text-center py-2" style="border-left:4px solid #7c3aed !important;">
+      <div class="small text-muted fw-semibold text-uppercase" style="font-size:.7rem;">Rétention</div>
+      <div class="fw-bold fs-4" style="color:#7c3aed;">{{ stats.taux_retention }}%</div>
+    </div>
+  </div>
+</div>

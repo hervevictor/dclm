@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block gestion %}
+<div class="container-fluid mt-4" style="max-width:600px;">
+  <div class="card shadow-sm border-0">
+    <div class="card-header fw-semibold" style="background:#fff8e1; border-left:4px solid #f59e0b;">
+      <i class="bi bi-building text-warning"></i> {{ titre }}
+    </div>
+    <div class="card-body">
+      <div class="alert alert-light border small mb-3">
+        <i class="bi bi-info-circle text-primary me-1"></i>
+        Le siège attribue un quota à chaque région (sauf Grand Lomé dont le quota est calculé automatiquement).
+        Si un quota existe déjà pour cette région/année, il sera mis à jour.
+      </div>
+      <form method="post">
+        {% csrf_token %}
+
+        <!-- datalist régions -->
+        <datalist id="regions-list">
+          {% for r in regions %}
+          <option value="{{ r.name }}">
+          {% endfor %}
+        </datalist>
+
+        {{ form.annee }}
+        {% for field in form.visible_fields %}
+        <div class="mb-3">
+          <label class="form-label fw-semibold">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}<div class="text-danger small mt-1">{{ field.errors }}</div>{% endif %}
+        </div>
+        {% endfor %}
+        <div class="d-flex gap-2 mt-4">
+          <button type="submit" class="btn btn-warning"><i class="bi bi-check-lg"></i> Enregistrer</button>
+          <a href="{% url 'quota_national' %}" class="btn btn-outline-secondary">Annuler</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

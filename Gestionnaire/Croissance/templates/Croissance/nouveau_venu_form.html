@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block gestion %}
+<div class="container-fluid mt-4" style="max-width:700px;">
+  <div class="card shadow-sm border-0">
+    <div class="card-header fw-semibold" style="background:#f0fff4; border-left:4px solid #198754;">
+      <i class="bi bi-person-plus text-success"></i> {{ titre }}
+    </div>
+    <div class="card-body">
+      <form method="post">
+        {% csrf_token %}
+        <div class="row g-3">
+
+          <div class="col-12">
+            <label class="form-label fw-semibold">Église <span class="text-danger">*</span></label>
+            {{ form.eglise }}
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Nom <span class="text-danger">*</span></label>
+            {{ form.nom }}
+            {% if form.nom.errors %}<div class="text-danger small">{{ form.nom.errors }}</div>{% endif %}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Prénom</label>
+            {{ form.prenom }}
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">Sexe <span class="text-danger">*</span></label>
+            {{ form.sexe }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">Catégorie <span class="text-danger">*</span></label>
+            {{ form.categorie }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">Date de venue <span class="text-danger">*</span></label>
+            {{ form.date_venue }}
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Téléphone</label>
+            {{ form.telephone }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Adresse / Quartier</label>
+            {{ form.adresse }}
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Comment est-il/elle venu(e) ? <span class="text-danger">*</span></label>
+            {{ form.origine }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Statut actuel</label>
+            {{ form.statut }}
+          </div>
+
+          <div class="col-12">
+            <label class="form-label fw-semibold">Observations</label>
+            {{ form.observations }}
+          </div>
+
+        </div>
+        <div class="d-flex gap-2 mt-4">
+          <button type="submit" class="btn btn-success"><i class="bi bi-check-lg"></i> Enregistrer</button>
+          <a href="{% url 'nouveau_venu_liste' %}" class="btn btn-outline-secondary">Annuler</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

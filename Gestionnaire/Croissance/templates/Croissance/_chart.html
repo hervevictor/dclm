@@ -1,0 +1,57 @@
+{% comment %}Partial : histogramme + courbe Chart.js{% endcomment %}
+<div class="card shadow-sm border-0 mb-4">
+  <div class="card-header bg-white fw-semibold py-2">
+    <i class="bi bi-bar-chart-line text-primary me-1"></i> Évolution mensuelle des nouveaux venus
+  </div>
+  <div class="card-body">
+    <canvas id="croissanceChart" style="max-height:260px;"></canvas>
+  </div>
+</div>
+
+<script>
+(function(){
+  var labels = {{ chart_labels|safe }};
+  var values = {{ chart_values|safe }};
+  var ctx = document.getElementById('croissanceChart');
+  if(!ctx || !labels.length) return;
+  new Chart(ctx, {
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          type: 'bar',
+          label: 'Nouveaux venus',
+          data: values,
+          backgroundColor: 'rgba(13,110,253,0.25)',
+          borderColor: '#0d6efd',
+          borderWidth: 1.5,
+          borderRadius: 4,
+          order: 2,
+        },
+        {
+          type: 'line',
+          label: 'Courbe',
+          data: values,
+          borderColor: '#198754',
+          backgroundColor: 'rgba(25,135,84,0.08)',
+          borderWidth: 2,
+          pointRadius: 4,
+          tension: 0.35,
+          fill: true,
+          order: 1,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom' },
+        tooltip: { mode: 'index', intersect: false }
+      },
+      scales: {
+        y: { beginAtZero: true, ticks: { precision: 0 } }
+      }
+    }
+  });
+})();
+</script>

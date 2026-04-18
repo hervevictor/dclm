@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% block gestion %}
+<div class="container-fluid mt-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <div>
+      <h4 class="mb-0 fw-bold"><i class="bi bi-pie-chart text-primary me-2"></i>Quotas – {{ groupe }}</h4>
+      <div class="text-muted small mt-1">Répartition par église · Année {{ annee }}</div>
+    </div>
+    <div class="d-flex gap-2 flex-wrap align-items-center">
+      <form method="get" class="d-flex gap-1">
+        <input type="number" name="annee" value="{{ annee }}" class="form-control form-control-sm" style="width:90px;">
+        <button class="btn btn-sm btn-outline-secondary" type="submit"><i class="bi bi-filter"></i></button>
+      </form>
+      <a href="{% url 'quota_attribuer_eglise_groupe' groupe %}" class="btn btn-warning btn-sm"><i class="bi bi-building"></i> Quota → Église</a>
+      <a href="{% url 'versement_quota_add' %}" class="btn btn-success btn-sm"><i class="bi bi-cash"></i> Paiement</a>
+      {% if region %}
+      <a href="{% url 'quota_region' region %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> {{ region }}</a>
+      {% endif %}
+      <a href="{% url 'quota_national' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-globe"></i> National</a>
+    </div>
+  </div>
+
+  <!-- Quota alloué au groupe -->
+  <div class="card border-0 shadow-sm py-2 px-3 mb-4" style="background:#f8f9ff; border-left:4px solid #6c757d !important;">
+    <div class="d-flex flex-wrap gap-4 align-items-center">
+      <div>
+        <div class="small text-muted fw-semibold text-uppercase">Quota attribué au groupe</div>
+        <div class="fw-bold fs-5">{{ quota_groupe_total|floatformat:0 }} FCFA</div>
+      </div>
+      <div>
+        <div class="small text-muted fw-semibold text-uppercase">Déjà distribué aux églises</div>
+        <div class="fw-bold fs-5 text-warning">{{ total_quota|floatformat:0 }} FCFA</div>
+      </div>
+      <div>
+        <div class="small text-muted fw-semibold text-uppercase">Reste à distribuer</div>
+        <div class="fw-bold fs-5 {% if restant_a_distribuer > 0 %}text-danger{% else %}text-success{% endif %}">{{ restant_a_distribuer|floatformat:0 }} FCFA</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Résumé paiements -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-4">
+      <div class="card border-0 shadow-sm text-center py-3" style="border-left:4px solid #198754 !important;">
+        <div class="small text-muted fw-semibold text-uppercase mb-1">Total Payé</div>
+        <div class="fw-bold fs-5 text-success">{{ total_verse|floatformat:0 }} <small class="fs-6">FCFA</small></div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4">
+      <div class="card border-0 shadow-sm text-center py-3" style="border-left:4px solid #dc3545 !important;">
+        <div class="small text-muted fw-semibold text-uppercase mb-1">Reste à percevoir</div>
+        <div class="fw-bold fs-5 text-danger">{{ total_reste|floatformat:0 }} <small class="fs-6">FCFA</small></div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4">
+      <div class="card border-0 shadow-sm text-center py-3" style="border-left:4px solid #0d6efd !important;">
+        <div class="small text-muted fw-semibold text-uppercase mb-1">Taux</div>
+        <div class="fw-bold fs-5 text-primary">{{ total_pct }} %</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tableau par église -->
+  <div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-sm table-hover mb-0">
+          <thead class="table-dark">
+            <tr>
+              <th style="width:45px;">N°</th>
+              <th>District</th>
+              <th class="text-end">Quota (FCFA)</th>
+              <th class="text-end">Contribution (FCFA)</th>
+              <th class="text-end">Reste (FCFA)</th>
+              <th style="width:130px;">%</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in rows %}
+            <tr>
+              <td class="text-muted">{{ row.num }}</td>
+              <td class="fw-semibold">{{ row.eglise.nom }}</td>
+              <td class="text-end">{{ row.quota|floatformat:0 }}</td>
+              <td class="text-end text-success fw-semibold">{{ row.verse|floatformat:0 }}</td>
+              <td class="text-end {% if row.reste > 0 %}text-danger{% else %}text-success{% endif %} fw-semibold">{{ row.reste|floatformat:0 }}</td>
+              <td>
+                <div class="d-flex align-items-center gap-1">
+                  <div class="progress flex-grow-1" style="height:7px;">
+                    <div class="progress-bar {% if row.pct >= 100 %}bg-success{% elif row.pct >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
+                         style="width:{{ row.pct }}%"></div>
+                  </div>
+                  <small class="text-muted fw-semibold" style="white-space:nowrap;min-width:32px;">{{ row.pct }}%</small>
+                </div>
+              </td>
+              <td>
+                <a href="{% url 'versement_quota_add' %}?eglise={{ row.eglise.pk }}" class="btn btn-xs btn-outline-success py-0 px-1" style="font-size:.78rem;" title="Enregistrer paiement">
+                  <i class="bi bi-plus"></i>
+                </a>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7" class="text-center text-muted py-4">Aucune église dans ce groupe.</td></tr>
+            {% endfor %}
+          </tbody>
+          <tfoot class="table-dark fw-bold">
+            <tr>
+              <td colspan="2">TOTAL</td>
+              <td class="text-end">{{ total_quota|floatformat:0 }}</td>
+              <td class="text-end text-success">{{ total_verse|floatformat:0 }}</td>
+              <td class="text-end {% if total_reste > 0 %}text-warning{% else %}text-success{% endif %}">{{ total_reste|floatformat:0 }}</td>
+              <td class="fw-bold">{{ total_pct }} %</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
