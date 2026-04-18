@@ -57,7 +57,7 @@
             <div class="card border-success border-2 shadow-sm">
                 <div class="card-body text-center">
                     <h5 class="card-title text-success">Total Entrées</h5>
-                    <h3 class="mb-0">{{ total_entrees|floatformat:2 }} FCFA</h3>
+                    <h3 class="mb-0">{{ total_entrees|floatformat:0 }} FCFA</h3>
                 </div>
             </div>
         </div>
@@ -65,7 +65,7 @@
             <div class="card border-danger border-2 shadow-sm">
                 <div class="card-body text-center">
                     <h5 class="card-title text-danger">Total Sorties</h5>
-                    <h3 class="mb-0">{{ total_sorties|floatformat:2 }} FCFA</h3>
+                    <h3 class="mb-0">{{ total_sorties|floatformat:0 }} FCFA</h3>
                 </div>
             </div>
         </div>
@@ -73,7 +73,7 @@
             <div class="card border-primary border-2 shadow-sm">
                 <div class="card-body text-center">
                     <h5 class="card-title text-primary">Solde Actuel</h5>
-                    <h3 class="mb-0">{{ solde|floatformat:2 }} FCFA</h3>
+                    <h3 class="mb-0">{{ solde|floatformat:0 }} FCFA</h3>
                 </div>
             </div>
         </div>
@@ -107,9 +107,9 @@
                             </td>
                             <td class="fw-bold">
                                 {% if transaction.type_transaction == 'ENTREE' %}
-                                <span class="text-success">+{{ transaction.montant|floatformat:2 }}</span>
+                                <span class="text-success">+{{ transaction.montant|floatformat:0 }}</span>
                                 {% else %}
-                                <span class="text-danger">-{{ transaction.montant|floatformat:2 }}</span>
+                                <span class="text-danger">-{{ transaction.montant|floatformat:0 }}</span>
                                 {% endif %}
                             </td>
                             <td>{{ transaction.eglise.nom|default:"-" }}</td>

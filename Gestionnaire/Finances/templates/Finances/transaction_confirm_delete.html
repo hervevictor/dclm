@@ -9,7 +9,7 @@
         </div>
         <div class="card-body py-4">
             <p class="lead">Voulez-vous vraiment supprimer la transaction :</p>
-            <h5 class="fw-bold mb-4">"{{ object.titre }}" ({{ object.montant|floatformat:2 }} FCFA) ?</h5>
+            <h5 class="fw-bold mb-4">"{{ object.titre }}" ({{ object.montant|floatformat:0 }} FCFA) ?</h5>
 
             <form method="post">
                 {% csrf_token %}
