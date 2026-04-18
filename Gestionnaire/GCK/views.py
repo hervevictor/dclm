@@ -754,17 +754,26 @@ def gck_mensuel(request):
     from datetime import date as dt_date
     from .exports import export_mensuel
     today = dt_date.today()
-    mois = request.GET.get('mois', str(today.month))
-    annee = request.GET.get('annee', str(today.year))
     region = request.GET.get('region', '')
     groupe = request.GET.get('groupe', '')
     district = request.GET.get('district', '')
 
-    try:
-        mois_int = int(mois)
-        annee_int = int(annee)
-    except (ValueError, TypeError):
-        mois_int, annee_int = today.month, today.year
+    # Si aucun mois explicitement demandé, prendre le dernier mois avec des données
+    if 'mois' not in request.GET and 'annee' not in request.GET:
+        dernier = (
+            BilanGCK.objects.order_by('-date').values_list('date__month', 'date__year').first()
+            or (today.month, today.year)
+        )
+        mois_int, annee_int = dernier[0], dernier[1]
+    else:
+        try:
+            mois_int = int(request.GET.get('mois', today.month))
+            annee_int = int(request.GET.get('annee', today.year))
+        except (ValueError, TypeError):
+            mois_int, annee_int = today.month, today.year
+
+    mois = str(mois_int)
+    annee = str(annee_int)
 
     def _filter(qs):
         qs = filter_by_rbac(request.user, qs, 'bilan')
