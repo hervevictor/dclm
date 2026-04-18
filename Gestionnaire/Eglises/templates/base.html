@@ -394,14 +394,42 @@
         </ul>
       </li>
 
-      <!-- Finances -->
+      <!-- Versements des cotisations de séance (accessible à tous) -->
+      {% if user.is_authenticated %}
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#versements-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-cash-coin text-success"></i><span>{% trans "Versements" %}</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="versements-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="{% url 'versement_list' %}">
+              <i class="bi bi-list-ul"></i><span>{% trans "Liste des versements" %}</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'versement_add' %}">
+              <i class="bi bi-circle"></i><span style="font-size:.85em;padding-left:.5rem">{% trans "Nouveau versement" %}</span>
+            </a>
+          </li>
+          {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' or user.profile.niveau_acces == 'COMPTABLE' or user.profile.niveau_acces == 'REGION' %}
+          <li>
+            <a href="{% url 'reliquat_national' %}">
+              <i class="bi bi-calculator text-warning"></i><span>{% trans "Reliquats" %}</span>
+            </a>
+          </li>
+          {% endif %}
+        </ul>
+      </li>
+      {% endif %}
+
+      <!-- Finances (transactions internes — ADMIN/COMPTABLE uniquement) -->
       {% if user.is_authenticated %}
       {% if user.is_superuser or user.profile.niveau_acces == 'ADMIN' or user.profile.niveau_acces == 'COMPTABLE' %}
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#finances-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-cash-stack"></i><span>{% trans "Finances" %}</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
-        <ul id="finances-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <ul id="finances-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
           <li>
             <a href="{% url 'transaction_list' %}">
               <i class="bi bi-circle"></i><span>{% trans "Liste Transactions" %}</span>
@@ -410,22 +438,6 @@
           <li>
             <a href="{% url 'transaction_create' %}">
               <i class="bi bi-circle"></i><span>{% trans "Nouvelle Transaction" %}</span>
-            </a>
-          </li>
-          <li><hr class="my-1 opacity-25"></li>
-          <li>
-            <a href="{% url 'versement_list' %}">
-              <i class="bi bi-cash-coin text-success"></i><span>{% trans "Versements" %}</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% url 'versement_add' %}">
-              <i class="bi bi-circle"></i><span>{% trans "Nouveau Versement" %}</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% url 'reliquat_national' %}">
-              <i class="bi bi-calculator text-warning"></i><span>{% trans "Reliquats" %}</span>
             </a>
           </li>
         </ul>
