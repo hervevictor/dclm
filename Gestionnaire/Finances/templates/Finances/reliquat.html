@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block gestion %}
+<div class="container-fluid mt-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+      <h4 class="mb-0 fw-bold"><i class="bi bi-calculator text-primary me-2"></i>Reliquat des Cotisations</h4>
+      <div class="text-muted small mt-1">{{ niveau }}</div>
+    </div>
+    <a href="{% url 'versement_add' %}" class="btn btn-success btn-sm">
+      <i class="bi bi-plus-circle"></i> Nouveau versement
+    </a>
+  </div>
+
+  <!-- Résumé global -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm text-center py-3" style="border-left:4px solid #198754 !important;">
+        <div class="small text-muted fw-semibold text-uppercase mb-1">Total Cotisé</div>
+        <div class="fw-bold fs-4 text-success">{{ total_cotise|floatformat:0 }} <small class="fs-6">FCFA</small></div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm text-center py-3" style="border-left:4px solid #1d4ed8 !important;">
+        <div class="small text-muted fw-semibold text-uppercase mb-1">Total Versé</div>
+        <div class="fw-bold fs-4 text-primary">{{ total_verse|floatformat:0 }} <small class="fs-6">FCFA</small></div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm text-center py-3"
+           style="border-left:4px solid {% if reliquat_total > 0 %}#dc3545{% else %}#198754{% endif %} !important;">
+        <div class="small text-muted fw-semibold text-uppercase mb-1">Reliquat</div>
+        <div class="fw-bold fs-4 {% if reliquat_total > 0 %}text-danger{% else %}text-success{% endif %}">
+          {{ reliquat_total|floatformat:0 }} <small class="fs-6">FCFA</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tableau par église -->
+  <div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-sm table-hover mb-0">
+          <thead class="table-dark">
+            <tr>
+              <th>Église</th>
+              <th>Groupe</th>
+              <th>Région</th>
+              <th class="text-end">Cotisé (FCFA)</th>
+              <th class="text-end">Versé (FCFA)</th>
+              <th class="text-end">Reliquat (FCFA)</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in rows %}
+            <tr>
+              <td class="fw-semibold">{{ row.eglise.nom }}</td>
+              <td>{{ row.eglise.groupe }}</td>
+              <td>{{ row.eglise.region }}</td>
+              <td class="text-end text-success fw-semibold">{{ row.cotise|floatformat:0 }}</td>
+              <td class="text-end text-primary fw-semibold">{{ row.verse|floatformat:0 }}</td>
+              <td class="text-end fw-bold {% if row.reliquat > 0 %}text-danger{% else %}text-success{% endif %}">
+                {{ row.reliquat|floatformat:0 }}
+              </td>
+              <td>
+                <a href="{% url 'versement_add' %}?eglise={{ row.eglise.pk }}" class="btn btn-xs btn-outline-success py-0 px-1" style="font-size:.78rem;" title="Ajouter versement">
+                  <i class="bi bi-plus"></i>
+                </a>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7" class="text-center text-muted py-4">Aucune église.</td></tr>
+            {% endfor %}
+          </tbody>
+          <tfoot class="table-dark fw-bold">
+            <tr>
+              <td colspan="3">TOTAL</td>
+              <td class="text-end text-success">{{ total_cotise|floatformat:0 }}</td>
+              <td class="text-end text-info">{{ total_verse|floatformat:0 }}</td>
+              <td class="text-end {% if reliquat_total > 0 %}text-warning{% else %}text-success{% endif %}">
+                {{ reliquat_total|floatformat:0 }}
+              </td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

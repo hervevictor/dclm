@@ -412,6 +412,22 @@
               <i class="bi bi-circle"></i><span>{% trans "Nouvelle Transaction" %}</span>
             </a>
           </li>
+          <li><hr class="my-1 opacity-25"></li>
+          <li>
+            <a href="{% url 'versement_list' %}">
+              <i class="bi bi-cash-coin text-success"></i><span>{% trans "Versements" %}</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'versement_add' %}">
+              <i class="bi bi-circle"></i><span>{% trans "Nouveau Versement" %}</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'reliquat_national' %}">
+              <i class="bi bi-calculator text-warning"></i><span>{% trans "Reliquats" %}</span>
+            </a>
+          </li>
         </ul>
       </li>
       {% endif %}

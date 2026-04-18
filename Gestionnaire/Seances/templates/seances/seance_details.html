@@ -27,7 +27,7 @@
                     </div> <br>
                     <div class="row">
                         <div class="col-md-4">Assistance Totale : <strong>{{ bilan.total_assistance }}</strong></div>
-                        <div class="col-md-4"> Cotisation : <strong>{{ bilan.cotisation }}</strong></div>
+                        <div class="col-md-4"> Cotisation : <strong>{{ bilan.cotisation|floatformat:0 }}</strong></div>
                         <div class="col-md-4">Date de la seance : <strong> {{bilan.date}}</strong></div>
                     </div>
                      <br>

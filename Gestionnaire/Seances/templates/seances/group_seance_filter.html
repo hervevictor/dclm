@@ -31,7 +31,7 @@
                         <td>{{ item.hommes }}</td>
                         <td>{{ item.femmes }}</td>
                         <td>{{ item.assistance }}</td>
-                        <td>{{ item.cotisation }}</td>
+                        <td>{{ item.cotisation|floatformat:0 }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -42,7 +42,7 @@
         <p>Hommes: {{ total_hommes }}</p>
         <p>Femmes: {{ total_femmes }}</p>
         <p>Assistance Totale: {{ total_assistance }}</p>
-        <p>Cotisation Totale: {{ total_cotisation }}</p>
+        <p>Cotisation Totale: {{ total_cotisation|floatformat:0 }}</p>
     
     
 

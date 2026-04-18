@@ -27,7 +27,7 @@
                     <td><center>{{ item.total_hommes }}</center></td>
                     <td><center>{{ item.total_femmes }}</center></td>
                     <td><center>{{ item.total_assistance }}</center></td>
-                    <td><center>{{ item.total_cotisation }}</center></td>
+                    <td><center>{{ item.total_cotisation|floatformat:0 }}</center></td>
                     <td><center>
                         {% for seance_jour in item.seances_jour %}
                             <a href="{% url 'region_seance_filter' region_name=item.region seance_type=seance_jour %}">{{ seance_jour }}</a><br>

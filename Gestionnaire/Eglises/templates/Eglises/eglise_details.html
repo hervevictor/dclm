@@ -153,25 +153,53 @@
               <div class="fw-bold">{{ eglise.nom_du_pasteur|default:"—" }}</div>
             </div>
             <div class="col-sm-6">
-              <div class="small text-muted fw-semibold mb-1">Pasteur Adjoint</div>
-              <div class="fw-bold">{{ eglise.nom_du_pasteur_adjoin|default:"—" }}</div>
-            </div>
-            <div class="col-sm-6">
               <div class="small text-muted fw-semibold mb-1">Dirigeant des Jeunes</div>
               <div class="fw-bold">{{ eglise.nom_du_dirigeant_des_jeunes|default:"—" }}</div>
-            </div>
-            <div class="col-sm-6">
-              <div class="small text-muted fw-semibold mb-1">Dirigeant Adjoint des Jeunes</div>
-              <div class="fw-bold">{{ eglise.nom_du_dirigeant_adjoin_des_jeunes|default:"—" }}</div>
             </div>
             <div class="col-sm-6">
               <div class="small text-muted fw-semibold mb-1">Dirigeant des Enfants</div>
               <div class="fw-bold">{{ eglise.nom_du_dirigeant_des_enfants|default:"—" }}</div>
             </div>
             <div class="col-sm-6">
-              <div class="small text-muted fw-semibold mb-1">Dirigeant Adjoint des Enfants</div>
-              <div class="fw-bold">{{ eglise.nom_du_dirigeant_adjoin_des_enfants|default:"—" }}</div>
+              <div class="small text-muted fw-semibold mb-1">Coordinatrice des Femmes</div>
+              <div class="fw-bold">{{ eglise.coordinatrice_des_femmes|default:"—" }}</div>
             </div>
+            {% if eglise.dirigeant_de_zone1 %}
+            <div class="col-sm-6">
+              <div class="small text-muted fw-semibold mb-1">Dirigeant de Zone 1</div>
+              <div class="fw-bold">{{ eglise.dirigeant_de_zone1 }}</div>
+            </div>
+            {% endif %}
+            {% if eglise.dirigeant_de_zone2 %}
+            <div class="col-sm-6">
+              <div class="small text-muted fw-semibold mb-1">Dirigeant de Zone 2</div>
+              <div class="fw-bold">{{ eglise.dirigeant_de_zone2 }}</div>
+            </div>
+            {% endif %}
+            {% if eglise.responsable_des_femmes1 %}
+            <div class="col-sm-6">
+              <div class="small text-muted fw-semibold mb-1">Responsable des Femmes 1</div>
+              <div class="fw-bold">{{ eglise.responsable_des_femmes1 }}</div>
+            </div>
+            {% endif %}
+            {% if eglise.responsable_des_femmes2 %}
+            <div class="col-sm-6">
+              <div class="small text-muted fw-semibold mb-1">Responsable des Femmes 2</div>
+              <div class="fw-bold">{{ eglise.responsable_des_femmes2 }}</div>
+            </div>
+            {% endif %}
+            {% if eglise.responsable_des_jeunes_femme %}
+            <div class="col-sm-6">
+              <div class="small text-muted fw-semibold mb-1">Responsable Jeunes Filles</div>
+              <div class="fw-bold">{{ eglise.responsable_des_jeunes_femme }}</div>
+            </div>
+            {% endif %}
+            {% if eglise.responsable_des_jeunes_professionnel %}
+            <div class="col-sm-6">
+              <div class="small text-muted fw-semibold mb-1">Responsable Jeunes Professionnels</div>
+              <div class="fw-bold">{{ eglise.responsable_des_jeunes_professionnel }}</div>
+            </div>
+            {% endif %}
           </div>
         </div>
       </div>

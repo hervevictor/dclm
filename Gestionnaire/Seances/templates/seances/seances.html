@@ -73,7 +73,7 @@
     <div class="card border-success shadow-sm bg-light">
       <div class="card-body py-2">
         <p class="mb-0 small text-muted">Total Cotisations</p>
-        <h4 class="mb-0 fw-bold">{{ total_cotisation_globale|floatformat:2 }} FCFA</h4>
+        <h4 class="mb-0 fw-bold">{{ total_cotisation_globale|floatformat:0 }} FCFA</h4>
       </div>
     </div>
   </div>
@@ -137,7 +137,7 @@
         <center>{{ bilan.total_assistance }}</center>
       </td>
       <td>
-        <center>{{ bilan.cotisation }}</center>
+        <center>{{ bilan.cotisation|floatformat:0 }}</center>
       </td>
     </tr>
     {% endfor %}

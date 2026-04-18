@@ -25,3 +25,20 @@ class Transaction(models.Model):
 
     class Meta:
         ordering = ['-date', '-created_at']
+
+
+class Versement(models.Model):
+    """Versement effectué par une église (avec photo du reçu)."""
+    eglise = models.ForeignKey(Eglise, on_delete=models.CASCADE, related_name='versements')
+    montant = models.DecimalField(max_digits=12, decimal_places=0)
+    date = models.DateField(default=timezone.now)
+    photo_recu = models.ImageField(upload_to='images/versements/', blank=True, null=True)
+    description = models.TextField(blank=True)
+    auteur = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-date', '-created_at']
+
+    def __str__(self):
+        return f"Versement {self.eglise.nom} — {self.montant} FCFA ({self.date})"
