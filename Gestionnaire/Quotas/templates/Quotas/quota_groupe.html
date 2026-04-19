@@ -95,9 +95,16 @@
                 </div>
               </td>
               <td>
-                <a href="{% url 'versement_quota_add' %}?eglise={{ row.eglise.pk }}" class="btn btn-xs btn-outline-success py-0 px-1" style="font-size:.78rem;" title="Enregistrer paiement">
-                  <i class="bi bi-plus"></i>
-                </a>
+                <div class="d-flex gap-1">
+                  {% if row.quota_pk %}
+                  <a href="{% url 'quota_eglise_detail' row.quota_pk %}" class="btn btn-xs btn-outline-primary py-0 px-1" style="font-size:.78rem;" title="Détail & promesses">
+                    <i class="bi bi-eye"></i>
+                  </a>
+                  {% endif %}
+                  <a href="{% url 'versement_quota_add' %}?eglise={{ row.eglise.pk }}" class="btn btn-xs btn-outline-success py-0 px-1" style="font-size:.78rem;" title="Enregistrer paiement">
+                    <i class="bi bi-plus"></i>
+                  </a>
+                </div>
               </td>
             </tr>
             {% empty %}

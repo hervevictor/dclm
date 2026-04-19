@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.db.models import Sum
-from .models import QuotaRegion, QuotaGroupe, QuotaEglise, VersementQuota, GRAND_LOME
-from .forms import QuotaRegionForm, QuotaGroupeForm, QuotaEgliseForm, VersementQuotaForm
+from .models import QuotaRegion, QuotaGroupe, QuotaEglise, VersementQuota, PromesseQuota, GRAND_LOME
+from .forms import QuotaRegionForm, QuotaGroupeForm, QuotaEgliseForm, VersementQuotaForm, PromesseQuotaForm
 from Eglises.models import Eglise, Region as RegionModel, Groupe as GroupeModel
 from datetime import date
 
@@ -131,7 +132,7 @@ def quota_groupe(request, groupe):
         eq = int(eq_obj.montant) if eq_obj else 0
         ev = _verse_eglise(eglise)
         reste = eq - ev
-        rows.append({'num': i, 'eglise': eglise, 'quota': eq, 'verse': ev, 'reste': reste, 'pct': _pct(ev, eq)})
+        rows.append({'num': i, 'eglise': eglise, 'quota': eq, 'verse': ev, 'reste': reste, 'pct': _pct(ev, eq), 'quota_pk': eq_obj.pk if eq_obj else None})
         total_quota += eq
         total_verse += ev
 
@@ -215,12 +216,11 @@ def quota_attribuer_eglise(request, groupe=None):
         if form.is_valid():
             q = form.save(commit=False)
             q.auteur = request.user
-            QuotaEglise.objects.update_or_create(
+            quota_obj, _ = QuotaEglise.objects.update_or_create(
                 eglise=q.eglise, annee=q.annee,
                 defaults={'montant': q.montant, 'auteur': q.auteur}
             )
-            eglise_obj = q.eglise
-            return redirect('quota_groupe', groupe=eglise_obj.groupe)
+            return redirect('quota_eglise_detail', pk=quota_obj.pk)
     else:
         form = QuotaEgliseForm()
         if groupe_sel:
@@ -277,3 +277,90 @@ def versement_quota_supprimer(request, pk):
         versement.delete()
         return redirect('versement_quota_list')
     return render(request, 'Quotas/versement_quota_confirm_delete.html', {'object': versement})
+
+
+# ─── Détail quota d'une église + promesses ────────────────────────────────────
+
+@login_required(login_url='/membres/login/')
+def quota_eglise_detail(request, pk):
+    quota = get_object_or_404(QuotaEglise, pk=pk)
+    eglise = quota.eglise
+
+    promesses_qs = quota.promesses.all()
+    paginator = Paginator(promesses_qs, 20)
+    page = paginator.get_page(request.GET.get('page'))
+
+    total_promis = int(promesses_qs.aggregate(s=Sum('montant_promis'))['s'] or 0)
+    total_paye = int(promesses_qs.aggregate(s=Sum('montant_paye'))['s'] or 0)
+    quota_montant = int(quota.montant)
+    surplus = total_promis - quota_montant
+    pct_promis = min(round(total_promis * 100 / quota_montant), 999) if quota_montant else 0
+    pct_paye = min(round(total_paye * 100 / quota_montant), 999) if quota_montant else 0
+
+    context = {
+        'quota': quota,
+        'eglise': eglise,
+        'page_obj': page,
+        'total_promis': total_promis,
+        'total_paye': total_paye,
+        'quota_montant': quota_montant,
+        'surplus': surplus,
+        'pct_promis': pct_promis,
+        'pct_paye': pct_paye,
+    }
+    return render(request, 'Quotas/quota_eglise_detail.html', context)
+
+
+@login_required(login_url='/membres/login/')
+def promesse_add(request, quota_pk):
+    quota = get_object_or_404(QuotaEglise, pk=quota_pk)
+    eglise = quota.eglise
+    if request.method == 'POST':
+        form = PromesseQuotaForm(request.POST, eglise=eglise)
+        if form.is_valid():
+            p = form.save(commit=False)
+            p.quota_eglise = quota
+            p.save()
+            return redirect('quota_eglise_detail', pk=quota_pk)
+    else:
+        form = PromesseQuotaForm(eglise=eglise)
+    return render(request, 'Quotas/promesse_form.html', {
+        'form': form, 'quota': quota, 'titre': 'Ajouter une promesse',
+    })
+
+
+@login_required(login_url='/membres/login/')
+def promesse_edit(request, pk):
+    promesse = get_object_or_404(PromesseQuota, pk=pk)
+    quota = promesse.quota_eglise
+    eglise = quota.eglise
+    if request.method == 'POST':
+        form = PromesseQuotaForm(request.POST, instance=promesse, eglise=eglise)
+        if form.is_valid():
+            form.save()
+            return redirect('quota_eglise_detail', pk=quota.pk)
+    else:
+        form = PromesseQuotaForm(instance=promesse, eglise=eglise)
+    return render(request, 'Quotas/promesse_form.html', {
+        'form': form, 'quota': quota, 'titre': 'Modifier la promesse',
+    })
+
+
+@login_required(login_url='/membres/login/')
+def promesse_delete(request, pk):
+    promesse = get_object_or_404(PromesseQuota, pk=pk)
+    quota_pk = promesse.quota_eglise.pk
+    if request.method == 'POST':
+        promesse.delete()
+        return redirect('quota_eglise_detail', pk=quota_pk)
+    return render(request, 'Quotas/promesse_confirm_delete.html', {'object': promesse})
+
+
+# ─── Liste de toutes les quotas d'église ─────────────────────────────────────
+
+@login_required(login_url='/membres/login/')
+def quota_eglise_list(request):
+    annee = _annee(request)
+    quotas = QuotaEglise.objects.filter(annee=annee).select_related('eglise').order_by('eglise__groupe', 'eglise__nom')
+    context = {'quotas': quotas, 'annee': annee}
+    return render(request, 'Quotas/quota_eglise_list.html', context)

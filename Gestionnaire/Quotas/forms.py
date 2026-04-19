@@ -1,7 +1,8 @@
 from django import forms
 from datetime import date
-from .models import QuotaRegion, QuotaGroupe, QuotaEglise, VersementQuota
+from .models import QuotaRegion, QuotaGroupe, QuotaEglise, VersementQuota, PromesseQuota, GRAND_LOME
 from Eglises.models import Eglise, Region, Groupe
+from Adultes.models import Adulte
 
 
 class QuotaRegionForm(forms.ModelForm):
@@ -9,13 +10,18 @@ class QuotaRegionForm(forms.ModelForm):
         model = QuotaRegion
         fields = ['region', 'montant', 'annee']
         widgets = {
-            'region': forms.TextInput(attrs={'class': 'form-control', 'list': 'regions-list'}),
             'montant': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Montant en FCFA'}),
             'annee': forms.HiddenInput(),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        regions = Region.objects.exclude(name=GRAND_LOME).order_by('name')
+        self.fields['region'] = forms.ChoiceField(
+            choices=[('', '— Sélectionner une région —')] + [(r.name, r.name) for r in regions],
+            label='Région',
+            widget=forms.Select(attrs={'class': 'form-select select-search'}),
+        )
         if not self.initial.get('annee') and not self.data.get('annee'):
             self.fields['annee'].initial = date.today().year
 
@@ -25,14 +31,24 @@ class QuotaGroupeForm(forms.ModelForm):
         model = QuotaGroupe
         fields = ['groupe', 'region', 'montant', 'annee']
         widgets = {
-            'groupe': forms.TextInput(attrs={'class': 'form-control', 'list': 'groupes-list'}),
-            'region': forms.TextInput(attrs={'class': 'form-control', 'list': 'regions-list'}),
             'montant': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Montant en FCFA'}),
             'annee': forms.HiddenInput(),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        regions = Region.objects.all().order_by('name')
+        groupes = Groupe.objects.all().order_by('name')
+        self.fields['region'] = forms.ChoiceField(
+            choices=[('', '— Sélectionner une région —')] + [(r.name, r.name) for r in regions],
+            label='Région',
+            widget=forms.Select(attrs={'class': 'form-select select-search', 'id': 'id_region'}),
+        )
+        self.fields['groupe'] = forms.ChoiceField(
+            choices=[('', '— Sélectionner un groupe —')] + [(g.name, g.name) for g in groupes],
+            label='Groupe',
+            widget=forms.Select(attrs={'class': 'form-select select-search', 'id': 'id_groupe'}),
+        )
         if not self.initial.get('annee') and not self.data.get('annee'):
             self.fields['annee'].initial = date.today().year
 
@@ -51,6 +67,34 @@ class QuotaEgliseForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if not self.initial.get('annee') and not self.data.get('annee'):
             self.fields['annee'].initial = date.today().year
+
+
+class PromesseQuotaForm(forms.ModelForm):
+    class Meta:
+        model = PromesseQuota
+        fields = ['nom_membre', 'montant_promis', 'montant_paye', 'statut', 'date', 'notes']
+        widgets = {
+            'montant_promis': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Montant promis (FCFA)'}),
+            'montant_paye': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Montant déjà payé (FCFA)'}),
+            'statut': forms.Select(attrs={'class': 'form-select'}),
+            'date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+        }
+
+    def __init__(self, *args, eglise=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if eglise:
+            membres = Adulte.objects.filter(eglise=eglise).order_by('nom', 'prenom')
+            choices = [('', '— Sélectionner un membre —')] + [
+                (f"{m.nom} {m.prenom}", f"{m.nom} {m.prenom}") for m in membres
+            ]
+            self.fields['nom_membre'] = forms.ChoiceField(
+                choices=choices,
+                label='Membre',
+                widget=forms.Select(attrs={'class': 'form-select select-search'}),
+            )
+        else:
+            self.fields['nom_membre'].widget = forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nom du membre'})
 
 
 class VersementQuotaForm(forms.ModelForm):

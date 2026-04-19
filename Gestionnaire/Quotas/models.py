@@ -60,6 +60,32 @@ class QuotaEglise(models.Model):
         return f"{self.eglise.nom} – {self.annee} – {self.montant} FCFA"
 
 
+class PromesseQuota(models.Model):
+    """Promesse d'un membre envers le quota de son église."""
+    STATUT_CHOICES = [
+        ('ATTENTE', 'En attente'),
+        ('PARTIEL', 'Partiellement payé'),
+        ('PAYE', 'Payé'),
+    ]
+    quota_eglise = models.ForeignKey(QuotaEglise, on_delete=models.CASCADE, related_name='promesses')
+    nom_membre = models.CharField(max_length=150)
+    montant_promis = models.DecimalField(max_digits=12, decimal_places=0)
+    montant_paye = models.DecimalField(max_digits=12, decimal_places=0, default=0)
+    statut = models.CharField(max_length=10, choices=STATUT_CHOICES, default='ATTENTE')
+    date = models.DateField(default=date.today)
+    notes = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ['nom_membre']
+
+    def __str__(self):
+        return f"{self.nom_membre} – {self.montant_promis} FCFA"
+
+    @property
+    def reste(self):
+        return max(int(self.montant_promis) - int(self.montant_paye), 0)
+
+
 class VersementQuota(models.Model):
     """Paiement d'une église vers son quota (distinct des cotisations de culte)."""
     eglise = models.ForeignKey(Eglise, on_delete=models.CASCADE, related_name='versements_quota')

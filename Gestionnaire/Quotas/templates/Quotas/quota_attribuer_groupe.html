@@ -14,17 +14,6 @@
       <form method="post">
         {% csrf_token %}
 
-        <datalist id="regions-list">
-          {% for r in regions %}
-          <option value="{{ r.name }}">
-          {% endfor %}
-        </datalist>
-        <datalist id="groupes-list">
-          {% for g in groupes %}
-          <option value="{{ g.name }}">
-          {% endfor %}
-        </datalist>
-
         {{ form.annee }}
         {% for field in form.visible_fields %}
         <div class="mb-3">
