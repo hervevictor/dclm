@@ -2,512 +2,351 @@
 {% load i18n %}
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
-
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>Communauté</title>
-  <meta content="" name="description">
-  <meta content="" name="keywords">
-
-  <!-- Favicons -->
   <link href="{% static 'images/communaute.png' %}" rel="icon">
   <link href="{% static 'images/communaute.png' %}" rel="apple-touch-icon">
-
-  <!-- Fonts -->
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-
-  <!-- Vendor CSS Files -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="{% static 'assets1/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
   <link href="{% static 'assets1/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
   <link href="{% static 'assets1/vendor/aos/aos.css' %}" rel="stylesheet">
   <link href="{% static 'assets1/vendor/animate.css/animate.min.css' %}" rel="stylesheet">
   <link href="{% static 'assets1/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
   <link href="{% static 'assets1/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
-
-  <!-- Main CSS File -->
   <link href="{% static 'assets1/css/main.css' %}" rel="stylesheet">
-
-  <!-- =======================================================
-  * Template Name: Selecao
-  * Template URL: https://bootstrapmade.com/selecao-bootstrap-template/
-  * Updated: Jul 17 2024 with Bootstrap v5.3.3
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
+  <style>
+    body { font-family: 'Poppins', sans-serif; }
+    .section-badge { display:inline-block; background:#e8f0fe; color:#1a56db; font-size:.72rem; font-weight:600; padding:2px 10px; border-radius:20px; letter-spacing:.05em; text-transform:uppercase; margin-bottom:.5rem; }
+    .church-card { border:none; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,.07); transition:transform .2s,box-shadow .2s; }
+    .church-card:hover { transform:translateY(-3px); box-shadow:0 6px 20px rgba(0,0,0,.12); }
+    .region-header { background:linear-gradient(135deg,#1e3a5f,#2563eb); color:#fff; border-radius:10px; padding:14px 20px; margin-bottom:1rem; }
+    .annonce-card { border-left:4px solid #2563eb; border-radius:0 10px 10px 0; background:#f8faff; }
+    .msg-card { border-left:4px solid #198754; border-radius:0 10px 10px 0; background:#f6faf7; }
+    .login-btn { background:#fff; color:#1a3a6b; font-weight:600; border:2px solid rgba(255,255,255,.6); border-radius:25px; padding:6px 20px; transition:all .2s; }
+    .login-btn:hover { background:#1a3a6b; color:#fff; border-color:#1a3a6b; }
+    .hero-stat { background:rgba(255,255,255,.15); backdrop-filter:blur(6px); border-radius:12px; padding:14px 20px; text-align:center; }
+    .hero-stat .num { font-size:2rem; font-weight:700; color:#fff; line-height:1; }
+    .hero-stat .lbl { font-size:.78rem; color:rgba(255,255,255,.8); text-transform:uppercase; letter-spacing:.06em; }
+  </style>
 </head>
 
 <body class="index-page">
 
+  <!-- ══ HEADER ══ -->
   <header id="header" class="header d-flex align-items-center fixed-top">
     <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
 
-      <a href="{% url 'eglises' %}" class="logo d-flex align-items-center">
+      <a href="{% url 'index' %}" class="logo d-flex align-items-center">
         <h1 class="sitename">COMMUNAUTÉ</h1>
       </a>
 
       <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="#regions">Régions</a></li>
+          <li><a href="#groupes">Groupes</a></li>
+          <li><a href="#eglises">Églises</a></li>
+          <li><a href="#annonces">Annonces</a></li>
+        </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 
-      <!-- Sélecteur de langue -->
-      <div class="dropdown ms-3">
-        <button class="btn btn-outline-light btn-sm dropdown-toggle d-flex align-items-center gap-1"
-                type="button" data-bs-toggle="dropdown">
-          <i class="bi bi-translate"></i>
-          {% get_current_language as CURRENT_LANG %}
-          {{ CURRENT_LANG|upper }}
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end shadow">
-          {% get_available_languages as LANGUAGES_LIST %}
-          {% get_language_info_list for LANGUAGES_LIST as langs %}
-          {% for lang in langs %}
-          <li>
-            <form method="post" action="{% url 'set_language' %}">
-              {% csrf_token %}
-              <input type="hidden" name="language" value="{{ lang.code }}">
-              <input type="hidden" name="next" value="{{ request.get_full_path }}">
-              <button type="submit" class="dropdown-item {% if lang.code == CURRENT_LANG %}fw-bold text-primary{% endif %}">
-                {% if lang.code == 'fr' %}🇫🇷{% endif %}
-                {% if lang.code == 'en' %}🇬🇧{% endif %}
-                {% if lang.code == 'pt' %}🇧🇷{% endif %}
-                {% if lang.code == 'de' %}🇩🇪{% endif %}
-                {% if lang.code == 'es' %}🇪🇸{% endif %}
-                {{ lang.name_local }}
-              </button>
-            </form>
-          </li>
-          {% endfor %}
-        </ul>
+      <div class="d-flex align-items-center gap-2 ms-3">
+        <!-- Langue -->
+        <div class="dropdown">
+          <button class="btn btn-outline-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            <i class="bi bi-translate"></i>
+            {% get_current_language as CURRENT_LANG %}{{ CURRENT_LANG|upper }}
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow">
+            {% get_available_languages as LANGUAGES_LIST %}
+            {% get_language_info_list for LANGUAGES_LIST as langs %}
+            {% for lang in langs %}
+            <li>
+              <form method="post" action="{% url 'set_language' %}">
+                {% csrf_token %}
+                <input type="hidden" name="language" value="{{ lang.code }}">
+                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <button type="submit" class="dropdown-item {% if lang.code == CURRENT_LANG %}fw-bold text-primary{% endif %}">
+                  {% if lang.code == 'fr' %}🇫🇷{% endif %}{% if lang.code == 'en' %}🇬🇧{% endif %}{% if lang.code == 'pt' %}🇧🇷{% endif %}
+                  {{ lang.name_local }}
+                </button>
+              </form>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        <!-- Connexion -->
+        {% if user.is_authenticated %}
+        <a href="{% url 'eglises' %}" class="login-btn"><i class="bi bi-grid me-1"></i>Accueil app</a>
+        {% else %}
+        <a href="{% url 'login' %}" class="login-btn"><i class="bi bi-box-arrow-in-right me-1"></i>Connexion</a>
+        {% endif %}
       </div>
-
     </div>
   </header>
 
   <main class="main">
 
-    <!-- Hero Section -->
+    <!-- ══ HERO ══ -->
     <section id="hero" class="hero section dark-background">
-
-      <div id="hero-carousel" data-bs-interval="5000" class="container carousel carousel-fade" data-bs-ride="carousel">
-
-        <!-- Slide 1 -->
+      <div id="hero-carousel" data-bs-interval="6000" class="container carousel carousel-fade" data-bs-ride="carousel">
         <div class="carousel-item active">
           <div class="carousel-container">
             <h2 class="animate__animated animate__fadeInDown">COMMUNAUTÉ</h2>
-            <p class="animate__animated animate__fadeInUp">{% trans "home_hero_desc" %}</p>
-            <a href="#about" class="btn-get-started animate__animated animate__fadeInUp scrollto">{% trans "Lire plus" %}</a>
+            <p class="animate__animated animate__fadeInUp">Plateforme de gestion et de suivi de la vie communautaire — régions, groupes, églises, membres et activités.</p>
+            <a href="#regions" class="btn-get-started animate__animated animate__fadeInUp scrollto">Découvrir</a>
           </div>
         </div>
-
-       
-
-        
-
       </div>
-
-      <svg class="hero-waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28 " preserveAspectRatio="none">
-        <defs>
-          <path id="wave-path" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path>
-        </defs>
-        <g class="wave1">
-          <use xlink:href="#wave-path" x="50" y="3"></use>
-        </g>
-        <g class="wave2">
-          <use xlink:href="#wave-path" x="50" y="0"></use>
-        </g>
-        <g class="wave3">
-          <use xlink:href="#wave-path" x="50" y="9"></use>
-        </g>
+      <!-- Statistiques rapides -->
+      <div class="container position-relative" style="margin-top:2rem;padding-bottom:3rem;">
+        <div class="row g-3 justify-content-center">
+          <div class="col-4 col-md-3">
+            <div class="hero-stat">
+              <div class="num">{{ regions|length }}</div>
+              <div class="lbl">Régions</div>
+            </div>
+          </div>
+          <div class="col-4 col-md-3">
+            <div class="hero-stat">
+              <div class="num">{{ groupes|length }}</div>
+              <div class="lbl">Groupes</div>
+            </div>
+          </div>
+          <div class="col-4 col-md-3">
+            <div class="hero-stat">
+              <div class="num">{{ eglises|length }}</div>
+              <div class="lbl">Églises</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <svg class="hero-waves" xmlns="http://www.w3.org/2000/svg" viewBox="0 24 150 28" preserveAspectRatio="none">
+        <defs><path id="wave-path" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path></defs>
+        <g class="wave1"><use href="#wave-path" x="50" y="3"></use></g>
+        <g class="wave2"><use href="#wave-path" x="50" y="0"></use></g>
+        <g class="wave3"><use href="#wave-path" x="50" y="9"></use></g>
       </svg>
+    </section>
 
-    </section><!-- /Hero Section -->
-
-    <!-- About Section -->
-    <section id="about" class="about section">
-
-      <!-- Section Title -->
-      <div class="container section-title" data-aos="fade-up">
-        <h2>{% trans "À Propos" %}</h2>
-        <p>{% trans "Qu'est-ce que COMMUNAUTÉ" %}</p>
-      </div><!-- End Section Title -->
-
+    <!-- ══ RÉGIONS ══ -->
+    <section id="regions" class="section" style="padding:60px 0 40px;">
       <div class="container">
-
-        <div class="row gy-4">
-
-          <div class="col-lg-6 content" data-aos="fade-up" data-aos-delay="100">
-            <p>{% trans "about_intro" %}</p>
-            <ul>
-              <li><i class="bi bi-check2-circle"></i> <span>{% trans "about_item1" %}</span></li>
-              <li><i class="bi bi-check2-circle"></i> <span>{% trans "about_item2" %}</span></li>
-              <li><i class="bi bi-check2-circle"></i> <span>{% trans "about_item3" %}</span></li>
-              <li><i class="bi bi-check2-circle"></i> <span>{% trans "about_item4" %}</span></li>
-              <li><i class="bi bi-check2-circle"></i> <span>{% trans "about_item5" %}</span></li>
-              <li><i class="bi bi-check2-circle"></i> <span>{% trans "about_item6" %}</span></li>
-            </ul>
-          </div>
-
-          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
-            <p>{% trans "about_desc" %}</p>
-          </div>
-
+        <div class="text-center mb-4" data-aos="fade-up">
+          <span class="section-badge">Organisation</span>
+          <h2 class="fw-bold">Régions</h2>
+          <p class="text-muted">Les grandes zones géographiques de la communauté</p>
         </div>
-
-      </div>
-
-    </section><!-- /About Section -->
-        
-    <!-- Features Section -->
-    <section id="features" class="features section">
-      <div class="container">
-
-        <div class="tab-content" data-aos="fade-up" data-aos-delay="200">
-
-          <div class="tab-pane fade active show" id="features-tab-1">
-            <div class="row">
-              <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0">
-                <h3>{% trans "Les informations sur l'église." %}</h3>
-                <p class="fst-italic">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                  magna aliqua.
-                </p>
-                <ul>
-                  <li><i class="bi bi-check2-all"></i>
-                    <spab>Ullamco laboris nisi ut aliquip ex ea commodo consequat.</spab>
-                  </li>
-                  <li><i class="bi bi-check2-all"></i> <span>Duis aute irure dolor in reprehenderit in voluptate velit</span>.</li>
-                  <li><i class="bi bi-check2-all"></i> <span>Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate trideta storacalaperda mastiro dolore eu fugiat nulla pariatur.</span></li>
-                </ul>
-                <p>
-                  Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-                  velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                  culpa qui officia deserunt mollit anim id est laborum
-                </p>
-              </div>
-              <div class="col-lg-6 order-1 order-lg-2 text-center">
-                <img src=" {% static 'assets1/img/working-1.jpg' %} " alt="" class="img-fluid">
-              </div>
-            </div>
-          </div><!-- End Tab Content Item -->
-
-          <div class="tab-pane fade" id="features-tab-2">
-            <div class="row">
-              <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0">
-                <h3>Neque exercitationem debitis soluta quos debitis quo mollitia officia est</h3>
-                <p>
-                  Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-                  velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                  culpa qui officia deserunt mollit anim id est laborum
-                </p>
-                <p class="fst-italic">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                  magna aliqua.
-                </p>
-                <ul>
-                  <li><i class="bi bi-check2-all"></i> <span>Ullamco laboris nisi ut aliquip ex ea commodo consequat.</span></li>
-                  <li><i class="bi bi-check2-all"></i> <span>Duis aute irure dolor in reprehenderit in voluptate velit.</span></li>
-                  <li><i class="bi bi-check2-all"></i> <span>Provident mollitia neque rerum asperiores dolores quos qui a. Ipsum neque dolor voluptate nisi sed.</span></li>
-                  <li><i class="bi bi-check2-all"></i> <span>Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate trideta storacalaperda mastiro dolore eu fugiat nulla pariatur.</span></li>
-                </ul>
-              </div>
-              <div class="col-lg-6 order-1 order-lg-2 text-center">
-                <img src="assets/img/working-2.jpg" alt="" class="img-fluid">
-              </div>
-            </div>
-          </div><!-- End Tab Content Item -->
-
-          <div class="tab-pane fade" id="features-tab-3">
-            <div class="row">
-              <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0">
-                <h3>Voluptatibus commodi ut accusamus ea repudiandae ut autem dolor ut assumenda</h3>
-                <p>
-                  Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-                  velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                  culpa qui officia deserunt mollit anim id est laborum
-                </p>
-                <ul>
-                  <li><i class="bi bi-check2-all"></i> <span>Ullamco laboris nisi ut aliquip ex ea commodo consequat.</span></li>
-                  <li><i class="bi bi-check2-all"></i> <span>Duis aute irure dolor in reprehenderit in voluptate velit.</span></li>
-                  <li><i class="bi bi-check2-all"></i> <span>Provident mollitia neque rerum asperiores dolores quos qui a. Ipsum neque dolor voluptate nisi sed.</span></li>
-                </ul>
-                <p class="fst-italic">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                  magna aliqua.
-                </p>
-              </div>
-              <div class="col-lg-6 order-1 order-lg-2 text-center">
-                <img src="assets/img/working-3.jpg" alt="" class="img-fluid">
-              </div>
-            </div>
-          </div><!-- End Tab Content Item -->
-
-          <div class="tab-pane fade" id="features-tab-4">
-            <div class="row">
-              <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0">
-                <h3>Omnis fugiat ea explicabo sunt dolorum asperiores sequi inventore rerum</h3>
-                <p>
-                  Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-                  velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                  culpa qui officia deserunt mollit anim id est laborum
-                </p>
-                <p class="fst-italic">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                  magna aliqua.
-                </p>
-                <ul>
-                  <li><i class="bi bi-check2-all"></i> <span>Ullamco laboris nisi ut aliquip ex ea commodo consequat.</span></li>
-                  <li><i class="bi bi-check2-all"></i> <span>Duis aute irure dolor in reprehenderit in voluptate velit.</span></li>
-                  <li><i class="bi bi-check2-all"></i> <span>Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate trideta storacalaperda mastiro dolore eu fugiat nulla pariatur.</span></li>
-                </ul>
-              </div>
-              <div class="col-lg-6 order-1 order-lg-2 text-center">
-                <img src="assets/img/working-4.jpg" alt="" class="img-fluid">
-              </div>
-            </div>
-          </div><!-- End Tab Content Item -->
-
-        </div>
-
-      </div>
-    </section><!-- /Features Section -->
-
-       <!-- Services Section -->
-       <section id="services" class="services section">
-
-        <!-- Section Title -->
-        <div class="container section-title" data-aos="fade-up">
-          <h2>{% trans "Informations" %}</h2>
-          <p>{% trans "Annonces et Hymnes" %}</p>
-        </div><!-- End Section Title -->
-  
-        <div class="container">
-  
-          <div class="row gy-4">
-  
-            
-            <div class="col-lg-6 col-md-6 col-12" data-aos="fade-up" data-aos-delay="600">
-              <div class="service-item position-relative">
-                {% if message %}
-                  <p>
-                    <a href="{{message.message.url}}" class="stretched-link">
-                      <h3> {{message.titre}} </h3>
-                    </a>
-                  </p>
-                  
-                  <p>Hymnes : <strong>{{message.hymnes}}</strong> </p>
-                  <p>date : <strong>{{message.date}}</strong> </p>
-                {% else %}
-                <strong>Aucun message récent disponible. <br> Consulter la liste des messages en cliquant <a href="{% url 'messages' %}">ICI</a> </strong>
-                {% endif %}
-                
-                
-              </div>
-            </div><!-- End Service Item -->
-
-            <div class="col-lg-6 col-md-6 col-12" data-aos="fade-up" data-aos-delay="600">
-              <div class="service-item position-relative">
-                {% if annonce %}
-                  
-                
-                <p>
-                  <a href="{% url 'annonces_list' %}" class="stretched-link">
-                    <h3>{{annonce.titre}}</h3>
-                  </a>
-                </p>
-                
-                <p>Contenu : {{annonce.contenu}} </p>
-                <br>
-                <p>Date de poste : <small>{{annonce.add_date}}  </small> </p>
-
-                {% else %}
-                 <strong>Pas d'annonce récente </strong>
-                {% endif %}
-              </div>
-            </div><!-- End Service Item -->
-  
-          </div>
-  
-        </div>
-  
-      </section><!-- /Services Section -->
-  
-
-    <!-- Call To Action Section -->
-    <section id="call-to-action" class="call-to-action section dark-background">
-
-      <div class="container">
-
-        <div class="row" data-aos="zoom-in" data-aos-delay="100">
-          <div class="col-xl-9 text-center text-xl-start">
-            <h3>{% trans "Pour visiter l'interface Église" %}</h3>
-            <p>{% trans "home_cta_desc" %}</p>
-          </div>
-          <div class="col-xl-3 cta-btn-container text-center">
-            <a class="cta-btn align-middle" href="{% url 'eglises' %}">COMMUNAUTÉ</a>
-          </div>
-        </div>
-
-      </div>
-
-    </section><!-- /Call To Action Section -->
-
-    <!-- Services Section -->
-    <section id="services" class="services section">
-
-      <!-- Section Title -->
-      <div class="container section-title" data-aos="fade-up">
-        <h2>{% trans "Details" %}</h2>
-        <p>{% trans "Les différents partie de l'application" %}</p>
-      </div><!-- End Section Title -->
-
-      <div class="container">
-
-        <div class="row gy-4">
-
-          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-            <div class="service-item  position-relative">
-              <div class="icon">
-                <i class="bi bi-cash-stack" style="color: #0dcaf0;"></i>
-              </div>
-              <a href="#" class="stretched-link">
-                <h3>{% trans "svc_eglises_title" %}</h3>
-              </a>
-              <p>{% trans "svc_eglises_desc" %}</p>
-            </div>
-          </div><!-- End Service Item -->
-
-          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-            <div class="service-item position-relative">
-              <div class="icon">
-                <i class="bi bi-calendar4-week" style="color: #fd7e14;"></i>
-              </div>
-              <a href="#" class="stretched-link">
-                <h3>{% trans "svc_groupes_title" %}</h3>
-              </a>
-              <p>{% trans "svc_groupes_desc" %}</p>
-            </div>
-          </div><!-- End Service Item -->
-
-          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-            <div class="service-item position-relative">
-              <div class="icon">
-                <i class="bi bi-chat-text" style="color: #20c997;"></i>
-              </div>
-              <a href="#" class="stretched-link">
-                <h3>{% trans "svc_bilans_title" %}</h3>
-              </a>
-              <p>{% trans "svc_bilans_desc" %}</p>
-            </div>
-          </div><!-- End Service Item -->
-
-          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
-            <div class="service-item position-relative">
-              <div class="icon">
-                <i class="bi bi-credit-card-2-front" style="color: #df1529;"></i>
-              </div>
-              <a href="#" class="stretched-link">
-                <h3>{% trans "svc_personnes_title" %}</h3>
-              </a>
-              <p>{% trans "svc_personnes_desc" %}</p>
-            </div>
-          </div><!-- End Service Item -->
-
-          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
-            <div class="service-item position-relative">
-              <a href="#" class="stretched-link">
-                <h3>{% trans "svc_lumiere_title" %}</h3>
-              </a>
-              <p>{% trans "svc_lumiere_desc" %}</p>
-            </div>
-          </div><!-- End Service Item -->
-
-          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
-            <div class="service-item position-relative">
-              <a href="#" class="stretched-link">
-                <h3>{% trans "svc_annonces_title" %}</h3>
-              </a>
-              <p>{% trans "svc_annonces_desc" %}</p>
-            </div>
-          </div><!-- End Service Item -->
-
-        </div>
-
-      </div>
-
-    </section><!-- /Services Section -->
-
-    <!-- Faq Section -->
-    <section id="faq" class="faq section">
-      <!-- Section Title -->
-      <div class="container section-title" data-aos="fade-up">
-        <h2>Autres informations</h2>
-        <p>Historique<p>
-      </div><!-- End Section Title -->
-
-      <div class="container" data-aos="fade-up">
-        <div class="row">
-          <div class="col-12">
-            <div class="custom-accordion" id="accordion-faq">
-              <div class="accordion-item">
-                
-
-                <div id="collapse-faq-1" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion-faq">
-                  <div class="accordion-body">
-                    Cette application a été développé en 2021 sous le nom de DCLM_plateforme <a href="">Herve Victor DOAMEKPO</a>  et abandonnée après quelques mois en ligne.
-                    Entre mars et mai 2024 elle est reprise cette fois pas pour DCLM mais pour toutes communauté réligieuse sous le nom de : COMMUNAUTÉ. Tout dans cette nouvelle version a été codé du debut en prenant pour modèle l'ancienne version. Cette mise à jour est plus perfomante et plus vaste que l'autre. 
-                  </div>
+        <div class="row g-3">
+          {% for region in regions %}
+          <div class="col-12 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}00">
+            <div class="card church-card h-100 p-3">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <div style="width:40px;height:40px;background:#e8f0fe;border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                  <i class="bi bi-geo-alt-fill text-primary fs-5"></i>
+                </div>
+                <div>
+                  <div class="fw-bold">{{ region.name }}</div>
+                  <div class="small text-muted">Région</div>
                 </div>
               </div>
-              <!-- .accordion-item -->
+              {% if region.nom_du_pasteur_regional %}
+              <div class="small text-muted"><i class="bi bi-person me-1"></i>{{ region.nom_du_pasteur_regional }}</div>
+              {% endif %}
+              {% if region.nombre_de_membres %}
+              <div class="small text-muted mt-1"><i class="bi bi-people me-1"></i>{{ region.nombre_de_membres }} membres</div>
+              {% endif %}
+              <div class="mt-2 small">
+                <span class="badge bg-light text-dark border">{{ groupes|length }} groupes</span>
+              </div>
+            </div>
+          </div>
+          {% empty %}
+          <div class="col-12 text-center text-muted py-4">Aucune région enregistrée.</div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
 
+    <!-- ══ GROUPES ══ -->
+    <section id="groupes" class="section" style="padding:40px 0; background:#f8f9fa;">
+      <div class="container">
+        <div class="text-center mb-4" data-aos="fade-up">
+          <span class="section-badge">Structure</span>
+          <h2 class="fw-bold">Groupes</h2>
+          <p class="text-muted">Les groupes répartis par région</p>
+        </div>
+        {% regroup groupes by region as groupes_par_region %}
+        {% for region_entry in groupes_par_region %}
+        <div class="mb-4" data-aos="fade-up">
+          <div class="region-header d-flex align-items-center gap-2">
+            <i class="bi bi-diagram-3-fill fs-5"></i>
+            <span class="fw-bold fs-6">{{ region_entry.grouper }}</span>
+            <span class="badge bg-white text-primary ms-auto">{{ region_entry.list|length }} groupe(s)</span>
+          </div>
+          <div class="row g-3">
+            {% for groupe in region_entry.list %}
+            <div class="col-12 col-sm-6 col-lg-4">
+              <div class="card church-card p-3 h-100">
+                <div class="fw-semibold mb-1"><i class="bi bi-building me-1 text-primary"></i>{{ groupe.name }}</div>
+                {% if groupe.nom_du_pasteur_du_groupe %}
+                <div class="small text-muted"><i class="bi bi-person me-1"></i>{{ groupe.nom_du_pasteur_du_groupe }}</div>
+                {% endif %}
+                {% if groupe.nombre_de_membres %}
+                <div class="small text-muted mt-1"><i class="bi bi-people me-1"></i>{{ groupe.nombre_de_membres }} membres</div>
+                {% endif %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% empty %}
+        <div class="text-center text-muted py-4">Aucun groupe enregistré.</div>
+        {% endfor %}
+      </div>
+    </section>
 
+    <!-- ══ ÉGLISES ══ -->
+    <section id="eglises" class="section" style="padding:40px 0;">
+      <div class="container">
+        <div class="text-center mb-4" data-aos="fade-up">
+          <span class="section-badge">Districts</span>
+          <h2 class="fw-bold">Églises locales</h2>
+          <p class="text-muted">Les assemblées locales de la communauté</p>
+        </div>
+        {% regroup eglises by region as eglises_par_region %}
+        {% for region_entry in eglises_par_region %}
+        <div class="mb-4" data-aos="fade-up">
+          <div class="region-header d-flex align-items-center gap-2">
+            <i class="bi bi-geo-alt-fill fs-5"></i>
+            <span class="fw-bold fs-6">{{ region_entry.grouper }}</span>
+            <span class="badge bg-white text-primary ms-auto">{{ region_entry.list|length }} église(s)</span>
+          </div>
+          <div class="row g-3">
+            {% for eglise in region_entry.list %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+              <div class="card church-card p-3 h-100">
+                <div class="fw-semibold mb-1 text-truncate" title="{{ eglise.nom }}">
+                  <i class="bi bi-house-door me-1 text-primary"></i>{{ eglise.nom }}
+                </div>
+                {% if eglise.nom_du_pasteur %}
+                <div class="small text-muted text-truncate"><i class="bi bi-person me-1"></i>{{ eglise.nom_du_pasteur }}</div>
+                {% endif %}
+                {% if eglise.ville %}
+                <div class="small text-muted"><i class="bi bi-pin-map me-1"></i>{{ eglise.ville }}</div>
+                {% endif %}
+                <div class="mt-1">
+                  <span class="badge bg-light text-secondary border" style="font-size:.7rem;">{{ eglise.groupe }}</span>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% empty %}
+        <div class="text-center text-muted py-4">Aucune église enregistrée.</div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- ══ ANNONCES & MESSAGES ══ -->
+    <section id="annonces" class="section" style="padding:40px 0; background:#f8f9fa;">
+      <div class="container">
+        <div class="text-center mb-4" data-aos="fade-up">
+          <span class="section-badge">Actualités</span>
+          <h2 class="fw-bold">Annonces & Messages</h2>
+          <p class="text-muted">Les dernières communications de la communauté</p>
+        </div>
+        <div class="row g-4">
+          <!-- Annonces -->
+          <div class="col-12 col-lg-6" data-aos="fade-right">
+            <h5 class="fw-bold mb-3"><i class="bi bi-megaphone-fill text-primary me-2"></i>Annonces récentes</h5>
+            {% for annonce in annonces_recentes %}
+            <div class="card annonce-card mb-3 p-3">
+              <div class="fw-semibold">{{ annonce.titre }}</div>
+              {% if annonce.contenu %}
+              <div class="small text-muted mt-1">{{ annonce.contenu|truncatewords:25 }}</div>
+              {% endif %}
+              <div class="d-flex justify-content-between align-items-center mt-2">
+                <small class="text-muted"><i class="bi bi-calendar3 me-1"></i>{{ annonce.add_date }}</small>
+                {% if user.is_authenticated %}
+                <a href="{% url 'annonces_list' %}" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size:.75rem;">Voir plus</a>
+                {% endif %}
+              </div>
+            </div>
+            {% empty %}
+            <div class="text-center text-muted py-4 card p-4">
+              <i class="bi bi-megaphone fs-2 mb-2 d-block text-muted"></i>
+              Aucune annonce récente.
+            </div>
+            {% endfor %}
+          </div>
+          <!-- Messages -->
+          <div class="col-12 col-lg-6" data-aos="fade-left">
+            <h5 class="fw-bold mb-3"><i class="bi bi-music-note-beamed text-success me-2"></i>Messages récents</h5>
+            {% for msg in messages_recents %}
+            <div class="card msg-card mb-3 p-3">
+              <div class="fw-semibold">{{ msg.titre }}</div>
+              {% if msg.hymnes %}
+              <div class="small text-muted mt-1"><i class="bi bi-music-note me-1"></i>Hymnes : {{ msg.hymnes }}</div>
+              {% endif %}
+              <div class="d-flex justify-content-between align-items-center mt-2">
+                <small class="text-muted"><i class="bi bi-calendar3 me-1"></i>{{ msg.date }}</small>
+                {% if msg.message %}
+                <a href="{{ msg.message.url }}" target="_blank" class="btn btn-sm btn-outline-success py-0 px-2" style="font-size:.75rem;"><i class="bi bi-download me-1"></i>Télécharger</a>
+                {% endif %}
+              </div>
+            </div>
+            {% empty %}
+            <div class="text-center text-muted py-4 card p-4">
+              <i class="bi bi-chat-text fs-2 mb-2 d-block text-muted"></i>
+              Aucun message récent.
+            </div>
+            {% endfor %}
           </div>
         </div>
       </div>
-      </div>
-    </section><!-- /Faq Section -->
+    </section>
 
+    <!-- ══ CTA CONNEXION ══ -->
+    {% if not user.is_authenticated %}
+    <section class="section dark-background" style="padding:50px 0;">
+      <div class="container text-center" data-aos="zoom-in">
+        <h3 class="text-white fw-bold mb-2">Vous avez un compte ?</h3>
+        <p class="text-white-50 mb-4">Connectez-vous pour accéder à la gestion complète : membres, séances, GCK, quotas et plus.</p>
+        <a href="{% url 'login' %}" class="btn btn-light btn-lg px-5 fw-bold" style="border-radius:30px;">
+          <i class="bi bi-box-arrow-in-right me-2"></i>Se connecter
+        </a>
+      </div>
+    </section>
+    {% endif %}
 
   </main>
 
   <footer id="footer" class="footer dark-background">
-    <div class="container">
+    <div class="container text-center">
       <h3 class="sitename">COMMUNAUTÉ</h3>
-      <p>Systéme de gestion d'une communauté religieuse. Allant des liste des personnes jusqu'aux activités.</p>
-      <div class="social-links d-flex justify-content-center">
-        <a href=""><i class="bi bi-twitter-x"></i></a>
-        <a href=""><i class="bi bi-facebook"></i></a>
-        <a href=""><i class="bi bi-instagram"></i></a>
-        <a href=""><i class="bi bi-skype"></i></a>
-        <a href=""><i class="bi bi-linkedin"></i></a>
+      <p class="text-white-50 small">Système de gestion d'une communauté religieuse.</p>
+      <div class="social-links d-flex justify-content-center gap-3 my-2">
+        <a href="#"><i class="bi bi-facebook"></i></a>
+        <a href="#"><i class="bi bi-instagram"></i></a>
+        <a href="#"><i class="bi bi-twitter-x"></i></a>
       </div>
+      <div class="small text-white-50 mt-2">&copy; COMMUNAUTÉ — Tous droits réservés</div>
     </div>
   </footer>
 
-  <!-- Scroll Top -->
   <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-
-  <!-- Preloader -->
   <div id="preloader"></div>
 
-  <!-- Vendor JS Files -->
   <script src="{% static 'assets1/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-  <script src="{% static 'assets1/vendor/php-email-form/validate.js' %}"></script>
   <script src="{% static 'assets1/vendor/aos/aos.js' %}"></script>
   <script src="{% static 'assets1/vendor/glightbox/js/glightbox.min.js' %}"></script>
-  <script src="{% static 'assets1/vendor/imagesloaded/imagesloaded.pkgd.min.js' %}"></script>
-  <script src="{% static 'assets1/vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
   <script src="{% static 'assets1/vendor/swiper/swiper-bundle.min.js' %}"></script>
-
-  <!-- Main JS File -->
   <script src="{% static 'assets1/js/main.js' %}"></script>
-
-  <!-- Traduction contenu pages -->
-  <script src="{% static 'js/i18n_content.js' %}"></script>
-
 </body>
-
 </html>

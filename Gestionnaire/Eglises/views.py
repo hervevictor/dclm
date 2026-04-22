@@ -56,33 +56,26 @@ def get_member_stats(**filter_kwargs):
 
 @login_required(login_url='/membres/login/')
 def index(request):
-    # Calculer la date limite du message
-    date_limit = timezone.now().date() - timedelta(days=6)
-    
-    #annonce date limite
-    date_limit = timezone.now().date() - timedelta(days=15)
-    
-    
-    # Filtrer les messages plus récents que la date limite
-    recent_messages = Message.objects.filter(date__gt=date_limit).order_by('-date')
-    
-    # Filtrer les annnces plus récents que la date limite
-    recent_annonces = Annonce.objects.filter(add_date__gt=date_limit).order_by('-add_date')
-    
-    
-    
-    # Prendre le message le plus récent
-    if recent_messages.exists():
-        message = recent_messages.first()
-    else:
-        message = None
-    
-    # Prendre le annonce le plus récent
-    if recent_annonces.exists():
-        annonce = recent_annonces.first()
-    else:
-        annonce = None
-    return render(request, 'index.html', {'message':message, 'annonce':annonce})
+    date_limit_msg = timezone.now().date() - timedelta(days=6)
+    date_limit_ann = timezone.now().date() - timedelta(days=30)
+
+    recent_messages = Message.objects.filter(date__gt=date_limit_msg).order_by('-date')
+    recent_annonces = Annonce.objects.filter(add_date__gt=date_limit_ann).order_by('-add_date')
+
+    regions = Region.objects.all().order_by('name')
+    groupes = Groupe.objects.all().order_by('region', 'name')
+    eglises = Eglise.objects.all().order_by('region', 'groupe', 'nom')
+
+    return render(request, 'index.html', {
+        'messages_recents': recent_messages,
+        'annonces_recentes': recent_annonces,
+        'regions': regions,
+        'groupes': groupes,
+        'eglises': eglises,
+        # compat ancienne template
+        'message': recent_messages.first(),
+        'annonce': recent_annonces.first(),
+    })
 
 
 @login_required(login_url='/membres/login/')
