@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'Retraites.apps.RetraitesConfig',
     'Quotas.apps.QuotasConfig',
     'Croissance.apps.CroissanceConfig',
+    'Dashboard.apps.DashboardConfig',
     'simple_history',
 ]
 

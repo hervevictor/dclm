@@ -1,0 +1,445 @@
+{% extends 'base.html' %}
+{% block gestion %}
+<div class="container-fluid mt-3 pb-5">
+
+  <!-- En-tête -->
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+      <h3 class="fw-bold mb-0"><i class="bi bi-speedometer2 text-primary me-2"></i>Tableau de Bord National</h3>
+      <div class="text-muted small mt-1">Vue d'ensemble — Année {{ annee }} · Mis à jour en temps réel</div>
+    </div>
+    <div class="text-muted small"><i class="bi bi-calendar3 me-1"></i>{{ today }}</div>
+  </div>
+
+  <!-- ════════════════ STRUCTURE ════════════════ -->
+  <div class="row g-3 mb-4">
+    <div class="col-4">
+      <div class="card border-0 shadow-sm text-center py-3" style="border-top:3px solid #0d6efd !important;">
+        <div class="display-6 fw-bold text-primary">{{ nb_regions }}</div>
+        <div class="small text-muted fw-semibold text-uppercase mt-1">Régions</div>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="card border-0 shadow-sm text-center py-3" style="border-top:3px solid #6c757d !important;">
+        <div class="display-6 fw-bold text-secondary">{{ nb_groupes }}</div>
+        <div class="small text-muted fw-semibold text-uppercase mt-1">Groupes</div>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="card border-0 shadow-sm text-center py-3" style="border-top:3px solid #198754 !important;">
+        <div class="display-6 fw-bold text-success">{{ nb_eglises }}</div>
+        <div class="small text-muted fw-semibold text-uppercase mt-1">Églises</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════ MEMBRES — KPI ════════════════ -->
+  <div class="d-flex align-items-center gap-2 mb-3">
+    <span class="fw-bold fs-5"><i class="bi bi-people-fill text-primary me-1"></i>Membres enregistrés</span>
+    <span class="badge bg-primary rounded-pill fs-6">{{ total_membres }}</span>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <!-- Adultes -->
+    <div class="col-12 col-md-4">
+      <div class="card border-0 shadow-sm h-100" style="border-left:4px solid #0d6efd !important;">
+        <div class="card-body pb-2">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="fw-bold text-primary"><i class="bi bi-person-badge me-1"></i>Adultes</span>
+            <span class="fw-bold fs-5">{{ a_h|add:a_f }}</span>
+          </div>
+          <div class="d-flex gap-3">
+            <div class="text-center flex-fill">
+              <div class="small text-muted">Hommes</div>
+              <div class="fw-bold text-primary fs-5">{{ a_h }}</div>
+            </div>
+            <div class="vr"></div>
+            <div class="text-center flex-fill">
+              <div class="small text-muted">Femmes</div>
+              <div class="fw-bold text-danger fs-5">{{ a_f }}</div>
+            </div>
+          </div>
+          <div class="progress mt-2" style="height:5px;">
+            {% if a_h|add:a_f > 0 %}
+            <div class="progress-bar bg-primary" style="width:{% widthratio a_h a_h|add:a_f 100 %}%"></div>
+            <div class="progress-bar bg-danger" style="width:{% widthratio a_f a_h|add:a_f 100 %}%"></div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Jeunes -->
+    <div class="col-12 col-md-4">
+      <div class="card border-0 shadow-sm h-100" style="border-left:4px solid #fd7e14 !important;">
+        <div class="card-body pb-2">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="fw-bold" style="color:#fd7e14;"><i class="bi bi-person-heart me-1"></i>Jeunes</span>
+            <span class="fw-bold fs-5">{{ j_h|add:j_f }}</span>
+          </div>
+          <div class="d-flex gap-3">
+            <div class="text-center flex-fill">
+              <div class="small text-muted">Garçons</div>
+              <div class="fw-bold fs-5" style="color:#fd7e14;">{{ j_h }}</div>
+            </div>
+            <div class="vr"></div>
+            <div class="text-center flex-fill">
+              <div class="small text-muted">Filles</div>
+              <div class="fw-bold text-danger fs-5">{{ j_f }}</div>
+            </div>
+          </div>
+          <div class="progress mt-2" style="height:5px;">
+            {% if j_h|add:j_f > 0 %}
+            <div class="progress-bar" style="background:#fd7e14;width:{% widthratio j_h j_h|add:j_f 100 %}%"></div>
+            <div class="progress-bar bg-danger" style="width:{% widthratio j_f j_h|add:j_f 100 %}%"></div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Enfants -->
+    <div class="col-12 col-md-4">
+      <div class="card border-0 shadow-sm h-100" style="border-left:4px solid #20c997 !important;">
+        <div class="card-body pb-2">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="fw-bold text-success"><i class="bi bi-emoji-smile me-1"></i>Enfants</span>
+            <span class="fw-bold fs-5">{{ e_h|add:e_f }}</span>
+          </div>
+          <div class="d-flex gap-3">
+            <div class="text-center flex-fill">
+              <div class="small text-muted">Garçons</div>
+              <div class="fw-bold text-success fs-5">{{ e_h }}</div>
+            </div>
+            <div class="vr"></div>
+            <div class="text-center flex-fill">
+              <div class="small text-muted">Filles</div>
+              <div class="fw-bold text-danger fs-5">{{ e_f }}</div>
+            </div>
+          </div>
+          <div class="progress mt-2" style="height:5px;">
+            {% if e_h|add:e_f > 0 %}
+            <div class="progress-bar bg-success" style="width:{% widthratio e_h e_h|add:e_f 100 %}%"></div>
+            <div class="progress-bar bg-danger" style="width:{% widthratio e_f e_h|add:e_f 100 %}%"></div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Membres par région -->
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white border-0 fw-bold py-2">
+      <i class="bi bi-map text-primary me-1"></i>Répartition membres par région
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-sm table-hover mb-0">
+          <thead class="table-dark">
+            <tr>
+              <th>Région</th>
+              <th class="text-end">Adultes</th>
+              <th class="text-end">Jeunes</th>
+              <th class="text-end">Enfants</th>
+              <th class="text-end fw-bold">Total</th>
+              <th style="width:140px;"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in membres_par_region %}
+            <tr>
+              <td class="fw-semibold">{{ r.region }}</td>
+              <td class="text-end text-primary">{{ r.adultes }}</td>
+              <td class="text-end" style="color:#fd7e14;">{{ r.jeunes }}</td>
+              <td class="text-end text-success">{{ r.enfants }}</td>
+              <td class="text-end fw-bold">{{ r.total }}</td>
+              <td>
+                {% if total_membres > 0 %}
+                <div class="progress" style="height:6px;">
+                  <div class="progress-bar bg-primary" style="width:{% widthratio r.total total_membres 100 %}%"></div>
+                </div>
+                {% endif %}
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" class="text-center text-muted py-3">Aucun membre enregistré.</td></tr>
+            {% endfor %}
+          </tbody>
+          <tfoot class="table-dark fw-bold">
+            <tr>
+              <td>TOTAL</td>
+              <td class="text-end">{{ a_h|add:a_f }}</td>
+              <td class="text-end">{{ j_h|add:j_f }}</td>
+              <td class="text-end">{{ e_h|add:e_f }}</td>
+              <td class="text-end">{{ total_membres }}</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════ SÉANCES ════════════════ -->
+  <div class="d-flex align-items-center gap-2 mb-3">
+    <span class="fw-bold fs-5"><i class="bi bi-calendar-check text-success me-1"></i>Séances de culte</span>
+    <span class="badge bg-success rounded-pill">Mois en cours · {{ s_nb_bilans }} bilans</span>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm text-center py-3" style="border-top:3px solid #0d6efd !important;">
+        <div class="fw-bold fs-4 text-primary">{{ s_ah }}</div>
+        <div class="small text-muted">Adultes H.</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm text-center py-3" style="border-top:3px solid #dc3545 !important;">
+        <div class="fw-bold fs-4 text-danger">{{ s_af }}</div>
+        <div class="small text-muted">Adultes F.</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm text-center py-3" style="border-top:3px solid #fd7e14 !important;">
+        <div class="fw-bold fs-4" style="color:#fd7e14;">{{ s_jh|add:s_jf }}</div>
+        <div class="small text-muted">Jeunes</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm text-center py-3" style="border-top:3px solid #198754 !important;">
+        <div class="fw-bold fs-4 text-success">{{ s_eh|add:s_ef }}</div>
+        <div class="small text-muted">Enfants</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-6">
+      <div class="card border-0 shadow-sm text-center py-3" style="border-top:3px solid #1e3a5f !important;">
+        <div class="fw-bold fs-3" style="color:#1e3a5f;">{{ s_total }}</div>
+        <div class="small text-muted fw-semibold text-uppercase">Présence totale ce mois</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-6">
+      <div class="card border-0 shadow-sm text-center py-3" style="border-top:3px solid #6f42c1 !important;">
+        <div class="fw-bold fs-3 text-purple" style="color:#6f42c1;">{{ s_cotis|floatformat:0 }} FCFA</div>
+        <div class="small text-muted fw-semibold text-uppercase">Cotisations ce mois</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart séances 6 mois -->
+  {% if chart_labels %}
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white border-0 fw-bold py-2">
+      <i class="bi bi-bar-chart-line text-success me-1"></i>Présence & cotisations — 6 derniers mois
+    </div>
+    <div class="card-body" style="height:250px;">
+      <canvas id="chartSeances"></canvas>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- ════════════════ GCK ════════════════ -->
+  <div class="d-flex align-items-center gap-2 mb-3">
+    <span class="fw-bold fs-5"><i class="bi bi-lightning-charge-fill text-warning me-1"></i>GCK</span>
+    <span class="badge bg-warning text-dark rounded-pill">Année {{ annee }}</span>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm text-center py-3" style="border-top:3px solid #0d6efd !important;">
+        <div class="fw-bold fs-4 text-primary">{{ gck_ah }}</div>
+        <div class="small text-muted">Adultes H.</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm text-center py-3" style="border-top:3px solid #dc3545 !important;">
+        <div class="fw-bold fs-4 text-danger">{{ gck_af }}</div>
+        <div class="small text-muted">Adultes F.</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm text-center py-3" style="border-top:3px solid #fd7e14 !important;">
+        <div class="fw-bold fs-4" style="color:#fd7e14;">{{ gck_jh|add:gck_jf }}</div>
+        <div class="small text-muted">Jeunes</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm text-center py-3" style="border-top:3px solid #ffc107 !important;">
+        <div class="fw-bold fs-4 text-warning">{{ gck_conv }}</div>
+        <div class="small text-muted">Convertis</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4">
+      <div class="card border-0 shadow-sm text-center py-3" style="border-top:3px solid #1e3a5f !important;">
+        <div class="fw-bold fs-3" style="color:#1e3a5f;">{{ gck_total }}</div>
+        <div class="small text-muted fw-semibold text-uppercase">Total GCK Soir</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4">
+      <div class="card border-0 shadow-sm text-center py-3" style="border-top:3px solid #6c757d !important;">
+        <div class="fw-bold fs-3 text-secondary">{{ conf_total }}</div>
+        <div class="small text-muted fw-semibold text-uppercase">Conférence Ministres</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4">
+      <div class="card border-0 shadow-sm text-center py-3" style="border-top:3px solid #198754 !important;">
+        <div class="fw-bold fs-3 text-success">{{ impact_total }}</div>
+        <div class="small text-muted fw-semibold text-uppercase">Académie Impact</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════ QUOTAS ════════════════ -->
+  <div class="d-flex align-items-center gap-2 mb-3">
+    <span class="fw-bold fs-5"><i class="bi bi-pie-chart-fill text-primary me-1"></i>Quotas</span>
+    <span class="badge bg-primary rounded-pill">Année {{ annee }}</span>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm text-center py-3" style="border-top:3px solid #6c757d !important;">
+        <div class="fw-bold fs-5 text-secondary">{{ q_total|floatformat:0 }}</div>
+        <div class="small text-muted fw-semibold text-uppercase">Total attribué (FCFA)</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm text-center py-3" style="border-top:3px solid #198754 !important;">
+        <div class="fw-bold fs-5 text-success">{{ q_verse|floatformat:0 }}</div>
+        <div class="small text-muted fw-semibold text-uppercase">Total versé (FCFA)</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm text-center py-3" style="border-top:3px solid #dc3545 !important;">
+        <div class="fw-bold fs-5 text-danger">{{ q_reste|floatformat:0 }}</div>
+        <div class="small text-muted fw-semibold text-uppercase">Reste (FCFA)</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm text-center py-3" style="border-top:3px solid #0d6efd !important;">
+        <div class="fw-bold fs-4 text-primary">{{ q_pct }}%</div>
+        <div class="small text-muted fw-semibold text-uppercase">Taux recouvrement</div>
+      </div>
+    </div>
+  </div>
+  <div class="mb-4">
+    <div class="progress" style="height:14px;border-radius:7px;">
+      <div class="progress-bar {% if q_pct >= 100 %}bg-success{% elif q_pct >= 50 %}bg-warning{% else %}bg-danger{% endif %} fw-bold"
+           style="width:{{ q_pct }}%;font-size:.75rem;line-height:14px;">
+        {% if q_pct > 8 %}{{ q_pct }}%{% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════ CROISSANCE ════════════════ -->
+  <div class="d-flex align-items-center gap-2 mb-3">
+    <span class="fw-bold fs-5"><i class="bi bi-graph-up-arrow text-success me-1"></i>Croissance</span>
+    <span class="badge bg-success rounded-pill">Nouveaux venus {{ annee }}</span>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm text-center py-3" style="border-top:3px solid #0d6efd !important;">
+        <div class="fw-bold fs-3 text-primary">{{ nv_total }}</div>
+        <div class="small text-muted fw-semibold text-uppercase">Total accueillis</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm text-center py-3" style="border-top:3px solid #198754 !important;">
+        <div class="fw-bold fs-3 text-success">{{ nv_restes }}</div>
+        <div class="small text-muted fw-semibold text-uppercase">Intégrés</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm text-center py-3" style="border-top:3px solid #dc3545 !important;">
+        <div class="fw-bold fs-3 text-danger">{{ nv_partis }}</div>
+        <div class="small text-muted fw-semibold text-uppercase">Partis</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm text-center py-3" style="border-top:3px solid #ffc107 !important;">
+        <div class="fw-bold fs-3 text-warning">{{ nv_retention }}%</div>
+        <div class="small text-muted fw-semibold text-uppercase">Taux rétention</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════ COTISATIONS ════════════════ -->
+  <div class="card border-0 shadow-sm mb-4" style="border-left:4px solid #6f42c1 !important; background:#faf8ff;">
+    <div class="card-body py-3">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div>
+          <div class="small text-muted fw-semibold text-uppercase"><i class="bi bi-wallet2 me-1"></i>Versements cotisations — {{ annee }}</div>
+          <div class="fw-bold fs-4" style="color:#6f42c1;">{{ cotis_annee|floatformat:0 }} FCFA</div>
+        </div>
+        <a href="{% url 'versement_list' %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-right me-1"></i>Détail</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Liens rapides -->
+  <div class="card border-0 shadow-sm">
+    <div class="card-header bg-white border-0 fw-bold py-2">
+      <i class="bi bi-grid-3x3-gap text-secondary me-1"></i>Accès rapide
+    </div>
+    <div class="card-body">
+      <div class="d-flex flex-wrap gap-2">
+        <a href="{% url 'quota_national' %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pie-chart me-1"></i>Quotas National</a>
+        <a href="{% url 'gck_mensuel' %}" class="btn btn-sm btn-outline-warning"><i class="bi bi-lightning me-1"></i>GCK Mensuel</a>
+        <a href="{% url 'croissance_national' %}" class="btn btn-sm btn-outline-success"><i class="bi bi-graph-up me-1"></i>Croissance</a>
+        <a href="{% url 'versement_quota_list' %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-cash me-1"></i>Paiements Quota</a>
+        <a href="{% url 'eglises' %}" class="btn btn-sm btn-outline-dark"><i class="bi bi-building me-1"></i>Églises</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% if chart_labels %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+(function() {
+  const labels = {{ chart_labels|safe }};
+  const presence = {{ chart_presence|safe }};
+  const cotis = {{ chart_cotis|safe }};
+
+  new Chart(document.getElementById('chartSeances'), {
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          type: 'bar',
+          label: 'Présence',
+          data: presence,
+          backgroundColor: 'rgba(13,110,253,0.25)',
+          borderColor: '#0d6efd',
+          borderWidth: 2,
+          yAxisID: 'y',
+          order: 2,
+        },
+        {
+          type: 'line',
+          label: 'Cotisations (FCFA)',
+          data: cotis,
+          borderColor: '#198754',
+          backgroundColor: 'rgba(25,135,84,0.08)',
+          borderWidth: 2,
+          tension: 0.35,
+          fill: true,
+          pointRadius: 4,
+          yAxisID: 'y2',
+          order: 1,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'top' } },
+      scales: {
+        y:  { position: 'left',  beginAtZero: true, grid: { color: '#f0f0f0' } },
+        y2: { position: 'right', beginAtZero: true, grid: { display: false } },
+      }
+    }
+  });
+})();
+</script>
+{% endif %}
+{% endblock %}

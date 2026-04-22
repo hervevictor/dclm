@@ -42,6 +42,7 @@ urlpatterns = [
     path('retraites/', include('Retraites.urls')),
     path('quotas/', include('Quotas.urls')),
     path('croissance/', include('Croissance.urls')),
+    path('dashboard/', include('Dashboard.urls')),
 
 
 
