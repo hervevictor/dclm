@@ -160,8 +160,13 @@
               {% if region.nombre_de_membres %}
               <div class="small text-muted mt-1"><i class="bi bi-people me-1"></i>{{ region.nombre_de_membres }} membres</div>
               {% endif %}
-              <div class="mt-2 small">
-                <span class="badge bg-light text-dark border">{{ groupes|length }} groupes</span>
+              <div class="mt-2 d-flex gap-2 flex-wrap">
+                <span class="badge bg-light text-dark border">
+                  <i class="bi bi-diagram-3 me-1"></i>{{ region.nb_groupes }} groupe{{ region.nb_groupes|pluralize }}
+                </span>
+                <span class="badge bg-light text-dark border">
+                  <i class="bi bi-house-door me-1"></i>{{ region.nb_eglises }} église{{ region.nb_eglises|pluralize }}
+                </span>
               </div>
             </div>
           </div>

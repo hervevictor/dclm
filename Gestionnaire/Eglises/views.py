@@ -62,9 +62,32 @@ def index(request):
     recent_messages = Message.objects.filter(date__gt=date_limit_msg).order_by('-date')
     recent_annonces = Annonce.objects.filter(add_date__gt=date_limit_ann).order_by('-add_date')
 
-    regions = Region.objects.all().order_by('name')
+    regions_qs = Region.objects.all().order_by('name')
     groupes = Groupe.objects.all().order_by('region', 'name')
     eglises = Eglise.objects.all().order_by('region', 'groupe', 'nom')
+
+    # Comptes par région
+    from django.db.models import Count
+    groupes_count = {
+        item['region']: item['c']
+        for item in Groupe.objects.values('region').annotate(c=Count('id'))
+    }
+    eglises_count = {
+        item['region']: item['c']
+        for item in Eglise.objects.values('region').annotate(c=Count('id'))
+    }
+
+    regions = [
+        {
+            'obj': r,
+            'name': r.name,
+            'nom_du_pasteur_regional': r.nom_du_pasteur_regional,
+            'nombre_de_membres': r.nombre_de_membres,
+            'nb_groupes': groupes_count.get(r.name, 0),
+            'nb_eglises': eglises_count.get(r.name, 0),
+        }
+        for r in regions_qs
+    ]
 
     return render(request, 'index.html', {
         'messages_recents': recent_messages,
@@ -72,7 +95,6 @@ def index(request):
         'regions': regions,
         'groupes': groupes,
         'eglises': eglises,
-        # compat ancienne template
         'message': recent_messages.first(),
         'annonce': recent_annonces.first(),
     })
