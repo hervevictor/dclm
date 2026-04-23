@@ -293,7 +293,10 @@ def quota_eglise_detail(request, pk):
     total_promis = int(promesses_qs.aggregate(s=Sum('montant_promis'))['s'] or 0)
     total_paye = int(promesses_qs.aggregate(s=Sum('montant_paye'))['s'] or 0)
     quota_montant = int(quota.montant)
-    surplus = total_promis - quota_montant
+    # Reste = ce que les membres doivent encore payer
+    reste = quota_montant - total_paye
+    # Surplus = si le total payé dépasse le quota
+    surplus_paye = total_paye - quota_montant  # positif = surplus, négatif = reste
     pct_promis = min(round(total_promis * 100 / quota_montant), 999) if quota_montant else 0
     pct_paye = min(round(total_paye * 100 / quota_montant), 999) if quota_montant else 0
 
@@ -304,7 +307,8 @@ def quota_eglise_detail(request, pk):
         'total_promis': total_promis,
         'total_paye': total_paye,
         'quota_montant': quota_montant,
-        'surplus': surplus,
+        'reste': reste,
+        'surplus_paye': surplus_paye,
         'pct_promis': pct_promis,
         'pct_paye': pct_paye,
     }
