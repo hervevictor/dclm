@@ -93,20 +93,29 @@
         </div>
       </div>
 
-      <!-- Enfants + Convertis -->
+      <!-- Enfants + Convertis + Quête -->
       <div class="row mb-3">
-        <div class="col-md-4">
+        <div class="col-md-3">
           <label class="form-label fw-semibold">Enfants</label>
           {{ form.enfants }}
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
           <label class="form-label fw-semibold text-success">Nouveaux convertis</label>
           {{ form.nouveaux_convertis }}
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
+          <label class="form-label fw-semibold text-warning"><i class="bi bi-cash-coin me-1"></i>Quête (FCFA)</label>
+          {{ form.quete }}
+        </div>
+        <div class="col-md-3">
           <label class="form-label text-muted">Total général</label>
           <div class="form-control bg-light fw-bold text-center" id="total_general_display">0</div>
         </div>
+      </div>
+
+      <div class="alert alert-info py-2 px-3 mb-3 small">
+        <i class="bi bi-arrow-repeat me-1"></i>
+        Ce bilan sera automatiquement ajouté aux <strong>bilans de séances</strong> selon le jour de la semaine sélectionné (Dimanche soir, Jeudi soir ou Lundi soir).
       </div>
 
       <hr>

@@ -28,6 +28,7 @@ class BilanGCKForm(forms.ModelForm):
                   'adultes_hommes', 'adultes_femmes',
                   'jeunes_hommes', 'jeunes_femmes',
                   'enfants', 'nouveaux_convertis',
+                  'quete',
                   'suggestions', 'difficultes', 'auteur')
         widgets = {
             'eglise': forms.Select(attrs={'class': 'form-control select-search'}),
@@ -38,6 +39,7 @@ class BilanGCKForm(forms.ModelForm):
             'jeunes_femmes': forms.NumberInput(attrs={'class': 'form-control', 'min': 0}),
             'enfants': forms.NumberInput(attrs={'class': 'form-control', 'min': 0}),
             'nouveaux_convertis': forms.NumberInput(attrs={'class': 'form-control', 'min': 0}),
+            'quete': forms.NumberInput(attrs={'class': 'form-control', 'min': 0, 'placeholder': '0'}),
             'suggestions': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Facultatif'}),
             'difficultes': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Facultatif'}),
             'auteur': forms.TextInput(attrs={'class': 'form-control', 'id': 'current_user', 'type': 'hidden'}),

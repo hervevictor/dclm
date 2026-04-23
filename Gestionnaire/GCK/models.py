@@ -3,6 +3,19 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from Eglises.models import Eglise
 
+# Types de séance GCK (créés automatiquement si absents)
+_GCK_SEANCE_TYPES = {
+    0: 'GCK Lundi soir',
+    3: 'GCK Jeudi soir',
+    6: 'GCK Dimanche soir',
+}
+
+
+def _get_or_create_seance(type_name):
+    from Seances.models import Seance
+    obj, _ = Seance.objects.get_or_create(type=type_name)
+    return obj
+
 
 class BilanGCK(models.Model):
     eglise = models.ForeignKey(Eglise, on_delete=models.CASCADE, related_name='bilans_gck')
@@ -21,6 +34,9 @@ class BilanGCK(models.Model):
 
     # Convertis
     nouveaux_convertis = models.PositiveIntegerField(default=0)
+
+    # Quête de la séance GCK
+    quete = models.DecimalField(max_digits=12, decimal_places=0, default=0, verbose_name="Quête (FCFA)")
 
     # Facultatifs
     suggestions = models.TextField(blank=True)
@@ -53,6 +69,51 @@ class BilanGCK(models.Model):
 
     def get_absolute_url(self):
         return reverse("gck_detail", args=[str(self.pk)])
+
+    # ── Synchronisation automatique vers Séances ────────────────────────────
+    def _seance_type_name(self):
+        return _GCK_SEANCE_TYPES.get(self.date.weekday())
+
+    def _sync_bilan_seance(self):
+        """Crée ou met à jour le Bilan de Séances correspondant à ce rapport GCK."""
+        from Seances.models import Bilan
+        type_name = self._seance_type_name()
+        if not type_name:
+            return
+        seance = _get_or_create_seance(type_name)
+        Bilan.objects.update_or_create(
+            eglise=self.eglise,
+            seance=seance,
+            date=self.date,
+            defaults={
+                'adultes_hommes': self.adultes_hommes,
+                'adultes_femmes': self.adultes_femmes,
+                'jeunes_garcons': self.jeunes_hommes,
+                'jeunes_filles': self.jeunes_femmes,
+                'enfants_garcons': self.enfants,
+                'enfants_filles': 0,
+                'cotisation': self.quete,
+                'auteur': self.auteur,
+            }
+        )
+
+    def _delete_bilan_seance(self):
+        """Supprime le Bilan de Séances lié si ce rapport GCK est supprimé."""
+        from Seances.models import Bilan, Seance
+        type_name = self._seance_type_name()
+        if not type_name:
+            return
+        seance = Seance.objects.filter(type=type_name).first()
+        if seance:
+            Bilan.objects.filter(eglise=self.eglise, seance=seance, date=self.date).delete()
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self._sync_bilan_seance()
+
+    def delete(self, *args, **kwargs):
+        self._delete_bilan_seance()
+        super().delete(*args, **kwargs)
 
 
 class BilanConferenceMinistres(models.Model):

@@ -72,9 +72,9 @@
           </div>
         </div>
 
-        <!-- Enfants + Convertis -->
-        <div class="row text-center mb-3">
-          <div class="col-4">
+        <!-- Enfants + Convertis + Quête -->
+        <div class="row text-center mb-3 g-2">
+          <div class="col-3">
             <div class="card border-secondary">
               <div class="card-body py-3">
                 <div class="text-muted small">Enfants</div>
@@ -82,7 +82,7 @@
               </div>
             </div>
           </div>
-          <div class="col-4">
+          <div class="col-3">
             <div class="card bg-dark text-white">
               <div class="card-body py-3">
                 <div class="small opacity-75">Total général</div>
@@ -90,11 +90,19 @@
               </div>
             </div>
           </div>
-          <div class="col-4">
+          <div class="col-3">
             <div class="card border-success">
               <div class="card-body py-3">
                 <div class="text-muted small">Nouveaux convertis</div>
                 <h4 class="text-success mb-0 fw-bold">{{ bilan.nouveaux_convertis }}</h4>
+              </div>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="card border-warning">
+              <div class="card-body py-3">
+                <div class="text-muted small"><i class="bi bi-cash-coin me-1"></i>Quête</div>
+                <h5 class="text-warning mb-0 fw-bold">{{ bilan.quete|floatformat:0 }} <small class="fs-6">FCFA</small></h5>
               </div>
             </div>
           </div>
