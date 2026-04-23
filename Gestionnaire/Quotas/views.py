@@ -12,6 +12,43 @@ def _annee(request):
     return int(request.GET.get('annee', date.today().year))
 
 
+# ─── RBAC helper ──────────────────────────────────────────────────────────────
+
+def _profil(user):
+    """Retourne (niveau, region, groupe, district) pour l'utilisateur."""
+    if user.is_superuser:
+        return 'ADMIN', None, None, None
+    p = getattr(user, 'profile', None)
+    if not p:
+        return 'DISTRICT', None, None, None
+    return p.niveau_acces, p.region_assignee, p.groupe_assigne, p.district_assigne
+
+
+def _is_admin(user):
+    niveau, *_ = _profil(user)
+    return niveau in ('ADMIN', 'COMPTABLE')
+
+
+def _redirect_quota_accueil(user):
+    """Redirige l'utilisateur vers la page quota de son niveau."""
+    niveau, region, groupe, district = _profil(user)
+    if niveau in ('ADMIN', 'COMPTABLE'):
+        return redirect('quota_national')
+    if niveau == 'REGION' and region:
+        return redirect('quota_region', region=region)
+    if niveau == 'GROUPE' and groupe:
+        return redirect('quota_groupe', groupe=groupe)
+    if niveau == 'DISTRICT' and district:
+        eglise = Eglise.objects.filter(nom=district).first()
+        if eglise:
+            annee = date.today().year
+            quota = QuotaEglise.objects.filter(eglise=eglise, annee=annee).first()
+            if quota:
+                return redirect('quota_eglise_detail', pk=quota.pk)
+        return redirect('quota_national')
+    return redirect('quota_national')
+
+
 def _verse_region(region_name):
     return int(VersementQuota.objects.filter(eglise__region=region_name).aggregate(s=Sum('montant'))['s'] or 0)
 
@@ -31,10 +68,27 @@ def _pct(verse, quota):
     return min(round(verse * 100 / quota), 100) if quota else 0
 
 
+def _can_view_eglise(user, eglise):
+    """True si l'utilisateur a le droit de voir le quota de cette église."""
+    niveau, region, groupe, district = _profil(user)
+    if niveau in ('ADMIN', 'COMPTABLE'):
+        return True
+    if niveau == 'REGION':
+        return region and eglise.region == region
+    if niveau == 'GROUPE':
+        return groupe and eglise.groupe == groupe
+    if niveau == 'DISTRICT':
+        return district and eglise.nom == district
+    return False
+
+
 # ─── Vue nationale ────────────────────────────────────────────────────────────
 
 @login_required(login_url='/membres/login/')
 def quota_national(request):
+    niveau, region, groupe, district = _profil(request.user)
+    if niveau not in ('ADMIN', 'COMPTABLE'):
+        return _redirect_quota_accueil(request.user)
     annee = _annee(request)
     regions = RegionModel.objects.all().order_by('name')
     rows = []
@@ -70,6 +124,12 @@ def quota_national(request):
 
 @login_required(login_url='/membres/login/')
 def quota_region(request, region):
+    niveau, reg_user, groupe, district = _profil(request.user)
+    if niveau not in ('ADMIN', 'COMPTABLE'):
+        if niveau == 'REGION' and reg_user != region:
+            return _redirect_quota_accueil(request.user)
+        if niveau in ('GROUPE', 'DISTRICT'):
+            return _redirect_quota_accueil(request.user)
     annee = _annee(request)
     groupes_qs = GroupeModel.objects.filter(region=region).order_by('name')
     rows = []
@@ -114,6 +174,17 @@ def quota_region(request, region):
 
 @login_required(login_url='/membres/login/')
 def quota_groupe(request, groupe):
+    niveau, region, grp_user, district = _profil(request.user)
+    if niveau not in ('ADMIN', 'COMPTABLE'):
+        if niveau == 'GROUPE' and grp_user != groupe:
+            return _redirect_quota_accueil(request.user)
+        if niveau == 'DISTRICT':
+            return _redirect_quota_accueil(request.user)
+        if niveau == 'REGION':
+            # Vérifier que ce groupe appartient bien à la région de l'utilisateur
+            grp_obj = GroupeModel.objects.filter(name=groupe).first()
+            if not grp_obj or grp_obj.region != region:
+                return _redirect_quota_accueil(request.user)
     annee = _annee(request)
     eglises = Eglise.objects.filter(groupe=groupe).order_by('nom')
 
@@ -155,6 +226,8 @@ def quota_groupe(request, groupe):
 
 @login_required(login_url='/membres/login/')
 def quota_attribuer_region(request):
+    if not _is_admin(request.user):
+        return _redirect_quota_accueil(request.user)
     regions = RegionModel.objects.exclude(name=GRAND_LOME).order_by('name')
     if request.method == 'POST':
         form = QuotaRegionForm(request.POST)
@@ -177,6 +250,8 @@ def quota_attribuer_region(request):
 
 @login_required(login_url='/membres/login/')
 def quota_attribuer_groupe(request, region=None):
+    if not _is_admin(request.user):
+        return _redirect_quota_accueil(request.user)
     regions = RegionModel.objects.all().order_by('name')
     groupes = GroupeModel.objects.all().order_by('name')
     region_sel = region or request.GET.get('region', '')
@@ -206,6 +281,8 @@ def quota_attribuer_groupe(request, region=None):
 
 @login_required(login_url='/membres/login/')
 def quota_attribuer_eglise(request, groupe=None):
+    if not _is_admin(request.user):
+        return _redirect_quota_accueil(request.user)
     groupe_sel = groupe or request.GET.get('groupe', '')
     eglises = Eglise.objects.all().order_by('groupe', 'nom')
     if groupe_sel:
@@ -285,6 +362,8 @@ def versement_quota_supprimer(request, pk):
 def quota_eglise_detail(request, pk):
     quota = get_object_or_404(QuotaEglise, pk=pk)
     eglise = quota.eglise
+    if not _can_view_eglise(request.user, eglise):
+        return _redirect_quota_accueil(request.user)
 
     promesses_qs = quota.promesses.all()
     paginator = Paginator(promesses_qs, 20)
@@ -319,6 +398,8 @@ def quota_eglise_detail(request, pk):
 def promesse_add(request, quota_pk):
     quota = get_object_or_404(QuotaEglise, pk=quota_pk)
     eglise = quota.eglise
+    if not _can_view_eglise(request.user, eglise):
+        return _redirect_quota_accueil(request.user)
     if request.method == 'POST':
         form = PromesseQuotaForm(request.POST, eglise=eglise)
         if form.is_valid():
@@ -338,6 +419,8 @@ def promesse_edit(request, pk):
     promesse = get_object_or_404(PromesseQuota, pk=pk)
     quota = promesse.quota_eglise
     eglise = quota.eglise
+    if not _can_view_eglise(request.user, eglise):
+        return _redirect_quota_accueil(request.user)
     if request.method == 'POST':
         form = PromesseQuotaForm(request.POST, instance=promesse, eglise=eglise)
         if form.is_valid():
@@ -354,6 +437,8 @@ def promesse_edit(request, pk):
 def promesse_delete(request, pk):
     promesse = get_object_or_404(PromesseQuota, pk=pk)
     quota_pk = promesse.quota_eglise.pk
+    if not _can_view_eglise(request.user, promesse.quota_eglise.eglise):
+        return _redirect_quota_accueil(request.user)
     if request.method == 'POST':
         promesse.delete()
         return redirect('quota_eglise_detail', pk=quota_pk)
@@ -366,5 +451,18 @@ def promesse_delete(request, pk):
 def quota_eglise_list(request):
     annee = _annee(request)
     quotas = QuotaEglise.objects.filter(annee=annee).select_related('eglise').order_by('eglise__groupe', 'eglise__nom')
+    niveau, region, groupe, district = _profil(request.user)
+    if niveau == 'REGION' and region:
+        quotas = quotas.filter(eglise__region=region)
+    elif niveau == 'GROUPE' and groupe:
+        quotas = quotas.filter(eglise__groupe=groupe)
+    elif niveau == 'DISTRICT' and district:
+        # Un district ne voit que son église, redirige directement vers le détail
+        eglise = Eglise.objects.filter(nom=district).first()
+        if eglise:
+            quota = QuotaEglise.objects.filter(eglise=eglise, annee=annee).first()
+            if quota:
+                return redirect('quota_eglise_detail', pk=quota.pk)
+        quotas = quotas.none()
     context = {'quotas': quotas, 'annee': annee}
     return render(request, 'Quotas/quota_eglise_list.html', context)
